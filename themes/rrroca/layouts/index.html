@@ -99,7 +99,7 @@
         <div class="news-card-body">
           <time class="news-date">{{ .Date.Format "January 2, 2006" }}</time>
           <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
-          <p>{{ .Summary | truncate 120 }}</p>
+          <p>{{ .Summary | plainify | truncate 120 }}</p>
           <a href="{{ .Permalink }}" class="read-more">Read more →</a>
         </div>
       </article>

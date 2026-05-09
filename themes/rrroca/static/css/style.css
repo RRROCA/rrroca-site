@@ -269,23 +269,56 @@ p { margin-bottom: var(--space-md); }
 }
 .hero-actions { display: flex; gap: var(--space-md); flex-wrap: wrap; }
 
+/* Hero stats bar */
+.hero-stats {
+  display: flex; gap: var(--space-2xl); margin-bottom: var(--space-xl);
+  flex-wrap: wrap;
+}
+.hero-stat { text-align: center; }
+.hero-stat-number {
+  display: block; font-family: var(--font-heading);
+  font-size: 1.6rem; font-weight: 700; line-height: 1.2;
+}
+.hero-stat-label {
+  display: block; font-size: 0.8rem; opacity: 0.8;
+  margin-top: var(--space-xs);
+}
+
+/* Button variants */
+.btn-outline {
+  background: transparent; color: white;
+  border-color: rgba(255,255,255,0.5);
+}
+.btn-outline:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: white; color: white;
+}
+
+/* Background alternates */
+.bg-alt { background: var(--color-surface); }
+
 /* ================================
    QUICK LINKS — icon cards
    ================================ */
 .quick-links {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-lg);
   margin-top: calc(-1 * var(--space-3xl));
   position: relative;
   z-index: 10;
+  padding: 0 var(--space-lg);
 }
-.quick-link {
+.quick-links-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: var(--space-lg);
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+.quick-link-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-sm);
-  padding: var(--space-xl) var(--space-lg);
+  padding: var(--space-xl) var(--space-md);
   background: var(--color-surface);
   border-radius: var(--radius-lg);
   border: 1px solid var(--color-border);
@@ -295,12 +328,14 @@ p { margin-bottom: var(--space-md); }
   color: var(--color-text);
   box-shadow: var(--shadow-md);
 }
-.quick-link:hover {
+.quick-link-card:hover {
   border-color: var(--color-ridge);
   box-shadow: var(--shadow-lg);
   transform: translateY(-4px);
   color: var(--color-ridge);
 }
+.quick-link-card h3 { font-size: 0.95rem; margin: 0; font-family: var(--font-body); }
+.quick-link-card p { font-size: 0.78rem; color: var(--color-text-muted); line-height: 1.4; margin: 0; }
 .quick-link-icon {
   font-size: 1.8rem;
   width: 56px;
@@ -1111,6 +1146,7 @@ p { margin-bottom: var(--space-md); }
    Responsive — Extended for new components
    ============================================ */
 @media (max-width: 1024px) {
+  .quick-links-grid { grid-template-columns: repeat(3, 1fr); }
   .safety-grid { grid-template-columns: repeat(2, 1fr); }
   .membership-tiers { grid-template-columns: 1fr; max-width: 400px; }
   .tier-card.featured { transform: none; }
@@ -1119,11 +1155,13 @@ p { margin-bottom: var(--space-md); }
 }
 
 @media (max-width: 768px) {
+  .quick-links-grid { grid-template-columns: repeat(2, 1fr); }
   .ai-panel { width: calc(100vw - 32px); right: 16px; bottom: 16px; max-height: 80vh; }
   .safety-grid { grid-template-columns: 1fr 1fr; }
   .emergency-inner { flex-direction: column; text-align: center; }
   .emergency-contacts { flex-direction: column; gap: var(--space-sm); }
   .hero-stats { flex-direction: column; gap: var(--space-md); }
+  .fb-group-cta-inner { flex-direction: column; text-align: center; }
 }
 
 @media (max-width: 480px) {

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 import re
 import sys
 import time
@@ -41,17 +42,7 @@ class PageTarget:
 
 TARGETS: list[PageTarget] = [
     PageTarget("https://rrroca.org/en/about-rrroca-calgary/", "about\\_index.md", "about"),
-    PageTarget(
-        "https://rrroca.org/en/about-rrroca-calgary/rrroca-board-of-directors/rrroca-meeting-minutes/",
-        "about\\meeting-minutes.md",
-        "about",
-    ),
     PageTarget("https://rrroca.org/en/about-rrroca-calgary/bylaws/", "about\\bylaws.md", "about"),
-    PageTarget(
-        "https://rrroca.org/en/about-rrroca-calgary/president-message/",
-        "about\\president-message.md",
-        "about",
-    ),
     PageTarget("https://rrroca.org/en/rrroca-community/safety/", "safety\\_index.md", "safety"),
     PageTarget(
         "https://rrroca.org/en/rrroca-community/safety/wild-animal-safety/",
@@ -87,7 +78,6 @@ TARGETS: list[PageTarget] = [
         "community\\community-park.md",
         "community",
     ),
-    PageTarget("https://rrroca.org/en/rrroca-events-calgary/", "events\\_index.md", "events"),
     PageTarget(
         "https://rrroca.org/en/rrroca-events-calgary/block-party-ideas/",
         "events\\block-party-ideas.md",
@@ -108,17 +98,59 @@ TARGETS: list[PageTarget] = [
     ),
     PageTarget("https://rrroca.org/en/news-community-avid-readers/", "news\\community-avid-readers.md", "news"),
     PageTarget("https://rrroca.org/en/presidentsmessage2022/", "news\\presidents-message-2022.md", "news"),
+    PageTarget("https://rrroca.org/en/president-message-2022-02/", "news\\president-message-feb-2022.md", "news"),
     PageTarget("https://rrroca.org/en/news-royal-vista-business-park/", "news\\royal-vista-business-park.md", "news"),
     PageTarget(
         "https://rrroca.org/en/news-newdevelopmentpermitapplication/",
         "news\\new-development-permit.md",
         "news",
     ),
+    PageTarget("https://rrroca.org/en/2022marchwinter-festival/", "news\\winter-festival-2022.md", "news"),
     PageTarget("https://rrroca.org/en/contact-us/terms-of-use/", "terms-of-use.md", "legal"),
     PageTarget("https://rrroca.org/en/contact-us/privacy-statement/", "privacy-statement.md", "legal"),
     PageTarget("https://rrroca.org/en/ward-1-forum/", "about\\ward-1-forum.md", "about"),
     PageTarget("https://rrroca.org/en/gallery/", "gallery.md", "gallery"),
     PageTarget("https://rrroca.org/en/news/past-community-newsletters/", "news\\past-newsletters.md", "news"),
+]
+
+GENERATED_CONTENT_PATHS = [
+    "about\\_index.md",
+    "about\\bylaws.md",
+    "about\\meeting-minutes.md",
+    "about\\president-message.md",
+    "about\\ward-1-forum.md",
+    "business-directory\\_index.md",
+    "community\\_index.md",
+    "community\\babysitter-registry.md",
+    "community\\community-garden.md",
+    "community\\community-park.md",
+    "community\\groups.md",
+    "community\\home-owners.md",
+    "community\\schools.md",
+    "events\\_index.md",
+    "events\\block-party-ideas.md",
+    "gallery.md",
+    "get-involved\\_index.md",
+    "get-involved\\sponsorship.md",
+    "get-involved\\volunteer.md",
+    "news\\community-avid-readers.md",
+    "news\\freedom-mobile-tower.md",
+    "news\\new-development-permit.md",
+    "news\\past-newsletters.md",
+    "news\\president-message-feb-2022.md",
+    "news\\presidents-message-2022.md",
+    "news\\royal-vista-business-park.md",
+    "news\\winter-festival-2022.md",
+    "privacy-statement.md",
+    "safety\\_index.md",
+    "safety\\electrical-safety.md",
+    "safety\\wild-animal-safety.md",
+    "safety\\winter-safety.md",
+    "sports\\_index.md",
+    "sports\\baseball.md",
+    "sports\\sport-clubs.md",
+    "sports\\spring-sports.md",
+    "terms-of-use.md",
 ]
 
 
@@ -159,6 +191,19 @@ class PoliteSession:
 
 def log(message: str) -> None:
     print(message, flush=True)
+
+
+def reset_generated_output() -> None:
+    for relative_path in GENERATED_CONTENT_PATHS:
+        target_path = CONTENT_DIR / Path(relative_path)
+        target_path.unlink(missing_ok=True)
+
+    if STATIC_UPLOADS_DIR.exists():
+        for child in STATIC_UPLOADS_DIR.iterdir():
+            if child.is_file():
+                child.unlink()
+            elif child.is_dir():
+                shutil.rmtree(child)
 
 
 def fetch_sitemap_lastmods(client: PoliteSession) -> dict[str, str]:
@@ -497,8 +542,7 @@ def sanitize_content_html(container: Tag, page_url: str, client: PoliteSession, 
             if href:
                 absolute_href = urljoin(page_url, href)
                 if is_allowed_image_url(absolute_href):
-                    local_href = download_image(client, absolute_href, image_cache, used_names)
-                    node.attrs = {"href": local_href or absolute_href}
+                    node.unwrap()
                 else:
                     node.attrs = {"href": absolute_href}
             else:
@@ -523,6 +567,7 @@ def html_to_markdown(html: str, title: str) -> str:
     )
     markdown = markdown.replace("\r\n", "\n").replace("\xa0", " ")
     markdown = re.sub(r"(?m)^\[(?:/?[A-Za-z0-9_-]+[^\]\n]*)\]\s*$", "", markdown)
+    markdown = re.sub(r"(?m)^#{1,6}\s*$\n?", "", markdown)
     markdown = re.sub(r"\n{3,}", "\n\n", markdown)
     markdown = re.sub(r"[ \t]+\n", "\n", markdown)
     markdown = markdown.strip()
@@ -609,6 +654,7 @@ def import_page(
 def main() -> int:
     CONTENT_DIR.mkdir(parents=True, exist_ok=True)
     STATIC_UPLOADS_DIR.mkdir(parents=True, exist_ok=True)
+    reset_generated_output()
 
     client = PoliteSession()
     sitemap_lastmods = fetch_sitemap_lastmods(client)
