@@ -1,0 +1,69 @@
+name: "💡 Feature Request"
+description: "Suggest a new feature, page, or improvement for the RRROCA website."
+title: "Feature: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Suggest a Feature
+        Have an idea to make the RRROCA website better? We'd love to hear it.
+
+  - type: textarea
+    id: idea
+    attributes:
+      label: "What's the idea?"
+      description: "Describe the feature or improvement you'd like to see."
+      placeholder: |
+        Example: "Add an events calendar that shows upcoming community events with dates, times, and registration links."
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: "Why would this be useful?"
+      description: "Who benefits? What problem does it solve? How does it help the community?"
+      placeholder: |
+        Example: "Residents keep asking when the next event is. A calendar would reduce questions to the board and help with attendance."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "How important is this?"
+      options:
+        - "🔥 Critical — we really need this"
+        - "👍 Nice to have — would improve the site"
+        - "💭 Just an idea — worth discussing"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: "Which area of the site?"
+      options:
+        - "🏠 Homepage"
+        - "📰 News & Events"
+        - "🛡️ Safety"
+        - "🏛️ Governance / Board"
+        - "🤝 Get Involved / Membership"
+        - "🏘️ Community Pages"
+        - "💼 Business Directory"
+        - "📱 Mobile Experience"
+        - "🌐 General / Sitewide"
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: "Any examples or inspiration? (optional)"
+      description: "Link to another site that does this well, or sketch out how you imagine it."
+      placeholder: "Check out how community-xyz.ca does their events calendar"
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        Thanks for the suggestion! Chad will review and prioritize. ✨

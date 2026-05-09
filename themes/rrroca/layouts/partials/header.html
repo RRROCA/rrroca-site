@@ -18,3 +18,19 @@
     </nav>
   </div>
 </header>
+<script>
+(function(){
+  var h = document.querySelector('.site-header');
+  if (!h) return;
+  var last = 0;
+  function onScroll() {
+    var y = window.scrollY || document.documentElement.scrollTop;
+    if (y !== last) {
+      h.classList.toggle('scrolled', y > 20);
+      last = y;
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive: true});
+  onScroll();
+})();
+</script>

@@ -1,0 +1,73 @@
+name: "📝 Content Update"
+description: "Request a text change, new page, or content correction on the website. Board members with publish access can make these changes directly."
+title: "Content: "
+labels: ["content"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Content Update Request
+
+        **Board members with write access:** You can edit content files directly!
+        1. Navigate to the `content/` folder in this repo
+        2. Find the `.md` file for the page you want to change
+        3. Click the ✏️ pencil icon to edit
+        4. Make your changes and commit directly to `master`
+        5. The site rebuilds automatically in ~2 minutes
+
+        **Don't have write access?** Fill out this form and Chad will make the update.
+
+        📁 **Content file locations:**
+        - News articles → `content/news/`
+        - Events → `content/events/`
+        - Community pages → `content/community/`
+        - Board / Governance → `content/board/`
+        - Safety → `content/safety/`
+        - Sports → `content/sports/`
+        - About pages → `content/about/`
+
+  - type: dropdown
+    id: update-type
+    attributes:
+      label: "What kind of update?"
+      options:
+        - "✏️ Fix a typo or incorrect information"
+        - "📄 Add a new page or article"
+        - "🔄 Update existing content (dates, info, etc.)"
+        - "🗑️ Remove outdated content"
+        - "📸 Add or change an image"
+    validations:
+      required: true
+
+  - type: input
+    id: which-page
+    attributes:
+      label: "Which page needs updating?"
+      description: "Paste the URL or describe the page."
+      placeholder: "https://canchad.github.io/rrroca-site/events/ or 'the events page'"
+    validations:
+      required: true
+
+  - type: textarea
+    id: changes
+    attributes:
+      label: "What should change?"
+      description: "Be specific — what text should be added, removed, or changed? For new pages, provide the content you want published."
+      placeholder: |
+        Example: "Change the next board meeting date from May 15 to June 12, 2026. Update the location from 'TBD' to 'Royal Oak Community Hall'."
+    validations:
+      required: true
+
+  - type: textarea
+    id: attachments
+    attributes:
+      label: "Any images or documents? (optional)"
+      description: "Drag and drop files here, or paste links to images/documents to include."
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        **Quick self-serve edits:** Board members with repo access can edit
+        any file in the `content/` folder directly on GitHub. Changes go live
+        automatically after commit — no approval needed for content updates.
