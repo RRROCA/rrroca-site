@@ -2,9 +2,10 @@ baseURL = "https://rrroca.org/"
 locale = "en-US"
 title= "Rocky Ridge Royal Oak Community Association"
 theme = "rrroca"
+buildFuture = true
+
 [pagination]
   pagerSize = 10
-buildFuture = true
 
 [params]
   description = "Serving the Rocky Ridge and Royal Oak communities in Northwest Calgary"
@@ -54,13 +55,17 @@ buildFuture = true
     url = "/business-directory/"
     weight = 7
   [[menus.main]]
+    name = "Board"
+    url = "/board/"
+    weight = 8
+  [[menus.main]]
     name = "Gallery"
     url = "/gallery/"
-    weight = 8
+    weight = 9
   [[menus.main]]
     name = "Join"
     url = "/membership/"
-    weight = 9
+    weight = 10
 
 [markup]
   [markup.goldmark]

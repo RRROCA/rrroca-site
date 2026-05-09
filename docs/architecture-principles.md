@@ -8,7 +8,31 @@
 
 Community associations are volunteer organizations with inherent constraints that most tech projects don't face: unpredictable turnover, zero budget, variable technical skill, and people who donate hours — not weeks. Every technical decision must be evaluated through this lens, not through the lens of a company with paid staff and IT departments.
 
+These principles are grounded in and aligned to the RRROCA Strategic Plan (2024-2028) and Business Plan (2023-2028), which together define the Association's mandate, values, and guiding principles.
+
 These principles are ordered by priority. When principles conflict, higher-ranked principles win.
+
+---
+
+## TL;DR
+
+**Build a website that a non-technical volunteer board can maintain at zero cost, forever.** Use static HTML (no servers, no databases, no plugins), store content in portable Markdown, and make every feature degrade gracefully when third-party services change or disappear. AI coding assistants are the succession plan — choose a platform they can work with.
+
+### Principles at a Glance
+
+| # | Principle | One-Liner |
+|---|-----------|-----------|
+| **P0** | [Community First](#north-star) | Every decision serves resident engagement — informed, safe, involved |
+| **P1** | [Survive Volunteer Turnover](#p1-survive-volunteer-turnover-the-bus-factor-principle) | No single person's departure breaks the website |
+| **P2** | [Zero Cost by Default](#p2-zero-cost-by-default-the-sustainability-principle) | Site runs at $0 indefinitely; paid services are optional |
+| **P3** | [Minimal Maintenance](#p3-minimal-maintenance-the-neglect-proof-principle) | Zero ongoing maintenance to keep the lights on |
+| **P4** | [Progressive Skill Levels](#p4-progressive-skill-levels-the-accessibility-principle) | Content editors → power users → AI-assisted → developers |
+| **P5** | [Security by Elimination](#p5-security-by-elimination-the-static-first-principle) | No server, no database, no attack surface |
+| **P6** | [Graceful Degradation](#p6-graceful-degradation-the-resilient-features-principle) | Broken third-party = reduced features, never broken pages |
+| **P7** | [Portability](#p7-portability-over-optimization-the-no-lock-in-principle) | Standard formats, no vendor lock-in, deployable anywhere |
+| **P8** | [Document Decisions](#p8-document-decisions-not-just-code-the-institutional-memory-principle) | Next volunteer understands WHY, not just WHAT |
+
+Also in this document: [Decision Framework](#decision-framework) (10-question checklist) · [Applied Guidance](#applying-principles-to-common-decisions) (forms, CMS, payments) · [AI Tooling Strategy](#ai-tooling-strategy) · [Anti-Patterns](#anti-patterns-to-avoid)
 
 ---
 
@@ -18,12 +42,31 @@ These principles are ordered by priority. When principles conflict, higher-ranke
 
 > **Every feature, page, and design decision exists to strengthen the connection between residents and their community. If it doesn't help a neighbour feel more informed, more safe, or more involved — it doesn't belong.**
 
-This is the north star that sits above all other principles. The website is not a technology project — it's a community engagement tool that happens to use technology. The measure of success is not uptime, page speed, or code quality. It's whether residents check the site when they hear sirens, whether new families discover their community cleanup day, whether a senior finds the right phone number during an emergency.
+This is the north star that sits above all other principles. It flows directly from RRROCA's founding mandate:
+
+- **Vision:** *"Build a sense of community that encourages involvement between community-based organizations, community members, and individual neighborhoods... Friendly, Safe and Environmentally Sensitive."*
+- **Mission:** *"A vital organization that effectively acts in response to the common interests and concerns of the community's diverse residents."*
+- **Guiding Principle #2:** *"Strive to be a Community Hub of Information"*
+
+The website is not a technology project — it's a **Community Hub of Information** that happens to use technology. The measure of success is not uptime, page speed, or code quality. It's whether residents check the site when they hear sirens, whether new families discover their community cleanup day, whether a senior finds the right phone number during an emergency.
+
+**Alignment to RRROCA Guiding Principles:**
+
+| RRROCA Guiding Principle | How the website serves it |
+|---|---|
+| #1 Represent the community on well-being and aesthetics | Safety alerts, development updates, planning notices |
+| #2 Community Hub of Information | The entire site — events, news, resources, contacts |
+| #3 Inspire involvement through volunteer opportunities | Volunteer forms, "get involved" calls-to-action on every page |
+| #4 Engage with HAs, community-based groups | Partner org directory, joint event promotion |
+| #5 Support Child and Youth organizations | Youth programs page, Scouts/Guides links |
+| #6 Promote sports and programs for various age groups | Programs page, registration info, seasonal schedules |
+| #7 Organize social events to bring community together | Events calendar, event recaps with photos |
+| #8 Promote safety and act on public safety trends | Safety dashboard, concern reporting, CPS liaison info |
 
 **What this means in practice:**
 - Content hierarchy is driven by resident needs, not board structure. Safety alerts and upcoming events are more important than bylaws and meeting minutes.
 - Every page should answer a resident's question — "Is my neighbourhood safe?" "What's happening this weekend?" "How do I get involved?" — not showcase the CA's org chart.
-- Features are justified by engagement impact: a simple event calendar that 200 families check monthly is worth more than a sophisticated membership portal that 10 people use.
+- Features are justified by engagement impact: a simple event calendar that 200 families check monthly is worth more than a sophisticated membership portal that 10 people use. (Context: RRROCA has ~150-200 memberships out of ~20,000 residents — the site must serve the whole community, not just members.)
 - Design choices favour warmth and approachability over corporate polish. This is a neighbourhood, not a brand.
 - Accessibility is non-negotiable — the site serves everyone from tech-savvy parents to seniors who just learned to use a tablet.
 - Local voice matters: content should sound like a neighbour talking, not a press release. Real photos of real events, not stock imagery.
@@ -36,9 +79,11 @@ This is the north star that sits above all other principles. The website is not 
 
 ### P1. Survive Volunteer Turnover (The Bus Factor Principle)
 
-> **No single person's departure — from the board, from Microsoft, or from the project — should break the website or block content updates.**
+> **No single person's departure — from the board, from the community, or from the project — should break the website or block content updates.**
 
 This is the #1 architecture principle because it reflects the #1 operational reality of every community association: people rotate off the board, move away, get busy, or simply stop volunteering.
+
+**Strategic Plan alignment:** The Business Plan explicitly calls out succession planning as a priority — *"Each member of the Executive and Portfolio Chairs should develop a succession plan and actively develop a successor."* Board attendance and quorum are recurring challenges. The Association has no paid staff and relies entirely on volunteers. Technology choices must reflect this reality: if the Communications Chair changes mid-year, the website cannot go dark.
 
 **What this means in practice:**
 - Shared ownership: GitHub organization (not personal account), 2+ org admins, documented account access
@@ -46,6 +91,7 @@ This is the #1 architecture principle because it reflects the #1 operational rea
 - Content management via browser UI (Decap CMS), not terminal/git commands
 - Self-documenting: `docs/OPERATIONS.md`, `ARCHITECTURE.md`, `EMERGENCY.md`, `ACCOUNTS.md`
 - Annual "bus factor" audit at each AGM: can someone other than the original builder publish a post?
+- Align with board succession planning: website handoff should be part of every Portfolio Chair transition
 
 **Decision test:** *"If the person who set this up disappeared tomorrow, could the next volunteer figure it out within 30 minutes with only the documentation we've written?"*
 
@@ -55,7 +101,9 @@ This is the #1 architecture principle because it reflects the #1 operational rea
 
 > **The site must run indefinitely at $0. Every paid service must be optional and its removal must not break core functionality.**
 
-Community associations operate on membership dues, typically $5,000-10,000/year covering insurance, programs, and facility rentals. Website hosting is never a budget priority and is the first line item cut.
+**Strategic Plan alignment:** RRROCA's values include *Fiscal Responsibility*. The Association's unrestricted revenue comes primarily from ~150-200 annual memberships and business sponsorships — total operating budget is modest. Casino gaming proceeds (AGLC) are restricted to specific capital expenditures and cannot fund technology. The Business Plan notes that *"staff salaries can only be drawn from unrestricted funds"* — website costs compete directly with programming, events, and facility maintenance (~$4,735/year).
+
+Section 10.2 calls for a *"Financial Model for Technology Investments"* — our model is simple: $0 baseline, optional enhancements only.
 
 **What this means in practice:**
 - Static site on free hosting (GitHub Pages) — no server bills, no "oops we forgot to renew"
@@ -72,7 +120,7 @@ Community associations operate on membership dues, typically $5,000-10,000/year 
 
 > **The architecture must require zero ongoing maintenance to keep running. Maintenance effort should only be needed for content updates, never for keeping the lights on.**
 
-Volunteers donate 2-5 hours per month to the CA — total, across all responsibilities. If the website requires patching, updating, monitoring, or babysitting, it will be neglected and eventually break. WordPress sites die this way constantly.
+**Strategic Plan alignment:** The Business Plan repeatedly identifies limited volunteer time as the primary constraint — *"The Association currently has no paid staff and relies entirely on volunteers."* Board quorum is already a challenge; bylaw requirements and absences are preventing motions from passing. Portfolio Chairs carry governance, operations, AND programming responsibilities. Every hour a volunteer spends on website maintenance is an hour not spent on events, programs, or community engagement. The old tech strategy's WordPress + 10Web + plugins approach would have demanded exactly the kind of ongoing security patching and plugin management that volunteers don't have time for.
 
 **What this means in practice:**
 - Static HTML output: no servers to patch, no databases to back up, no PHP versions to upgrade
@@ -89,14 +137,19 @@ Volunteers donate 2-5 hours per month to the CA — total, across all responsibi
 
 > **Content editing must be accessible to non-technical volunteers. Development-level access should be available but never required for day-to-day operations.**
 
-A CA board typically has 8-12 members. Maybe 1-2 are technical. The website cannot depend on the technical ones for routine content updates.
+**Strategic Plan alignment:** The Business Plan identifies distinct operational tiers — Executive Committee, Portfolio Chairs, general volunteers — with varying capacity and expertise. The Communications Chair oversees all external communications (website, newsletter, social media). Programs, Events, and Safety Chairs need to post content specific to their portfolios. The old tech strategy identified 7 personas ranging from "Paul Anderson" (new resident wanting instant AI answers) to "David Lee" (technology volunteer contributing expertise). The architecture must serve all of them without requiring the technical ones for routine tasks.
+
+The Business Plan's Section 10.4 calls for *"digital tools for effective volunteer management"* — the CMS and content workflow IS a volunteer management tool.
 
 **What this means in practice:**
 - **Tier 1 — Content editors** (any board member): Browser-based CMS (Decap CMS at `/admin/`). No terminal, no Git, no code. Create/edit news, events, safety alerts via forms and rich text editor.
 - **Tier 2 — Power users** (interested volunteers): Can edit markdown files directly on GitHub.com. Understands basic formatting but doesn't need local development setup.
+- **Tier 2.5 — AI-assisted contributors** (the new middle): A semi-technical volunteer with access to AI tools (GitHub Copilot CLI, Copilot Chat, or similar) can perform developer-tier tasks — modifying templates, debugging build failures, updating configuration — without deep Hugo/Git expertise. AI dramatically compresses the gap between Tier 2 and Tier 3. This is a strategic differentiator: the platform choice should maximize AI-assistability (well-documented, standard tooling, text-based config).
 - **Tier 3 — Developer** (rare volunteer or hired freelancer): Full local dev with Hugo, can modify templates, themes, and CI/CD. Needed for design changes, not content.
 
-**Decision test:** *"Can the least technical board member publish a safety alert without asking anyone for help?"*
+**AI as force multiplier:** The traditional CA problem is "we need a developer but can't afford or retain one." AI tools fundamentally change this equation. A board member who can describe what they want in plain English can now get implementation help from AI — but ONLY if the underlying platform is AI-friendly. Static sites with Markdown, standard HTML/CSS/JS, and well-documented toolchains are maximally AI-assistable. Proprietary platforms (WordPress plugins, Google Sites templates, managed CMS web parts) are opaque to AI tools, which limits this multiplier effect.
+
+**Decision test:** *"Can the least technical board member publish a safety alert without asking anyone for help? And can a semi-technical volunteer with AI assistance make a template change without a developer?"*
 
 ---
 
@@ -104,7 +157,9 @@ A CA board typically has 8-12 members. Maybe 1-2 are technical. The website cann
 
 > **The most secure system is one with no server, no database, no admin panel, and no dynamic code. Eliminate attack surface rather than managing it.**
 
-WordPress is the #1 hacked CMS globally because it has a massive attack surface: PHP runtime, MySQL database, plugin ecosystem, admin login, XML-RPC, REST API. Our approach eliminates all of these.
+**Strategic Plan alignment:** The Business Plan's Section 9.1 calls for a *"Comprehensive Cybersecurity Strategy"* including *"secure access controls, regular security audits, and staff training on data privacy norms."* For a volunteer organization with no IT staff, the most effective cybersecurity strategy is elimination of the attack surface entirely. The current WordPress site has a massive vulnerability profile (PHP, MySQL, plugins, admin panel, XML-RPC) — moving to static HTML eliminates ALL of these vectors. Security audits become trivial when there's nothing to audit. The old tech strategy recommended 10Web + WordPress plugins + AI chatbot backends — each one adding attack surface that volunteers would need to monitor and patch.
+
+The Business Plan also emphasizes compliance with data privacy norms (PIPEDA in Canada). Static sites that don't collect or store personal data have minimal privacy obligations — form submissions go directly to third-party processors (Formspree, Google Forms) who handle compliance.
 
 **What this means in practice:**
 - Static HTML output: no server-side code to exploit
@@ -123,7 +178,9 @@ WordPress is the #1 hacked CMS globally because it has a massive attack surface:
 
 > **Every optional feature must fail silently and gracefully. A broken third-party service should never result in a broken page or a confusing user experience.**
 
-Third-party free tiers change, services shut down, API keys expire. This is guaranteed to happen eventually, and when it does, it will be months before a volunteer notices.
+**Strategic Plan alignment:** The Business Plan emphasizes partnerships and collaboration (Section 10.3, Guiding Principle #4) — with homeowner associations, churches, YMCA, CPS, schools, and local businesses. Many of these partnerships will involve linking to external resources, embedding shared calendars, or integrating third-party services. These external dependencies WILL change, break, or disappear. The architecture must treat every external integration as "nice to have" — enhancing the experience when available, invisible when not.
+
+The old tech strategy's AI chatbot (Botsify/Tidio/Dialogflow at $50-100/month) would have been a single point of failure: when the subscription lapsed or the free tier changed, residents would get errors instead of information. Every integration must degrade to a simpler alternative, never to a broken page.
 
 **What this means in practice:**
 - Forms: If the form backend is down, display a fallback contact method (email address, phone number) — never show an error or blank page
@@ -161,7 +218,9 @@ showSuccess(data.message); // Throws if data.message is undefined
 
 > **Content must be stored in standard, portable formats. The site must be deployable to any static host with minimal effort. Prefer widely-adopted tools over niche ones.**
 
-Vendor lock-in is how volunteer projects die: the original tool becomes too expensive, or the company pivots, or the free tier evaporates. Portability is insurance.
+**Strategic Plan alignment:** RRROCA already faces a platform decision: Google Workspace for board operations, with a potential future path to other productivity suites via nonprofit grants. The Business Plan's board operations run on Google Calendar, Google Drive, Gmail, and WhatsApp. The website must be independent of the board's operational platform — whether that's Google today, another suite tomorrow, or something else entirely. Content in Markdown is platform-agnostic: it can be served from GitHub Pages, Netlify, Cloudflare Pages, or any web server. This independence protects the community's content investment regardless of what happens with board tooling.
+
+The old tech strategy was built around WordPress + Google ecosystem integration — tightly coupling the website to both a CMS platform and an operational platform. Our approach decouples these: website content is portable Markdown, operational tooling is a separate decision.
 
 **What this means in practice:**
 - Content in Markdown files (universal, readable, convertible to anything)
@@ -180,7 +239,9 @@ Vendor lock-in is how volunteer projects die: the original tool becomes too expe
 
 > **Every significant technical decision must be documented with context and rationale. The next volunteer should understand not just WHAT was built, but WHY choices were made.**
 
-Volunteer turnover means institutional memory is constantly lost. Code comments explain HOW. Decision documents explain WHY. Without the why, the next person will either break things by making uninformed changes, or be afraid to touch anything.
+**Strategic Plan alignment:** The Business Plan calls for succession planning at every level — *"Each member of the Executive and Portfolio Chairs should develop a succession plan and actively develop a successor."* Technology decisions are particularly vulnerable to institutional memory loss because they involve specialized knowledge. When the Safety Director who built the website rotates off the board, the next person needs to understand not just how to post content, but why Hugo was chosen over WordPress, why Formspree instead of a custom backend, why the site is on GitHub Pages instead of a paid host.
+
+The old tech strategy recognized this with its "Standardization and Documentation" pillar but placed documentation in Google Drive. Our approach keeps documentation IN the repository (where it can't get separated from the code) AND in a board-accessible location (Google Drive today, or whatever collaboration platform the board uses in the future). Dual storage per P1 (bus factor) — if either copy is lost, the other survives.
 
 **What this means in practice:**
 - This document (architecture-principles.md) explains the philosophy
@@ -189,7 +250,7 @@ Volunteer turnover means institutional memory is constantly lost. Code comments 
 - `EMERGENCY.md` explains what to do when things break
 - `ACCOUNTS.md` lists all services, accounts, and who has access
 - Decision records for non-obvious choices (inline in the relevant docs, not a separate ADR folder — keep it simple)
-- Keep documentation in the repo AND in a board-accessible location (Teams/SharePoint once M365 is set up)
+- Keep documentation in the repo AND in a board-accessible location (shared drive, collaboration platform)
 
 **Decision test:** *"Could a reasonably technical person who has never seen this project read the docs and make their first content change within 30 minutes? Could a developer make a theme change within 2 hours?"*
 
@@ -201,17 +262,18 @@ When evaluating any new service, tool, or feature for the RRROCA site, run it th
 
 | # | Question | Acceptable Answers |
 |---|----------|-------------------|
-| 0 | Does this help residents feel more informed, safe, or involved? | Yes — clear engagement value |
+| 0 | Does this help residents feel more informed, safe, or involved? (P0 — Community Hub of Information) | Yes — clear engagement value |
 | 1 | What happens if this service disappears? | Site still works, feature degrades gracefully |
 | 2 | What does it cost? | $0 (free tier), or optional enhancement with free fallback |
 | 3 | Does it need ongoing maintenance? | No, or once/year at most |
 | 4 | Can a non-technical board member use it? | Yes for content tasks; N/A for development tasks |
 | 5 | Does it create vendor lock-in? | No — standard formats, portable, switchable |
-| 6 | Does it require Chad (or any single person)? | No — documented, shared access, bus-factor ≥ 2 |
+| 6 | Does it require Chad (or any single person)? | No — documented, shared access, bus-factor >= 2 |
 | 7 | Does it increase the attack surface? | No — static-first, no server-side code |
 | 8 | Is it documented? | Yes — what it is, why it was chosen, how to change it |
+| 9 | Is it AI-assistable? | Yes — a volunteer with AI tools (GHCP CLI, Copilot) can understand, modify, and troubleshoot it without deep expertise |
 
-**Scoring:** If a proposed service fails questions 1, 2, or 6, it should be rejected or redesigned. The other questions allow for trade-offs with justification.
+**Scoring:** If a proposed service fails questions 0, 1, 2, or 6, it should be rejected or redesigned. Question 9 is a strong preference — AI-assistability is a force multiplier for volunteer capacity, but not an absolute requirement for simple services.
 
 ---
 
@@ -229,7 +291,7 @@ When evaluating any new service, tool, or feature for the RRROCA site, run it th
 
 **Recommended:** Formspree (free tier: 50 submissions/month). Standard HTML `<form>` with `action` URL. If Formspree dies, change one URL or fall back to `mailto:`.
 
-**Alternative path (Phase 2, once M365 is set up):** Microsoft Forms + Power Automate → Teams notification. Zero cost under nonprofit grant. But adds Microsoft dependency, so keep Formspree as documented fallback.
+**Alternative path (Phase 2, once nonprofit productivity suite is set up):** Cloud-based forms + automation → chat notification. Zero cost under nonprofit grant. But adds vendor dependency, so keep Formspree as documented fallback.
 
 ### Newsletter Signup
 
@@ -242,7 +304,7 @@ When evaluating any new service, tool, or feature for the RRROCA site, run it th
 
 **Recommended:** Buttondown (free tier: 100 subscribers) or Mailchimp (free tier: 500 subscribers). Both handle CAN-SPAM/CASL compliance. Subscriber data exportable.
 
-**Alternative path:** Once M365 is set up, could use Exchange distribution list for newsletter. Simpler but less feature-rich (no analytics, no templates).
+**Alternative path:** Once a nonprofit productivity suite is set up, could use distribution list for newsletter. Simpler but less feature-rich (no analytics, no templates).
 
 ### Analytics
 
@@ -276,6 +338,81 @@ When evaluating any new service, tool, or feature for the RRROCA site, run it th
 
 ---
 
+## AI Tooling Strategy
+
+> *This section operationalizes the AI-assistability principle (P4 Tier 2.5, Decision Framework Q9) with specific tooling recommendations aligned to RRROCA's operational model.*
+
+### Why AI Matters for a Community Association
+
+RRROCA's fundamental constraint is volunteer capacity — ~150-200 members, a board of 15-20, zero paid staff, and chronic quorum challenges. Traditional website management requires either:
+- **A developer volunteer** (rare, temporary, creates bus-factor-1 risk per P1)
+- **Paid contractors** (violates P2 at $50-150/hr)
+- **Dumbing down the platform** (limits capability, creates lock-in per P7)
+
+AI tools create a fourth option: **a semi-technical volunteer who can accomplish developer-level tasks with AI assistance.** This is the Tier 2.5 model — and it's the strategic reason the platform choice matters far beyond hosting costs.
+
+### AI Use Cases for RRROCA
+
+| Use Case | Who | AI Tool | Platform Requirement |
+|----------|-----|---------|---------------------|
+| **Website changes** — modify templates, fix bugs, update layouts | Communications Chair or tech volunteer | AI coding assistants (GitHub Copilot, ChatGPT, etc.) | Text-based codebase (Hugo/Markdown/HTML) — AI can read, understand, and modify. Proprietary platforms (Google Sites, managed CMS) have opaque templates AI can't assist with. |
+| **Content drafting** — write news articles, event descriptions, safety alerts | Any board member | Any AI assistant (Copilot, Gemini, ChatGPT) | Markdown-based content → AI drafts, human reviews, publishes via CMS. Works with any AI. |
+| **Safety analysis** — summarize CPS reports, identify crime trends, draft community alerts | Safety Director | AI coding assistants | Structured data in YAML/JSON → AI can analyze and generate visualizations. |
+| **Board collaboration** — meeting prep, agenda generation, motion drafting | President, Secretary | Productivity suite AI (Copilot, Gemini) | Independent of website platform — uses whatever productivity suite the board runs on. |
+| **Partner coordination** — draft communications to CPS, City, HAs, schools | Portfolio Chairs | Email/docs AI | Email/docs tool, independent of website platform. |
+| **Volunteer management** — matching volunteers to tasks, tracking hours | Volunteers Chair | Future AI-assisted tools | Structured data (Google Sheets/Forms today, could migrate to other platforms). |
+| **Troubleshooting** — diagnose build failures, fix CI, debug deployment | Tech volunteer | GitHub Copilot CLI | Git-based workflow with standard toolchain. GHCP CLI can read error logs, suggest fixes, and implement them. Not possible with managed platforms (10Web, Google Sites). |
+
+### Platform AI-Assistability Score
+
+| Platform | AI Can Read Code | AI Can Modify Templates | AI Can Debug Builds | AI Can Assist Content | Score |
+|----------|:---:|:---:|:---:|:---:|:---:|
+| **Hugo + GitHub** | ✅ Markdown, HTML, Go templates, JS — all text-based | ✅ Edit any template file with GHCP CLI | ✅ Read build logs, fix errors, run locally | ✅ Draft Markdown content | ⭐⭐⭐⭐ |
+| **WordPress + 10Web** | ⚠️ PHP readable but plugin code is opaque | ❌ Themes are PHP + database queries, fragile to edit | ❌ "Plugin conflicts" are nearly impossible to AI-debug | ✅ Draft content in editor | ⭐⭐ |
+| **Google Sites** | ❌ No code access, proprietary | ❌ Template changes via GUI only | N/A No build process | ⚠️ Content via Google Docs integration | ⭐ |
+| **Managed CMS (e.g. SharePoint)** | ⚠️ Framework-specific TypeScript | ⚠️ Web parts modifiable but require framework knowledge | ⚠️ Build process exists but debugging requires platform expertise | ✅ Content via built-in pages | ⭐⭐ |
+
+### AI-Assisted Coding as the "Safety Net" for Volunteer Turnover
+
+A key strategic insight: AI coding assistants don't just help WITH the current developer — they ARE the succession plan for the developer role.
+
+**Scenario:** Chad (current Safety Director / tech volunteer) rotates off the board. The next Communications Chair has no coding experience. With Hugo + GitHub:
+1. They post content via Decap CMS (Tier 1 — no AI needed)
+2. They need a template change → they describe it to an AI coding assistant → it modifies the template → they review and commit (Tier 2.5)
+3. Build breaks → AI reads the error log → suggests and implements the fix (Tier 2.5)
+4. They need a new feature → AI plans it, implements it, and explains what it did (Tier 2.5)
+
+With WordPress, Google Sites, or managed CMS platforms, steps 2-4 require hiring a contractor or finding another developer volunteer. AI can't help because the platforms are opaque.
+
+**This makes Hugo + GitHub not just a cost-competitive choice (P2) but a P1-compliant choice** — it's the only platform where AI-assisted volunteers can maintain the full stack.
+
+### Board Operations — AI-Assisted Collaboration
+
+Board operations (meetings, motions, communications, partner coordination) are SEPARATE from website management. The board currently uses Google Workspace; a future path to other productivity suites via nonprofit grants exists. AI recommendations for board ops:
+
+| Board Task | Current (Google) | Future (Nonprofit Productivity Suite) | AI Enhancement |
+|------------|-----------------|------------------------|----------------|
+| Meeting agendas | Google Docs | Docs/collaborative editor | AI summarizes past minutes, suggests agenda items |
+| Minutes & motions | Google Docs | Docs/collaborative editor | AI drafts minutes from notes, flags action items |
+| Board communications | Gmail | Email platform | AI drafts emails to community, CPS, City |
+| Document sharing | Google Drive | Cloud storage/sharing | AI-indexed search across all board documents |
+| Volunteer coordination | WhatsApp + Google Sheets | Chat + task management | AI-assisted volunteer matching, scheduling |
+| Safety reporting | Manual compilation | Workflow automation | AI-summarized CPS data, trend detection |
+| Event planning | Google Calendar | Outlook Calendar | AI-generated promotional content, scheduling optimization |
+
+**Key principle:** Board ops tooling is a separate decision from website platform. Don't let the desire for "one platform" force a bad website decision. The website serves 20,000 residents; board ops serves 15-20 board members. Optimize each for its audience.
+
+### AI Anti-Patterns
+
+| Anti-Pattern | Why It's Wrong | What To Do Instead |
+|---|---|---|
+| **"Build an AI chatbot for the website"** | $50-100/month (violates P2), breaks when subscription lapses (violates P6), requires prompt engineering maintenance (violates P3) | Static FAQ page + good search. AI assists the volunteer writing content, not the resident reading it. |
+| **"Use AI to auto-generate content"** | Hallucination risk for safety-critical content (crime stats, emergency contacts), community trust issue | AI drafts, human reviews. Never auto-publish AI content without board member approval. |
+| **"Choose the platform with the best AI features"** | AI features in managed platforms are vendor lock-in (violates P7) and add cost as features mature past free tiers (violates P2) | Choose the platform AI tools can WORK WITH (text-based, standard, open), not the one WITH AI built in. |
+| **"AI replaces the need for documentation"** | AI tools are better with context; documentation makes AI MORE effective, not less | Document decisions (P8) — AI reads docs and gives better answers. Undocumented systems = bad AI output. |
+
+---
+
 ## Anti-Patterns to Avoid
 
 | Anti-Pattern | Why It's Dangerous | What To Do Instead |
@@ -287,6 +424,10 @@ When evaluating any new service, tool, or feature for the RRROCA site, run it th
 | **"We'll document it later"** | Later never comes. The person who understood it leaves. | Document decisions when you make them. In-context comments > separate docs. |
 | **"Optimize for power users"** | Power users are rare and temporary in volunteer orgs | Optimize for the least technical board member first, then add power-user paths |
 | **"This tool is better technically"** | Technical superiority doesn't matter if volunteers can't use or maintain it | Choose boring, proven, well-documented tools over cutting-edge ones |
+| **"One platform for everything"** | Forces bad trade-offs — what's best for 20K residents (website) ≠ what's best for 20 board members (ops) | Decouple website from board ops. Optimize each for its audience. Connect via content, not platform. |
+| **"Build an AI chatbot"** | $50-100/month (violates P2), breaks when subscription lapses (violates P6), requires prompt engineering (violates P3) | Static FAQ + good search. AI assists volunteers writing content, not residents reading it. |
+| **"AI will handle it"** | AI-generated content without review = hallucination risk, especially for safety-critical info | AI drafts, humans approve. AI assists volunteers, doesn't replace governance. |
+| **"Choose the platform with the best AI"** | AI features in managed platforms are vendor lock-in (P7) and add cost past free tiers (P2) | Choose the platform AI tools can WORK WITH (text-based, open), not the one WITH AI built in. |
 
 ---
 
@@ -300,3 +441,5 @@ When evaluating any new service, tool, or feature for the RRROCA site, run it th
 ---
 
 *These principles are not about what's technically optimal. They're about what survives the reality of volunteer organizations: turnover, time poverty, budget constraints, and variable technical skill. Every decision should be boring, resilient, and documented.*
+
+*Aligned to: RRROCA Strategic Plan (2024-2028), Business Plan (2023-2028), and Integrated Technology Strategy (2024-28). Supersedes the technology recommendations in the old tech strategy where they conflict with these principles (specifically: WordPress/10Web/plugin recommendations replaced by static-first approach; AI chatbot deferred pending zero-cost implementation path).*

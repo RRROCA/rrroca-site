@@ -1,0 +1,172 @@
+{{ define "main" }}
+{{ $status := .Params.status | default "Open" }}
+{{ $for := .Params.votes_for | default 0 }}
+{{ $against := .Params.votes_against | default 0 }}
+{{ $abstain := .Params.votes_abstain | default 0 }}
+{{ $total := add (add $for $against) $abstain }}
+{{ $quorum := .Params.quorum_required | default 5 }}
+{{ $isOpen := eq $status "Open" }}
+{{ $pctFor := 0 }}
+{{ $pctAgainst := 0 }}
+{{ $pctAbstain := 0 }}
+{{ if gt $total 0 }}
+  {{ $pctFor = div (mul $for 100) $total }}
+  {{ $pctAgainst = div (mul $against 100) $total }}
+  {{ $pctAbstain = div (mul $abstain 100) $total }}
+{{ end }}
+
+<section class="page-header page-header--board">
+  <div class="container">
+    <div class="page-breadcrumb">
+      <a href="{{ "" | absURL }}">Home</a> ·
+      <a href="{{ "board/" | absURL }}">Board Governance</a> ·
+      <span>Motion #{{ .Params.motion_number }}</span>
+    </div>
+    <h1>{{ .Title }}</h1>
+    <div class="motion-header-meta">
+      {{ if $isOpen }}
+        <span class="motion-status motion-status--open">🗳️ Open for Voting</span>
+      {{ else if eq $status "Approved" }}
+        <span class="motion-status motion-status--approved">✅ Approved</span>
+      {{ else if eq $status "Defeated" }}
+        <span class="motion-status motion-status--defeated">❌ Defeated</span>
+      {{ else if eq $status "Tabled" }}
+        <span class="motion-status motion-status--tabled">⏸️ Tabled</span>
+      {{ else if eq $status "Withdrawn" }}
+        <span class="motion-status motion-status--withdrawn">↩️ Withdrawn</span>
+      {{ end }}
+      <span class="motion-number-badge">Motion #{{ .Params.motion_number }}</span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container content-layout">
+    <article class="content-main article-content">
+
+      <!-- Motion Details Panel -->
+      <div class="motion-detail-panel">
+        <h2 class="motion-detail-heading">Motion Details</h2>
+        <div class="motion-detail-grid">
+          <div class="motion-detail-item">
+            <span class="motion-detail-label">Moved by</span>
+            <strong>{{ .Params.mover | default "TBD" }}</strong>
+          </div>
+          <div class="motion-detail-item">
+            <span class="motion-detail-label">Seconded by</span>
+            <strong>{{ with .Params.seconder }}{{ . }}{{ else }}<em>Awaiting seconder</em>{{ end }}</strong>
+          </div>
+          <div class="motion-detail-item">
+            <span class="motion-detail-label">Category</span>
+            <strong>{{ .Params.category | default "General" }}</strong>
+          </div>
+          {{ with .Params.portfolio }}
+          <div class="motion-detail-item">
+            <span class="motion-detail-label">Portfolio</span>
+            <strong>{{ . }}</strong>
+          </div>
+          {{ end }}
+          {{ with .Params.amount }}
+          <div class="motion-detail-item">
+            <span class="motion-detail-label">Amount</span>
+            <strong class="motion-amount">${{ lang.FormatNumber 2 . }}</strong>
+          </div>
+          {{ end }}
+          {{ with .Params.vendor }}
+          <div class="motion-detail-item">
+            <span class="motion-detail-label">Vendor</span>
+            <strong>{{ . }}</strong>
+          </div>
+          {{ end }}
+          <div class="motion-detail-item">
+            <span class="motion-detail-label">Date submitted</span>
+            <strong>{{ .Date.Format "January 2, 2006" }}</strong>
+          </div>
+          {{ with .Params.deadline }}
+          <div class="motion-detail-item">
+            <span class="motion-detail-label">Voting deadline</span>
+            <strong class="motion-deadline">{{ time . | dateFormat "January 2, 2006" }}</strong>
+          </div>
+          {{ end }}
+        </div>
+      </div>
+
+      <!-- Vote Progress -->
+      <div class="motion-vote-panel">
+        <h2 class="motion-detail-heading">Vote Status</h2>
+        <div class="motion-vote-bar-container">
+          <div class="motion-vote-bar">
+            {{ if gt $pctFor 0 }}
+            <div class="motion-vote-bar-segment motion-vote-bar--for" style="width: {{ $pctFor }}%"></div>
+            {{ end }}
+            {{ if gt $pctAgainst 0 }}
+            <div class="motion-vote-bar-segment motion-vote-bar--against" style="width: {{ $pctAgainst }}%"></div>
+            {{ end }}
+            {{ if gt $pctAbstain 0 }}
+            <div class="motion-vote-bar-segment motion-vote-bar--abstain" style="width: {{ $pctAbstain }}%"></div>
+            {{ end }}
+            {{ if eq $total 0 }}
+            <div class="motion-vote-bar-segment motion-vote-bar--empty" style="width: 100%"></div>
+            {{ end }}
+          </div>
+        </div>
+        <div class="motion-vote-counts">
+          <span class="vote-count vote-count--for">
+            <span class="vote-dot vote-dot--for"></span>
+            {{ $for }} For
+          </span>
+          <span class="vote-count vote-count--against">
+            <span class="vote-dot vote-dot--against"></span>
+            {{ $against }} Against
+          </span>
+          <span class="vote-count vote-count--abstain">
+            <span class="vote-dot vote-dot--abstain"></span>
+            {{ $abstain }} Abstain
+          </span>
+        </div>
+        <div class="motion-quorum-status">
+          {{ if ge $total $quorum }}
+          <span class="quorum-met">✅ Quorum reached ({{ $total }}/{{ $quorum }} votes)</span>
+          {{ else }}
+          <span class="quorum-pending">⏳ {{ sub $quorum $total }} more vote{{ if gt (sub $quorum $total) 1 }}s{{ end }} needed for quorum ({{ $total }}/{{ $quorum }})</span>
+          {{ end }}
+        </div>
+
+        {{ if and $isOpen .Params.github_pr }}
+        <div class="motion-vote-cta">
+          <a href="{{ .Params.github_pr }}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+            🗳️ Review & Vote on GitHub
+          </a>
+          <p class="motion-vote-note">Board members: approve, request changes, or comment on the pull request to cast your vote.</p>
+        </div>
+        {{ else if $isOpen }}
+        <div class="motion-vote-cta">
+          <p class="motion-vote-note">Voting link will be posted here once the pull request is created. Board members will be notified via email.</p>
+        </div>
+        {{ end }}
+      </div>
+
+      <!-- Motion Body -->
+      <div class="motion-body">
+        {{ .Content }}
+      </div>
+
+      {{ with .Params.tags }}
+      <div class="article-tags">
+        {{ range . }}
+        <a href="{{ (printf "tags/%s/" (. | urlize)) | absURL }}" class="tag">{{ . }}</a>
+        {{ end }}
+      </div>
+      {{ end }}
+
+      <div class="motion-back-link">
+        <a href="{{ "board/" | absURL }}" class="read-more">← Back to Board Governance</a>
+      </div>
+    </article>
+
+    <aside class="content-sidebar">
+      {{ partial "sidebar.html" . }}
+    </aside>
+  </div>
+</section>
+{{ end }}

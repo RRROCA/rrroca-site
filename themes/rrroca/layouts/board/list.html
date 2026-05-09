@@ -1,0 +1,161 @@
+{{ define "main" }}
+{{ $allMotions := slice }}
+{{ $motionsSection := .GetPage "motions" }}
+{{ if $motionsSection }}
+  {{ range $motionsSection.Pages }}
+    {{ $allMotions = $allMotions | append . }}
+  {{ end }}
+{{ end }}
+
+{{ $activeMotions := slice }}
+{{ $pastMotions := slice }}
+{{ range $allMotions }}
+  {{ if eq (.Params.status | default "Open") "Open" }}
+    {{ $activeMotions = $activeMotions | append . }}
+  {{ else }}
+    {{ $pastMotions = $pastMotions | append . }}
+  {{ end }}
+{{ end }}
+
+<section class="page-header page-header--board">
+  <div class="container">
+    <div class="page-breadcrumb">
+      <a href="{{ "" | absURL }}">Home</a> · <span>Board Governance</span>
+    </div>
+    <h1>🏛️ {{ .Title }}</h1>
+    <p class="page-description">
+      {{ with .Description }}{{ . }}{{ else }}Formal motions, resolutions, and governance records for the RRROCA Board of Directors.{{ end }}
+    </p>
+    <div class="motion-summary-bar">
+      <span class="motion-summary-stat motion-summary-stat--active">
+        <strong>{{ len $activeMotions }}</strong> Active {{ if eq (len $activeMotions) 1 }}Motion{{ else }}Motions{{ end }}
+      </span>
+      <span class="motion-summary-stat">
+        <strong>{{ len $pastMotions }}</strong> Resolved
+      </span>
+      <span class="motion-summary-stat">
+        <strong>{{ len $allMotions }}</strong> Total
+      </span>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container content-layout">
+    <div class="content-main">
+      {{ if .Content }}
+      <div class="article-content motion-intro">
+        {{ .Content }}
+      </div>
+      {{ end }}
+
+      {{ if gt (len $activeMotions) 0 }}
+      <div class="motion-section">
+        <div class="motion-section-header">
+          <h2>🗳️ Active Motions</h2>
+          <span class="motion-count-badge motion-count-badge--active">{{ len $activeMotions }} open</span>
+        </div>
+
+        <div class="motion-grid">
+          {{ range sort $activeMotions "Date" "desc" }}
+          <article class="motion-card motion-card--active">
+            <div class="motion-card-header">
+              <span class="motion-number">#{{ .Params.motion_number }}</span>
+              <span class="motion-status motion-status--open">🗳️ Open for Voting</span>
+            </div>
+            <h3 class="motion-card-title">
+              <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            </h3>
+            <p class="motion-card-summary">{{ .Summary | plainify | truncate 160 }}</p>
+            <div class="motion-card-meta">
+              {{ with .Params.amount }}
+              <span class="motion-meta-item motion-meta-item--amount">
+                💰 ${{ lang.FormatNumber 2 . }}
+              </span>
+              {{ end }}
+              <span class="motion-meta-item">
+                📋 {{ .Params.category | default "General" }}
+              </span>
+              <span class="motion-meta-item">
+                👤 {{ .Params.mover | default "Unknown" }}
+              </span>
+              {{ with .Params.deadline }}
+              <span class="motion-meta-item motion-meta-item--deadline">
+                ⏰ Vote by {{ time . | dateFormat "Jan 2, 2006" }}
+              </span>
+              {{ end }}
+            </div>
+            <div class="motion-card-footer">
+              <div class="motion-vote-summary">
+                {{ $for := .Params.votes_for | default 0 }}
+                {{ $against := .Params.votes_against | default 0 }}
+                {{ $abstain := .Params.votes_abstain | default 0 }}
+                {{ $total := add (add $for $against) $abstain }}
+                {{ $quorum := .Params.quorum_required | default 5 }}
+                <span class="vote-count vote-count--for">{{ $for }} For</span>
+                <span class="vote-count vote-count--against">{{ $against }} Against</span>
+                <span class="vote-count vote-count--abstain">{{ $abstain }} Abstain</span>
+                <span class="vote-count vote-count--quorum">{{ $total }}/{{ $quorum }} quorum</span>
+              </div>
+              <a href="{{ .RelPermalink }}" class="btn btn-primary btn-sm">Review & Vote →</a>
+            </div>
+          </article>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+
+      {{ if gt (len $pastMotions) 0 }}
+      <div class="motion-section">
+        <div class="motion-section-header">
+          <h2>📁 Past Motions</h2>
+          <span class="motion-count-badge">{{ len $pastMotions }} resolved</span>
+        </div>
+
+        <div class="motion-grid">
+          {{ range sort $pastMotions "Date" "desc" }}
+          <article class="motion-card motion-card--resolved">
+            <div class="motion-card-header">
+              <span class="motion-number">#{{ .Params.motion_number }}</span>
+              {{ $status := .Params.status | default "Unknown" }}
+              {{ if eq $status "Approved" }}
+                <span class="motion-status motion-status--approved">✅ Approved</span>
+              {{ else if eq $status "Defeated" }}
+                <span class="motion-status motion-status--defeated">❌ Defeated</span>
+              {{ else if eq $status "Tabled" }}
+                <span class="motion-status motion-status--tabled">⏸️ Tabled</span>
+              {{ else if eq $status "Withdrawn" }}
+                <span class="motion-status motion-status--withdrawn">↩️ Withdrawn</span>
+              {{ else }}
+                <span class="motion-status">{{ $status }}</span>
+              {{ end }}
+            </div>
+            <h3 class="motion-card-title">
+              <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+            </h3>
+            <div class="motion-card-meta">
+              {{ with .Params.amount }}
+              <span class="motion-meta-item">💰 ${{ lang.FormatNumber 2 . }}</span>
+              {{ end }}
+              <span class="motion-meta-item">📅 {{ .Date.Format "Jan 2, 2006" }}</span>
+              <span class="motion-meta-item">👤 {{ .Params.mover | default "Unknown" }}</span>
+            </div>
+          </article>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+
+      {{ if and (eq (len $activeMotions) 0) (eq (len $pastMotions) 0) }}
+      <div class="motion-empty">
+        <p>No motions have been posted yet. Check back after the next board meeting.</p>
+      </div>
+      {{ end }}
+    </div>
+
+    <aside class="content-sidebar">
+      {{ partial "sidebar.html" . }}
+    </aside>
+  </div>
+</section>
+{{ end }}

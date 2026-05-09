@@ -24,5 +24,8 @@
     "@testing-library/jest-dom": "^6.9.1",
     "jest": "^30.4.2",
     "jsdom": "^22.1.0"
+  },
+  "dependencies": {
+    "docx": "^9.6.1"
   }
 }
