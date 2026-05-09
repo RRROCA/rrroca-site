@@ -47,9 +47,8 @@ With an adopted strategy:
 
 ## Supporting Documents
 
-- [Integrated Technology Strategy](/docs/strategic-evaluation/) — the full 11-domain evaluation
-- [Architecture Principles](/docs/architecture-principles/) — the 8 principles and decision framework
-- [Change Management Plan](/docs/change-management-plan/) — 5-phase board rollout plan
+- [Integrated Technology Strategy](https://github.com/CanChad/rrroca-site/blob/master/docs/strategic-evaluation.md) — the full 11-domain evaluation
+- [Architecture Principles](https://github.com/CanChad/rrroca-site/blob/master/docs/architecture-principles.md) — the 8 principles and decision framework
 
 ## Financial Impact
 
