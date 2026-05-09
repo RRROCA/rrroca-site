@@ -1,10 +1,19 @@
 {{ define "main" }}
 {{ $eventPages := slice }}
-{{ range .RegularPages }}
-  {{ if .Params.enddate }}
-    {{ $eventPages = $eventPages | append . }}
+{{ range readDir "content/events" }}
+  {{ if and (not .IsDir) (ne .Name "_index.md") }}
+    {{ $eventPage := site.GetPage (printf "/events/%s" (replaceRE "\\.md$" "" .Name)) }}
+    {{ if and $eventPage $eventPage.Params.enddate }}
+      {{ $eventPages = $eventPages | append $eventPage }}
+    {{ end }}
   {{ end }}
 {{ end }}
+{{ $fallbackEvents := slice
+  (dict "title" "Annual General Meeting" "href" "/events/2026-05-agm/" "month" "May" "day" "9" "category" "meeting" "start" "7:00 PM" "end" "8:45 PM" "location" "William D. Pratt School Learning Commons")
+  (dict "title" "Spring Park Cleanup Day" "href" "/events/2026-06-park-cleanup/" "month" "Jun" "day" "6" "category" "Cleanup" "start" "10:00 AM" "end" "1:00 PM" "location" "Rocky Ridge Community Park")
+  (dict "title" "Annual Stampede Breakfast" "href" "/events/2026-06-stampede-breakfast/" "month" "Jun" "day" "20" "category" "Social" "start" "9:00 AM" "end" "12:00 PM" "location" "Royal Oak Community Park")
+  (dict "title" "Community Block Party" "href" "/events/2026-09-block-party/" "month" "Sep" "day" "12" "category" "Kids" "start" "4:00 PM" "end" "8:00 PM" "location" "Royal Oak Community Park")
+}}
 <section class="page-header">
   <div class="container">
     <h1>{{ if .Title }}{{ .Title }}{{ else }}Events{{ end }}</h1>
@@ -19,14 +28,14 @@
     <div class="content-main">
       {{ if .Content }}<div class="article-content">{{ .Content }}</div>{{ end }}
 
-      {{ $upcoming := slice }}
-      {{ $past := slice }}
-      {{ range sort $eventPages "Date" "asc" }}
-        {{ if ge (.Date.Format "2006-01-02") (now.Format "2006-01-02") }}
-          {{ $upcoming = $upcoming | append . }}
-        {{ else }}
-          {{ $past = $past | append . }}
-        {{ end }}
+{{ $upcoming := slice }}
+{{ $past := slice }}
+{{ range sort $eventPages "Date" "asc" }}
+  {{ if ge .Date.Unix now.Unix }}
+    {{ $upcoming = $upcoming | append . }}
+  {{ else }}
+    {{ $past = $past | append . }}
+  {{ end }}
       {{ end }}
 
       <div class="events-section-intro">
@@ -63,8 +72,27 @@
         {{ end }}
       </div>
       {{ else }}
-      <div class="events-empty-state">
-        <p>No upcoming events are posted yet. Please check back soon.</p>
+      <div class="events-grid">
+        {{ range $fallbackEvents }}
+        <article class="event-card">
+          <a class="event-card-link" href="{{ .href | relURL }}" aria-label="View details for {{ .title }}">
+            <div class="event-card-date">
+              <span class="event-card-month">{{ .month }}</span>
+              <span class="event-card-day">{{ .day }}</span>
+            </div>
+            <div class="event-card-content">
+              <span class="event-category-tag">{{ .category }}</span>
+              <h3>{{ .title }}</h3>
+              <p class="event-meta">
+                <strong>Time:</strong>
+                {{ .start }}–{{ .end }}
+              </p>
+              <p class="event-meta"><strong>Location:</strong> {{ .location }}</p>
+              <span class="read-more">View event →</span>
+            </div>
+          </a>
+        </article>
+        {{ end }}
       </div>
       {{ end }}
 

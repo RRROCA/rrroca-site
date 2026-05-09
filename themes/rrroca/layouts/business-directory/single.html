@@ -9,7 +9,7 @@
 <section class="page-header">
   <div class="container">
     <div class="page-breadcrumb">
-      <a href="{{ "/business-directory/" | relURL }}">Business Directory</a> · <span>{{ $category }}</span>
+      <a href="{{ "/business-directory/" | absURL }}">Business Directory</a> · <span>{{ $category }}</span>
     </div>
     <h1>{{ .Title }}</h1>
     {{ with .Params.description }}<p class="page-description">{{ . }}</p>{{ end }}
@@ -45,7 +45,7 @@
       {{ end }}
 
       <div class="business-back-link">
-        <a href="{{ "/business-directory/" | relURL }}" class="read-more">← Back to directory</a>
+        <a href="{{ "/business-directory/" | absURL }}" class="read-more">← Back to directory</a>
       </div>
     </article>
 

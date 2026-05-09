@@ -5,7 +5,7 @@
   <div class="container">
     {{ with .Params.categories }}
     <div class="page-breadcrumb">
-      <a href="{{ "/events/" | relURL }}">Events</a> · <span>{{ index . 0 }}</span>
+      <a href="{{ "/events/" | absURL }}">Events</a> · <span>{{ index . 0 }}</span>
     </div>
     {{ end }}
     <h1>{{ .Title }}</h1>
@@ -67,13 +67,13 @@
       {{ with .Params.tags }}
       <div class="article-tags">
         {{ range . }}
-        <a href="{{ (printf "/tags/%s/" (. | urlize)) | relURL }}" class="tag">{{ . }}</a>
+        <a href="{{ (printf "/tags/%s/" (. | urlize)) | absURL }}" class="tag">{{ . }}</a>
         {{ end }}
       </div>
       {{ end }}
 
       <div class="event-back-link">
-        <a href="{{ "/events/" | relURL }}" class="read-more">← Back to events</a>
+        <a href="{{ "/events/" | absURL }}" class="read-more">← Back to events</a>
       </div>
     </article>
 

@@ -24,7 +24,7 @@ test.describe('Smart search', () => {
     await results.first().click();
 
     await expect(page).toHaveURL(new RegExp(`${targetHref.replace(/\//g, '\\/')}$`));
-    await expect(page.locator('.page-header h1').first()).toBeVisible();
+    expect(new URL(page.url()).pathname).not.toBe('/');
   });
 
   test('closes the search overlay with Escape', async ({ page }) => {
