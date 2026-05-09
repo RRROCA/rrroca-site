@@ -20,9 +20,10 @@ test.describe('Smart search', () => {
 
     await page.waitForFunction(() => document.querySelectorAll('.search-result').length > 0);
     const results = page.locator('.search-result');
+    const targetHref = await results.first().getAttribute('href');
     await results.first().click();
 
-    await expect(page).toHaveURL(/\/safety\/|\/community\/|\/news\//);
+    await expect(page).toHaveURL(new RegExp(`${targetHref.replace(/\//g, '\\/')}$`));
     await expect(page.locator('.page-header h1').first()).toBeVisible();
   });
 

@@ -13,7 +13,9 @@ draft: false
 
 **Rocky Ridge & Royal Oak Community Garden**
 
-![rrroca community garden calgary](/images/uploads/gardening-331986_640-600x399.jpg "rrroca community garden calgary")The Community Garden originally began with the help of RRROCA and the City of Calgary who created a designated garden space on the land located by the ball diamonds on Royal Oak Drive. Since then, the garden has been run as its own volunteer co-operative, not affiliated with RRROCA.
+![rrroca community garden calgary](/images/uploads/gardening-331986_640-600x399.jpg "rrroca community garden calgary")
+
+The Community Garden originally began with the help of RRROCA and the City of Calgary who created a designated garden space on the land located by the ball diamonds on Royal Oak Drive. Since then, the garden has been run as its own volunteer co-operative, not affiliated with RRROCA.
 
 Each gardener is a resident of either Rocky Ridge or Royal Oak and is allowed to rent one or two plots per year for a nominal fee in order to grow their own vegetables, flowers and herbs. The money raised by plot rentals goes back into maintaining and improving the garden.
 

@@ -52,4 +52,4 @@ If Calgary is to attract and retain young professionals from Canada and around t
 
 [**Good Neighbour Reference Guide**](http://www.calgary.ca/CSPS/ABS/Documents/good_neighbour_guide.pdf)
 [**City of Calgary By-Laws**](http://www.calgary.ca/CA/city-clerks/Pages/Legislative-services/Bylaws.aspx)
-[**Community Neighbourhoods Summer Programs**](https://rrroca.org/en/wp-content/uploads/2016/06/Calgary-Neighbourhoods-Summer-Programs-Northwest.pdf)
+[**Community Neighbourhoods Summer Programs**](/en/wp-content/uploads/2016/06/Calgary-Neighbourhoods-Summer-Programs-Northwest.pdf)

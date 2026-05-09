@@ -1,5 +1,10 @@
 {{ define "main" }}
-{{ $eventPages := where .RegularPages "Params.endDate" "!=" nil }}
+{{ $eventPages := slice }}
+{{ range .RegularPages }}
+  {{ if .Params.enddate }}
+    {{ $eventPages = $eventPages | append . }}
+  {{ end }}
+{{ end }}
 <section class="page-header">
   <div class="container">
     <h1>{{ if .Title }}{{ .Title }}{{ else }}Events{{ end }}</h1>
@@ -34,7 +39,7 @@
       <div class="events-grid">
         {{ range $upcoming }}
         <article class="event-card">
-          <a class="event-card-link" href="{{ .Permalink }}" aria-label="View details for {{ .Title }}">
+          <a class="event-card-link" href="{{ .RelPermalink }}" aria-label="View details for {{ .Title }}">
             <div class="event-card-date">
               <span class="event-card-month">{{ .Date.Format "Jan" }}</span>
               <span class="event-card-day">{{ .Date.Format "2" }}</span>
@@ -46,7 +51,7 @@
               <h3>{{ .Title }}</h3>
               <p class="event-meta">
                 <strong>Time:</strong>
-                {{ .Date.Format "3:04 PM" }}{{ with .Params.endDate }}–{{ time . | dateFormat "3:04 PM" }}{{ end }}
+                {{ .Date.Format "3:04 PM" }}{{ with .Params.enddate }}–{{ time . | dateFormat "3:04 PM" }}{{ end }}
               </p>
               {{ with .Params.location }}
               <p class="event-meta"><strong>Location:</strong> {{ . }}</p>
@@ -72,7 +77,7 @@
         <div class="events-grid events-grid-past">
           {{ range sort $past "Date" "desc" }}
           <article class="event-card event-card-past">
-            <a class="event-card-link" href="{{ .Permalink }}" aria-label="View details for {{ .Title }}">
+            <a class="event-card-link" href="{{ .RelPermalink }}" aria-label="View details for {{ .Title }}">
               <div class="event-card-date">
                 <span class="event-card-month">{{ .Date.Format "Jan" }}</span>
                 <span class="event-card-day">{{ .Date.Format "2" }}</span>

@@ -1,11 +1,11 @@
 {{ define "main" }}
-{{ $hasStructuredEvent := and (ne .Params.endDate nil) (ne .Params.location nil) }}
+{{ $hasStructuredEvent := and (ne .Params.enddate nil) (ne .Params.location nil) }}
 
 <section class="page-header">
   <div class="container">
     {{ with .Params.categories }}
     <div class="page-breadcrumb">
-      <a href="/events/">Events</a> · <span>{{ index . 0 }}</span>
+      <a href="{{ "/events/" | relURL }}">Events</a> · <span>{{ index . 0 }}</span>
     </div>
     {{ end }}
     <h1>{{ .Title }}</h1>
@@ -30,7 +30,7 @@
           <span class="event-category-tag">{{ index . 0 }}</span>
           {{ end }}
           <div class="event-detail-card">
-            <p><strong>Time</strong><span>{{ .Date.Format "3:04 PM" }}{{ with .Params.endDate }} – {{ time . | dateFormat "3:04 PM" }}{{ end }}</span></p>
+            <p><strong>Time</strong><span>{{ .Date.Format "3:04 PM" }}{{ with .Params.enddate }} – {{ time . | dateFormat "3:04 PM" }}{{ end }}</span></p>
             {{ with .Params.location }}
             <p><strong>Location</strong><span>{{ . }}</span></p>
             {{ end }}
@@ -41,13 +41,13 @@
           {{ with .Params.address }}
           <div class="event-detail-actions">
             <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query={{ . | urlquery }}" target="_blank" rel="noopener">Open in Google Maps</a>
-            {{ if $.Params.endDate }}
+            {{ if $.Params.enddate }}
             <button
               type="button"
               class="btn btn-primary event-calendar-btn"
               data-title="{{ $.Title }}"
               data-start="{{ $.Date.Format "2006-01-02T15:04:05-07:00" }}"
-              data-end="{{ time $.Params.endDate | dateFormat "2006-01-02T15:04:05-07:00" }}"
+              data-end="{{ time $.Params.enddate | dateFormat "2006-01-02T15:04:05-07:00" }}"
               data-location="{{ $.Params.location }}"
               data-address="{{ . }}"
               data-url="{{ $.Permalink }}"
@@ -67,13 +67,13 @@
       {{ with .Params.tags }}
       <div class="article-tags">
         {{ range . }}
-        <a href="/tags/{{ . | urlize }}/" class="tag">{{ . }}</a>
+        <a href="{{ (printf "/tags/%s/" (. | urlize)) | relURL }}" class="tag">{{ . }}</a>
         {{ end }}
       </div>
       {{ end }}
 
       <div class="event-back-link">
-        <a href="/events/" class="read-more">← Back to events</a>
+        <a href="{{ "/events/" | relURL }}" class="read-more">← Back to events</a>
       </div>
     </article>
 

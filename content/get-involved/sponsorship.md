@@ -9,7 +9,7 @@ draft: false
 
 ### Community Sponsors Wanted!
 
-To help make our community events a success we are actively seeking community sponsors. If you are interested in becoming a sponsor, or know someone who is, please contact our sponsorship director at [sponsorship@rrrroca.org](mailto:sponsorship@rrrroca.org)
+To help make our community events a success we are actively seeking community sponsors. If you are interested in becoming a sponsor, or know someone who is, please contact our sponsorship director at [sponsorship@rrroca.org](mailto:sponsorship@rrroca.org)
 
 If you are interested in advertising in our community newsletter, please contact the RRROCA Reporter publisher, Mind’s Design, at [info@mindsdesign.ca](mailto:info@mindsdesign.ca)
 

@@ -10,7 +10,7 @@
     data-formspree
     data-success-message="Thanks for your report. RRROCA has received your non-emergency concern."
     method="POST"
-    action="https://formspree.io/f/your-formspree-id"
+    action="/api/forms/safety-report"
     novalidate
   >
     <input type="hidden" name="form_name" value="RRROCA Safety Concern Form">
@@ -19,7 +19,7 @@
       <input id="report-company" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
     </div>
 
-    <p class="form-note"><strong>Setup:</strong> replace <code>your-formspree-id</code> with your Formspree form ID.</p>
+    <p class="form-note"><strong>Submission route:</strong> this form posts to RRROCA’s safety reporting endpoint. Update the action if your deployment uses a different handler.</p>
 
     <div class="rr-form-grid">
       <div class="rr-field">
@@ -73,4 +73,4 @@
   </form>
 </section>
 
-<script src="/js/forms.js" defer></script>
+<script src="{{ "/js/forms.js" | relURL }}" defer></script>

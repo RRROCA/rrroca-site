@@ -40,7 +40,7 @@ RRROCA developed a concept plan for an exciting community park to be located on 
 
 Residents may recall initial plans proposed by RRROCA in 2013 for a hockey rink in this area. While the community all season park still features a 65×150 foot lit hockey rink with boards and protective fencing, the park is now envisioned to include amenities that will entertain residents of all ages throughout the year.
 
-To learn more about the progress of the project, [CLICK HERE](https://rrroca.org/en/wp-content/uploads/2015/12/Presentation-1.0.pdf) to download the Community Rink presentation from the 2016 AGM.
+To learn more about the progress of the project, [CLICK HERE](/en/wp-content/uploads/2015/12/Presentation-1.0.pdf) to download the Community Rink presentation from the 2016 AGM.
 
 **We would like to express our gratitude to Parks Foundation Calgary and the Saddledome Foundation for their generous support of our community park project.**
 

@@ -19,7 +19,7 @@ We need your help with funds to continue dealing with municipal and provincial i
 
 ### Why Support us? So many reasons!
 
-Read more about What we do, Who we are and What has RRROCA been involved in [HERE](https://rrroca.org/en/about-rrroca-calgary/)
+Read more about What we do, Who we are and What has RRROCA been involved in [HERE](/about/)
 
 ### Volunteering
 

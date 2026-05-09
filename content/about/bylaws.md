@@ -16,17 +16,17 @@ Consequently the Board has analyzed the Bylaws and proposed a number of changes 
 **These changes were passed at the AGM Meeting held on November 27, 2017.
 To view a copy of the new Rocky Ridge Royal Oak Community Association bylaws, please click below:**
 
-[Review of RRROCA Community By-Laws 2018](https://rrroca.org/en/wp-content/uploads/2018/10/Review-of-Community-By-Laws-2018.pdf)
+[Review of RRROCA Community By-Laws 2018](/en/wp-content/uploads/2018/10/Review-of-Community-By-Laws-2018.pdf)
 
 ## **ByLaw Archives**
 
 **These changes were passed at the AGM Meeting held on November 19, 2008.
 To view a copy of past Rocky Ridge Royal Oak Community Association bylaws, please click below:**
 
-[RRROCA Special Resolution | 18 Nov 2015 (PDF)](https://rrroca.org/en/wp-content/uploads/2016/05/Special-Resolution-2016.pdf)
+[RRROCA Special Resolution | 18 Nov 2015 (PDF)](/en/wp-content/uploads/2016/05/Special-Resolution-2016.pdf)
 
-[RRROCA Bylaws (PDF)](https://rrroca.org/en/wp-content/uploads/2014/08/rrroca_bylaws.pdf)
+[RRROCA Bylaws (PDF)](/en/wp-content/uploads/2014/08/rrroca_bylaws.pdf)
 
-[RRROCA Special Resolution | 19 Nov 2008 (PDF)](https://rrroca.org/en/wp-content/uploads/2014/08/Special-Resolution.pdf)
+[RRROCA Special Resolution | 19 Nov 2008 (PDF)](/en/wp-content/uploads/2014/08/Special-Resolution.pdf)
 
 [Good Neighbour Practices Reference Guide (PDF)](http://calgaryarea.com/content/communities/good_neighbour.pdf)

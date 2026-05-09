@@ -111,8 +111,8 @@
   }
 
   async function submitForm(form) {
-    if (form.action.includes('your-formspree-id')) {
-      setStatus(form, 'error', 'Replace "your-formspree-id" with your live Formspree form ID before using this form.');
+    if (!form.action) {
+      setStatus(form, 'error', 'This form is missing a submission endpoint. Please update the form action before publishing.');
       return;
     }
 

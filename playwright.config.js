@@ -19,9 +19,9 @@ module.exports = defineConfig({
     },
   ],
   webServer: {
-    command: 'hugo server --port 1314 --disableLiveReload',
+    command: 'hugo server --port 1314 --disableLiveReload --buildFuture',
     port: 1314,
     timeout: 120000,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: false,
   },
 });

@@ -25,7 +25,7 @@ The Rocky Ridge Royal Oak Community Association encourages our members to lead a
 
 ### Register in one of our Adult Fitness Classes:
 
-<https://rrroca.org/en/sport/adult-fitness-classes/>
+[Adult Fitness Classes](/sports/adult-fitness-classes/)
 
 ### Go swimming or to the gymnasium at the YMCA to get moving:
 

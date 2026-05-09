@@ -1,5 +1,6 @@
 ---
 title: "Report a Concern"
+date: 2026-05-09T00:00:00-06:00
 description: "Share non-emergency safety concerns with RRROCA."
 categories: ["safety"]
 draft: false

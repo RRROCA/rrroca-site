@@ -1,7 +1,7 @@
 {{ define "main" }}
 <section class="page-header">
   <div class="container">
-    <div class="breadcrumb"><a href="/">Home</a> / <span>{{ .Title }}</span></div>
+    <div class="breadcrumb"><a href="{{ "/" | relURL }}">Home</a> / <span>{{ .Title }}</span></div>
     <h1>{{ .Title }}</h1>
     <p>Questions, ideas, and community updates from Rocky Ridge and Royal Oak.</p>
   </div>
@@ -23,7 +23,7 @@
         data-formspree
         data-success-message="Thanks for reaching out. Your message has been sent to RRROCA."
         method="POST"
-        action="https://formspree.io/f/your-formspree-id"
+        action="/api/forms/contact"
         novalidate
       >
         <input type="hidden" name="form_name" value="RRROCA Contact Form">
@@ -32,7 +32,7 @@
           <input id="contact-company" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
         </div>
 
-        <p class="form-note"><strong>Setup:</strong> replace <code>your-formspree-id</code> with your Formspree form ID.</p>
+        <p class="form-note"><strong>Submission route:</strong> this form posts to RRROCA’s contact endpoint. Update the action if your deployment uses a different handler.</p>
 
         <div class="rr-field">
           <label for="contact-name">Name</label>
@@ -76,5 +76,5 @@
   </div>
 </section>
 
-<script src="/js/forms.js" defer></script>
+<script src="{{ "/js/forms.js" | relURL }}" defer></script>
 {{ end }}

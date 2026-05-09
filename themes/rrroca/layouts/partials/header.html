@@ -1,7 +1,7 @@
 <header class="site-header">
   <div class="container header-inner">
-    <a href="/" class="logo">
-      <img src="/images/rrroca-logo.png" alt="RRROCA" class="logo-img" width="40" height="40">
+    <a href="{{ "/" | relURL }}" class="logo">
+      <img src="{{ "/images/rrroca-logo.png" | relURL }}" alt="RRROCA" class="logo-img" width="40" height="40">
       <div class="logo-text">
         <strong>RRROCA</strong>
         <small>Rocky Ridge Royal Oak Community Association</small>
@@ -10,10 +10,10 @@
     <button class="menu-toggle" aria-label="Toggle menu" onclick="document.querySelector('.nav-main').classList.toggle('open')">☰</button>
     <nav class="nav-main">
       {{ range .Site.Menus.main }}
-        <a href="{{ .URL }}" class="{{ if $.IsMenuCurrent "main" . }}active{{ end }}">{{ .Name }}</a>
+        <a href="{{ .URL | relURL }}" class="{{ if $.IsMenuCurrent "main" . }}active{{ end }}">{{ .Name }}</a>
       {{ end }}
       <button class="search-trigger" onclick="openSearch()" aria-label="Search">🔍 Search <kbd>Ctrl+K</kbd></button>
-      <a href="{{ .Site.Params.membershipURL }}" class="btn btn-primary btn-sm">Join / Renew</a>
+      <a href="{{ .Site.Params.membershipURL | relURL }}" class="btn btn-primary btn-sm">Join / Renew</a>
     </nav>
   </div>
 </header>

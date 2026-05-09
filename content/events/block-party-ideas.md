@@ -13,7 +13,7 @@ draft: false
 
 Great neighbourhoods make great cities. A neighbourhood block party is an opportunity for people to meet and get to know each other. The focus is on having fun but some communities find it a great way to work together on a neighbourhood project.
 
-[Download a Block Party Guide HERE! (PDF)](https://rrroca.org/en/wp-content/uploads/2016/10/Love-Where-You-Live-Host-a-Block-Party.pdf)
+[Download a Block Party Guide HERE! (PDF)](/en/wp-content/uploads/2016/10/Love-Where-You-Live-Host-a-Block-Party.pdf)
 
 #### Benefits of Block Parties
 

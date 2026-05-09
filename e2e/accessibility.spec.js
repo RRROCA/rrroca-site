@@ -6,7 +6,7 @@ const auditRoutes = ['/', '/about/', '/safety/', '/news/', '/events/', '/get-inv
 test.describe('Accessibility basics', () => {
   test('all images on key pages have alt attributes', async ({ page }) => {
     for (const route of auditRoutes) {
-      await page.goto(route);
+      await page.goto(route, { waitUntil: 'domcontentloaded' });
 
       const missingAlt = await page.evaluate(() =>
         Array.from(document.images)
@@ -19,7 +19,7 @@ test.describe('Accessibility basics', () => {
   });
 
   test('all links on the homepage have accessible text', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     const emptyLinks = await page.evaluate(() =>
       Array.from(document.querySelectorAll('a'))
@@ -36,7 +36,7 @@ test.describe('Accessibility basics', () => {
   });
 
   test('homepage headings follow the site section pattern', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await expect(page.locator('main > section .hero-title')).toHaveCount(1);
     expect(await page.locator('h2.section-heading').count()).toBeGreaterThanOrEqual(5);
@@ -45,7 +45,7 @@ test.describe('Accessibility basics', () => {
   });
 
   test('key interface text maintains acceptable contrast', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     const snapshot = await page.locator('body').ariaSnapshot();
     expect(snapshot).toBeTruthy();
@@ -64,7 +64,7 @@ test.describe('Accessibility basics', () => {
   });
 
   test('keyboard users can tab through the main menu', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     const focusedLabels = [];
     for (let index = 0; index < 8; index += 1) {
@@ -83,7 +83,7 @@ test.describe('Accessibility basics', () => {
   });
 
   test('skip-to-content link works when present', async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     const skipLink = page.getByRole('link', { name: /skip/i });
     if (await skipLink.count() === 0) {

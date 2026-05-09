@@ -21,9 +21,9 @@ All sitters’ names published **are required to have a valid babysitter trainin
 
 #### Babysitter’s Waiver Forms
 
-[**Over 18 Years Old Waiver Form**](https://rrroca.org/en/wp-content/uploads/2016/10/Waiver-Over-18.pdf)
+[**Over 18 Years Old Waiver Form**](/en/wp-content/uploads/2016/10/Waiver-Over-18.pdf)
 
-[**Under 18 Years Old Waiver Form**](https://rrroca.org/en/wp-content/uploads/2016/10/Waiver-Under-18.pdf)
+[**Under 18 Years Old Waiver Form**](/en/wp-content/uploads/2016/10/Waiver-Under-18.pdf)
 
 The Rocky Ridge Royal Oak Community Association and its Board of Directors will not be pre-screening / sanctioning / verifying any credentials for those using this service. The employer takes on full responsibility of interviewing and hiring the babysitters.
 

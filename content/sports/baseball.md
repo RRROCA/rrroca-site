@@ -13,7 +13,7 @@ draft: false
 
 No baseball planned for spring 2022 due to lack of volunteers to run the program. Check back here for updates.
 
-[![](/images/uploads/become-a-rrroca-member.jpg)](https://rrroca.org/en/join-rrroca/rrroca-calgary-membership/)
+[![](/images/uploads/become-a-rrroca-member.jpg)](/membership/)
 
 [![](/images/uploads/RRROCA-Member-Portal-Button.jpg)](https://admin.sportzsoft.com/apps/regWeb.dll/Login?OrgId=1901)
 

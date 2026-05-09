@@ -31,12 +31,12 @@
 
 ## 5. Add the custom domain
 1. In Azure Portal, open the Static Web App and go to **Custom domains**.
-2. Add `www.rrroca.org` first.
+2. Add your preferred `www` host first (for example, `www.your-domain.example`).
 3. Azure now validates ownership with a DNS **TXT** record; add the record Azure provides and wait for validation.
 4. After validation, create a DNS **CNAME** record:
    - **Host**: `www`
    - **Points to**: your app's default hostname such as `orange-pond-123456.1.azurestaticapps.net`
-5. For the apex domain `rrroca.org`, use your DNS provider's **ALIAS/ANAME/CNAME flattening** support if available, or forward the apex domain to `https://www.rrroca.org`.
+5. For the apex domain, use your DNS provider's **ALIAS/ANAME/CNAME flattening** support if available, or forward the apex domain to your canonical `https://www` hostname.
 
 ## 6. SSL
 - Azure Static Web Apps automatically provisions and renews SSL certificates for the default hostname and validated custom domains.

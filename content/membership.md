@@ -1,5 +1,6 @@
 ---
 title: "Join RRROCA"
+date: 2026-05-09T00:00:00-06:00
 layout: "membership"
 type: "page"
 description: "Support your community — become a RRROCA member today"

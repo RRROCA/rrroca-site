@@ -20,9 +20,9 @@
             {{ if not .Date.IsZero }}
             <time class="news-date">{{ .Date.Format "January 2, 2006" }}</time>
             {{ end }}
-            <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
+            <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
             <p>{{ .Summary | plainify | truncate 160 }}</p>
-            <a href="{{ .Permalink }}" class="read-more">Read more →</a>
+            <a href="{{ .RelPermalink }}" class="read-more">Read more →</a>
           </div>
         </article>
         {{ end }}
