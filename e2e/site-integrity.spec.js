@@ -21,7 +21,10 @@ function normalizeInternalLinks(hrefs, origin) {
       .filter(Boolean)
       .filter((href) => !/^(mailto:|tel:|javascript:|#)/i.test(href))
       .map((href) => new URL(href, origin))
-      .filter((url) => url.origin === origin)
+      .filter((url) => (
+        url.origin === origin
+        || ['localhost', '127.0.0.1'].includes(url.hostname)
+      ))
       .map((url) => `${url.pathname}${url.search}`)
   )];
 }
@@ -44,7 +47,8 @@ test.describe('Site integrity', () => {
     expect(matchedLinks.every(Boolean)).toBeTruthy();
 
     for (const link of matchedLinks) {
-      const response = await request.get(new URL(link.href, origin).toString());
+      const destination = new URL(link.href, origin);
+      const response = await request.get(`${origin}${destination.pathname}${destination.search}`);
       expect(response.status(), `${link.text} -> ${link.href}`).toBeLessThan(400);
     }
   });
@@ -70,7 +74,7 @@ test.describe('Site integrity', () => {
   test('all internal links on the homepage resolve without 404s', async ({ page, request }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
     const origin = new URL(page.url()).origin;
-    const hrefs = await page.locator('a[href]').evaluateAll((links) => links.map((link) => link.getAttribute('href')));
+    const hrefs = await page.locator('a[href]').evaluateAll((links) => links.map((link) => link.href));
     const internalLinks = normalizeInternalLinks(hrefs, origin);
 
     expect(internalLinks.length).toBeGreaterThan(10);
@@ -99,13 +103,14 @@ test.describe('Site integrity', () => {
         continue;
       }
 
-      if (/^https?:\/\//i.test(link.absoluteHref) && !link.absoluteHref.startsWith(origin)) {
+      if (/^https?:\/\//i.test(link.absoluteHref) && !link.absoluteHref.startsWith(origin) && !/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//i.test(link.absoluteHref)) {
         expect(link.absoluteHref).not.toMatch(/^https?:\/\/(www\.)?rrroca\.org(\/|$)/i);
         expect(link.absoluteHref).toMatch(/^https:\/\//i);
         continue;
       }
 
-      const response = await request.get(new URL(link.href, origin).toString());
+      const destination = new URL(link.href, origin);
+      const response = await request.get(`${origin}${destination.pathname}${destination.search}`);
       expect(response.status(), link.href).toBeLessThan(400);
     }
   });
@@ -185,6 +190,6 @@ test.describe('Site integrity', () => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await expect(page.locator('.site-header a.btn.btn-primary.btn-sm')).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Join / Renew' })).toHaveAttribute('href', '/membership/');
+    await expect(page.getByRole('link', { name: 'Join / Renew' })).toHaveAttribute('href', /\/membership\/?$/);
   });
 });

@@ -14,11 +14,17 @@ test.describe('Smart search', () => {
   });
 
   test('shows search results and navigates when a result is clicked', async ({ page }) => {
+    const indexResponse = page
+      .waitForResponse(response => response.url().endsWith('/index.json') && response.status() === 200)
+      .catch(() => null);
+
     await page.keyboard.press('Control+k');
-    await page.waitForResponse(response => response.url().endsWith('/index.json') && response.status() === 200);
+    await expect(page.locator('#search-overlay')).toBeVisible();
+    await indexResponse;
+    await page.waitForFunction(() => typeof window.Fuse === 'function');
     await page.locator('#search-input').fill('safety');
 
-    await page.waitForFunction(() => document.querySelectorAll('.search-result').length > 0);
+    await expect(page.locator('.search-result').first()).toBeVisible();
     const results = page.locator('.search-result');
     const targetHref = await results.first().getAttribute('href');
     await results.first().click();

@@ -62,11 +62,14 @@ describe('Hugo build validation', () => {
 
     expect(document.querySelector('.site-header .logo-img')).not.toBeNull();
     expect(document.querySelector('.site-header .search-trigger')).not.toBeNull();
-    expect(document.querySelector('.site-header a[href="/membership/"].btn')).not.toBeNull();
+    expect(
+      [...document.querySelectorAll('.site-header a.btn')]
+        .some((link) => /\/membership\/?$/.test(link.getAttribute('href') || ''))
+    ).toBe(true);
     expect(document.querySelectorAll('.nav-main a').length).toBeGreaterThanOrEqual(10);
 
     expect(document.querySelector('#hero.hero')).not.toBeNull();
-    expect(document.querySelectorAll('.community-strip .strip-item')).toHaveLength(4);
+    expect(document.querySelectorAll('.community-strip .strip-track:not([aria-hidden="true"]) .strip-item')).toHaveLength(4);
     expect(document.querySelectorAll('.quick-links-grid .quick-link-card')).toHaveLength(6);
     expect(document.querySelectorAll('.involve-grid .involve-card')).toHaveLength(3);
     expect(document.querySelectorAll('.involve-card-icon')).toHaveLength(3);

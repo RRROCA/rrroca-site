@@ -2,7 +2,7 @@ const { test, expect } = require('@playwright/test');
 
 test.describe('Homepage', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/');
+    await page.goto('/', { waitUntil: 'domcontentloaded' });
   });
 
   test('loads with the redesigned header, logo, and hero', async ({ page }) => {
@@ -23,7 +23,7 @@ test.describe('Homepage', () => {
     const quickLinks = page.locator('.quick-links-grid .quick-link-card');
     const involveCards = page.locator('.involve-grid .involve-card');
 
-    await expect(page.locator('.community-strip .strip-item')).toHaveCount(4);
+    await expect(page.locator('.community-strip .strip-track:not([aria-hidden="true"]) .strip-item')).toHaveCount(4);
     await expect(quickLinks).toHaveCount(6);
     await expect(involveCards).toHaveCount(3);
     await expect(page.locator('.involve-card-icon')).toHaveCount(3);

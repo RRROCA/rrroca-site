@@ -55,7 +55,7 @@ test.describe('Navigation', () => {
 
     for (const destination of primaryNavigation) {
       await page.goto('/', { waitUntil: 'domcontentloaded' });
-      await page.locator(`.nav-main a[href="${destination.href}"]`).first().click();
+      await page.locator('.site-header .nav-main').getByRole('link', { name: destination.label, exact: true }).click();
       await expect(page).toHaveURL(new RegExp(`${destination.href.replace(/\//g, '\\/')}$`));
       await expect(page.locator('main h1').first()).toContainText(destination.heading);
     }

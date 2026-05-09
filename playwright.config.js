@@ -19,7 +19,7 @@ module.exports = defineConfig({
     },
   ],
   webServer: {
-    command: 'hugo --gc --minify && node tests\\serve-public.js',
+    command: 'hugo --baseURL http://localhost:1314/ --buildFuture --gc --minify --cleanDestinationDir && node tests\\serve-public.js',
     port: 1314,
     timeout: 120000,
     reuseExistingServer: false,

@@ -1,51 +1,83 @@
 {{ define "main" }}
 <!-- Hero — Full-bleed community photo with warm welcome -->
 <section class="hero" id="hero">
-  <div class="hero-photo" style="background-image: url('/images/community-aerial.jpg');"></div>
+  <div class="hero-photo" style="background-image: url('{{ "images/community-aerial.jpg" | absURL }}');"></div>
   <div class="hero-overlay"></div>
+  <div class="hero-glow hero-glow--one" aria-hidden="true"></div>
+  <div class="hero-glow hero-glow--two" aria-hidden="true"></div>
   <div class="container hero-content">
-    <img src="{{ "images/rrroca-logo.png" | absURL }}" alt="RRROCA Logo" class="hero-logo" width="120" height="auto">
-    <h1 class="hero-title">Welcome to Rocky Ridge<br>&amp; Royal Oak</h1>
-    <p class="hero-tagline">{{ .Site.Params.tagline }}</p>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <span class="hero-stat-number">2,400+</span>
-        <span class="hero-stat-label">Families</span>
+    <div class="hero-copy">
+      <img src="{{ "images/rrroca-logo.png" | absURL }}" alt="RRROCA Logo" class="hero-logo" width="120" height="auto">
+      <p class="hero-tagline">{{ .Site.Params.tagline }}</p>
+      <h1 class="hero-title">Welcome to Rocky Ridge<br>&amp; Royal Oak</h1>
+      <p class="hero-description">A proud northwest Calgary community where neighbours show up, local businesses belong, and every event makes home feel even more like home.</p>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <span class="hero-stat-number">2,400+</span>
+          <span class="hero-stat-label">Families</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-number">22↓</span>
+          <span class="hero-stat-label">Crimes/year</span>
+        </div>
+        <div class="hero-stat">
+          <span class="hero-stat-number">{{ .Site.Params.facebookGroupMembers }}</span>
+          <span class="hero-stat-label">Connected Online</span>
+        </div>
       </div>
-      <div class="hero-stat">
-        <span class="hero-stat-number">26↓</span>
-        <span class="hero-stat-label">Crimes/year</span>
+      <div class="hero-actions">
+        <a href="{{ "get-involved/" | absURL }}" class="btn btn-primary btn-lg">Join Your Community</a>
+        <a href="{{ "safety/" | absURL }}" class="btn btn-outline btn-lg">Safety Dashboard</a>
       </div>
-      <div class="hero-stat">
-        <span class="hero-stat-number">{{ .Site.Params.facebookGroupMembers }}</span>
-        <span class="hero-stat-label">Connected Online</span>
+      <div class="hero-proof" aria-label="Community proof points">
+        <span class="hero-proof-item">Neighbour-led events</span>
+        <span class="hero-proof-item">Trusted by 2,400+ families</span>
+        <span class="hero-proof-item">Built for residents &amp; local business</span>
       </div>
-    </div>
-    <div class="hero-actions">
-      <a href="{{ "get-involved/" | absURL }}" class="btn btn-primary btn-lg">Join Your Community</a>
-      <a href="{{ "safety/" | absURL }}" class="btn btn-outline btn-lg">Safety Dashboard</a>
     </div>
   </div>
 </section>
 
 <!-- Photo strip — real community moments -->
-<section class="community-strip">
-  <div class="strip-scroll">
-    <div class="strip-item">
-      <img src="{{ "images/stampede-breakfast.jpg" | absURL }}" alt="RRROCA Stampede Pancake Breakfast" loading="lazy">
-      <span class="strip-caption">Stampede Breakfast</span>
-    </div>
-    <div class="strip-item">
-      <img src="{{ "images/cascades-royal-oak.jpg" | absURL }}" alt="The Cascades in Royal Oak Calgary" loading="lazy">
-      <span class="strip-caption">The Cascades</span>
-    </div>
-    <div class="strip-item">
-      <img src="{{ "images/little-free-library.jpg" | absURL }}" alt="Little Free Library in our neighbourhood" loading="lazy">
-      <span class="strip-caption">Little Free Library</span>
-    </div>
-    <div class="strip-item">
-      <img src="{{ "images/royal-oak-overview.jpg" | absURL }}" alt="Royal Oak neighbourhood overview" loading="lazy">
-      <span class="strip-caption">Our Neighbourhood</span>
+<section class="community-strip" aria-label="Community moments">
+  <div class="community-strip-shell">
+    <div class="strip-scroll">
+      <div class="strip-track">
+        <div class="strip-item">
+          <img src="{{ "images/stampede-breakfast.jpg" | absURL }}" alt="RRROCA Stampede Pancake Breakfast" loading="lazy">
+          <span class="strip-caption">Stampede Breakfast</span>
+        </div>
+        <div class="strip-item">
+          <img src="{{ "images/cascades-royal-oak.jpg" | absURL }}" alt="The Cascades in Royal Oak Calgary" loading="lazy">
+          <span class="strip-caption">The Cascades</span>
+        </div>
+        <div class="strip-item">
+          <img src="{{ "images/little-free-library.jpg" | absURL }}" alt="Little Free Library in our neighbourhood" loading="lazy">
+          <span class="strip-caption">Little Free Library</span>
+        </div>
+        <div class="strip-item">
+          <img src="{{ "images/royal-oak-overview.jpg" | absURL }}" alt="Royal Oak neighbourhood overview" loading="lazy">
+          <span class="strip-caption">Our Neighbourhood</span>
+        </div>
+      </div>
+      <div class="strip-track" aria-hidden="true">
+        <div class="strip-item">
+          <img src="{{ "images/stampede-breakfast.jpg" | absURL }}" alt="" loading="lazy">
+          <span class="strip-caption">Stampede Breakfast</span>
+        </div>
+        <div class="strip-item">
+          <img src="{{ "images/cascades-royal-oak.jpg" | absURL }}" alt="" loading="lazy">
+          <span class="strip-caption">The Cascades</span>
+        </div>
+        <div class="strip-item">
+          <img src="{{ "images/little-free-library.jpg" | absURL }}" alt="" loading="lazy">
+          <span class="strip-caption">Little Free Library</span>
+        </div>
+        <div class="strip-item">
+          <img src="{{ "images/royal-oak-overview.jpg" | absURL }}" alt="" loading="lazy">
+          <span class="strip-caption">Our Neighbourhood</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -53,37 +85,65 @@
 <!-- Quick Links — warm, photo-backed cards -->
 <section class="quick-links">
   <div class="container">
-    <h2 class="section-heading">How Can We Help?</h2>
+    <div class="quick-links-header">
+      <span class="section-label">Start Here</span>
+      <h2 class="section-heading">How Can We Help?</h2>
+      <p class="section-intro">Everything residents need — surfaced fast, beautifully, and without the hunt.</p>
+    </div>
     <div class="quick-links-grid">
       <a href="{{ "safety/" | absURL }}" class="quick-link-card">
-        <span class="quick-link-icon">🛡️</span>
-        <h3>Safety</h3>
-        <p>Crime stats, alerts &amp; CPS contacts</p>
+        <span class="quick-link-icon-wrap"><span class="quick-link-icon">🛡️</span></span>
+        <div class="quick-link-copy">
+          <span class="quick-link-eyebrow">Stay informed</span>
+          <h3>Safety</h3>
+          <p>Crime stats, alerts &amp; CPS contacts</p>
+        </div>
+        <span class="quick-link-arrow" aria-hidden="true">→</span>
       </a>
       <a href="{{ "events/" | absURL }}" class="quick-link-card">
-        <span class="quick-link-icon">🎉</span>
-        <h3>Events</h3>
-        <p>Block parties &amp; community gatherings</p>
+        <span class="quick-link-icon-wrap"><span class="quick-link-icon">🎉</span></span>
+        <div class="quick-link-copy">
+          <span class="quick-link-eyebrow">Show up</span>
+          <h3>Events</h3>
+          <p>Block parties &amp; community gatherings</p>
+        </div>
+        <span class="quick-link-arrow" aria-hidden="true">→</span>
       </a>
       <a href="{{ "news/" | absURL }}" class="quick-link-card">
-        <span class="quick-link-icon">📰</span>
-        <h3>News</h3>
-        <p>Development permits &amp; updates</p>
+        <span class="quick-link-icon-wrap"><span class="quick-link-icon">📰</span></span>
+        <div class="quick-link-copy">
+          <span class="quick-link-eyebrow">Know what's next</span>
+          <h3>News</h3>
+          <p>Development permits &amp; updates</p>
+        </div>
+        <span class="quick-link-arrow" aria-hidden="true">→</span>
       </a>
       <a href="{{ "sports/" | absURL }}" class="quick-link-card">
-        <span class="quick-link-icon">⚽</span>
-        <h3>Sports</h3>
-        <p>Clubs, leagues &amp; recreation</p>
+        <span class="quick-link-icon-wrap"><span class="quick-link-icon">⚽</span></span>
+        <div class="quick-link-copy">
+          <span class="quick-link-eyebrow">Get moving</span>
+          <h3>Sports</h3>
+          <p>Clubs, leagues &amp; recreation</p>
+        </div>
+        <span class="quick-link-arrow" aria-hidden="true">→</span>
       </a>
       <a href="{{ "community/" | absURL }}" class="quick-link-card">
-        <span class="quick-link-icon">🌳</span>
-        <h3>Community</h3>
-        <p>Parks, gardens, schools &amp; groups</p>
+        <span class="quick-link-icon-wrap"><span class="quick-link-icon">🌳</span></span>
+        <div class="quick-link-copy">
+          <span class="quick-link-eyebrow">Explore local life</span>
+          <h3>Community</h3>
+          <p>Parks, gardens, schools &amp; groups</p>
+        </div>
+        <span class="quick-link-arrow" aria-hidden="true">→</span>
       </a>
       <a href="{{ "business-directory/" | absURL }}" class="quick-link-card">
-        <span class="quick-link-icon">🏪</span>
-        <h3>Local Business</h3>
-        <p>Shop &amp; hire in the neighbourhood</p>
+        <span class="quick-link-icon-wrap"><span class="quick-link-icon">🏪</span></span>
+        <div class="quick-link-copy">
+          <span class="quick-link-eyebrow">Invest locally</span>
+          <h3>Local Business</h3>
+          <p>Curated directory &amp; sponsorship opportunities for businesses worth discovering</p>
+        </div>
+        <span class="quick-link-arrow" aria-hidden="true">→</span>
       </a>
     </div>
   </div>
@@ -92,8 +152,9 @@
 <!-- Get Involved — the heartbeat of a community site -->
 <section class="section get-involved-strip">
   <div class="container">
+    <span class="section-label">Show up locally</span>
     <h2 class="section-heading">Your Neighbourhood Needs You</h2>
-    <p class="section-intro">RRROCA is run entirely by volunteers — neighbours like you who show up.</p>
+    <p class="section-intro">From family events to safer streets, this community runs on neighbours who lean in and make great things happen.</p>
     <div class="involve-grid">
       <a href="{{ "membership/" | absURL }}" class="involve-card">
         <div class="involve-card-icon involve-card-icon--member">
@@ -146,12 +207,19 @@
 <!-- Latest News -->
 <section class="section bg-alt">
   <div class="container">
-    <h2 class="section-heading">What's Happening</h2>
+    <div class="news-section-header section-header">
+      <span class="section-label">Fresh from RRROCA</span>
+      <h2 class="section-heading">What's Happening</h2>
+      <p class="section-intro">Recent updates, upcoming events, and neighbourhood momentum — so residents and sponsors can see this community is active right now.</p>
+    </div>
     <div class="news-grid">
       {{ range first 3 (where .Site.RegularPages "Section" "news") }}
       <article class="news-card">
         <div class="news-card-body">
-          <time class="news-date">{{ .Date.Format "Jan 2, 2006" }}</time>
+          <div class="news-card-badge-row">
+            <span class="news-status">Latest Update</span>
+            <time class="news-date">{{ .Date.Format "Jan 2, 2006" }}</time>
+          </div>
           <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
           <p>{{ .Summary | plainify | truncate 120 }}</p>
           <a href="{{ .RelPermalink }}" class="read-more">Read more →</a>
@@ -168,8 +236,9 @@
 <!-- Stay Connected — Facebook + Newsletter -->
 <section class="section">
   <div class="container">
+    <span class="section-label">Always in the loop</span>
     <h2 class="section-heading">Stay Connected</h2>
-    <p class="section-intro">Join the conversation with your neighbours</p>
+    <p class="section-intro">Join the conversation, hear about what's next, and keep the neighbourhood energy going between events.</p>
     <div class="social-grid">
       <div class="social-col">
         {{ partial "facebook-page-widget.html" . }}
@@ -194,9 +263,14 @@
   <div class="container">
     <div class="membership-hero">
       <div class="membership-text">
+        <span class="section-label">Join the momentum</span>
         <h2>Your Membership Matters</h2>
-        <p>Every dollar stays in our community. Memberships fund the Stampede Breakfast, 
-           maintain our park, run children's programs, and keep our neighbourhood safe.</p>
+        <p class="membership-lead">For less than a couple coffees a month, you help power the events, safety work, family programming, and neighbourhood pride that make Rocky Ridge and Royal Oak feel special.</p>
+        <ul class="membership-benefits">
+          <li>Back visible community wins residents can feel all year</li>
+          <li>Show sponsors and local businesses this is an active, organized neighbourhood</li>
+          <li>Join a community association that feels alive, current, and worth belonging to</li>
+        </ul>
         <div class="membership-tiers-inline">
           <div class="tier-inline">
             <strong>Individual</strong>
@@ -212,10 +286,14 @@
             <span class="tier-price-inline">$100/yr</span>
           </div>
         </div>
-        <a href="{{ "membership/" | absURL }}" class="btn btn-primary btn-lg">Join RRROCA Today</a>
+        <div class="membership-actions">
+          <a href="{{ "membership/" | absURL }}" class="btn btn-primary btn-lg">Join RRROCA Today</a>
+          <a href="{{ "get-involved/sponsorship/" | absURL }}" class="btn btn-outline-light btn-lg">Sponsor the Community</a>
+        </div>
       </div>
       <div class="membership-photo">
         <img src="{{ "images/stampede-breakfast.jpg" | absURL }}" alt="RRROCA community event — Stampede Pancake Breakfast" loading="lazy">
+        <div class="membership-photo-badge">Alive, welcoming, and worth backing</div>
       </div>
     </div>
   </div>
@@ -225,7 +303,7 @@
 <section class="emergency-bar">
   <div class="container">
     <div class="emergency-inner">
-      <span class="emergency-label">Emergency Contacts</span>
+        <h2 class="emergency-label">Emergency Contacts</h2>
       <div class="emergency-contacts">
         <a href="tel:911">🚨 <strong>911</strong> Emergency</a>
         <a href="tel:{{ .Site.Params.cpsNonEmergency }}">📞 <strong>{{ .Site.Params.cpsNonEmergency }}</strong> CPS Non-Emergency</a>

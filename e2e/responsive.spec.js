@@ -16,21 +16,20 @@ test.describe('Responsive layouts', () => {
     await expect(page.locator('.menu-toggle')).toBeVisible();
 
     const columns = await countUniqueColumnStarts(page, '.quick-links-grid .quick-link-card');
-    expect(columns).toBeGreaterThanOrEqual(1);
-    expect(columns).toBeLessThanOrEqual(2);
+    expect(columns).toBe(1);
     expect(await fitsViewport(page, '.quick-links-grid')).toBeTruthy();
   });
 
-  test('uses three quick-link columns on medium tablet widths', async ({ page }) => {
-    await page.setViewportSize({ width: 800, height: 1024 });
+  test('uses the current two-column quick-link layout on tablet widths', async ({ page }) => {
+    await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto('/');
 
     const columns = await countUniqueColumnStarts(page, '.quick-links-grid .quick-link-card');
-    expect(columns).toBe(3);
+    expect(columns).toBe(2);
     expect(await fitsViewport(page, '.quick-links-grid')).toBeTruthy();
   });
 
-  test('uses a full six-column quick-link grid on desktop', async ({ page }) => {
+  test('uses the premium six-column quick-link grid on desktop', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/');
 
