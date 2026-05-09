@@ -51,7 +51,6 @@
               {{ with .Params.location }}
               <p class="event-meta"><strong>Location:</strong> {{ . }}</p>
               {{ end }}
-              <p class="event-summary">{{ .Summary | plainify | truncate 140 }}</p>
               <span class="read-more">View event →</span>
             </div>
           </a>
@@ -89,7 +88,6 @@
                 {{ with .Params.location }}
                 <p class="event-meta"><strong>Location:</strong> {{ . }}</p>
                 {{ end }}
-                <p class="event-summary">{{ .Summary | plainify | truncate 120 }}</p>
               </div>
             </a>
           </article>
