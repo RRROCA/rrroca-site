@@ -29,6 +29,7 @@ describe('safety-dashboard.js', () => {
       <body>
         <div id="chart-parent">
           <canvas id="safety-chart"></canvas>
+          <div id="safety-chart-tooltip" hidden></div>
         </div>
       </body>`,
       { url: 'https://rrroca.org/' }
@@ -56,6 +57,14 @@ describe('safety-dashboard.js', () => {
       right: 720,
       bottom: 300
     });
+    canvas.getBoundingClientRect = () => ({
+      width: 720,
+      height: 250,
+      top: 0,
+      left: 0,
+      right: 720,
+      bottom: 250
+    });
 
     ctx = {
       scale: jest.fn(),
@@ -77,6 +86,7 @@ describe('safety-dashboard.js', () => {
       window,
       document,
       console,
+      getComputedStyle: window.getComputedStyle.bind(window),
       setTimeout,
       clearTimeout
     });
@@ -126,5 +136,20 @@ describe('safety-dashboard.js', () => {
 
     jest.advanceTimersByTime(1);
     expect(ctx.clearRect.mock.calls.length).toBeGreaterThan(drawCallsBeforeResize);
+  });
+
+  it('shows a tooltip when hovering near a data point', () => {
+    document.dispatchEvent(new window.Event('DOMContentLoaded'));
+
+    canvas.dispatchEvent(new window.MouseEvent('mousemove', {
+      bubbles: true,
+      clientX: 50,
+      clientY: 188
+    }));
+
+    const tooltip = document.getElementById('safety-chart-tooltip');
+    expect(tooltip.hidden).toBe(false);
+    expect(tooltip.textContent).toMatch(/Rocky Ridge/i);
+    expect(tooltip.textContent).toMatch(/Q1 2025/i);
   });
 });

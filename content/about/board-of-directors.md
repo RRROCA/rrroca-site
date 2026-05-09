@@ -13,40 +13,27 @@ RRROCA is led by local volunteers who care deeply about keeping Rocky Ridge and 
 
 Interested in serving? Join us at the [Annual General Meeting](/events/2026-05-agm/) or connect through our [volunteer page](/get-involved/volunteer/).
 
-## Current board structure
+## Current board members
 
-### President
-**Name:** _To be announced_  
-Provides overall leadership, chairs meetings, and helps guide RRROCA priorities and partnerships.
+- **President:** [Jason Kellock](/about/board-members/jason-kellock/)
+- **Vice President:** [Michelle Delorme](/about/board-members/michelle-delorme/)
+- **Secretary / Events Chair:** [Shahnaz Munir](/about/board-members/shahnaz-munir/)
+- **Treasurer:** [Darren Barfuss](/about/board-members/darren-barfuss/)
+- **Planning & Development Chair:** [Dave Spencer](/about/board-members/dave-spencer/)
+- **Transportation Chair:** [Yomi Olujonwo](/about/board-members/yomi-olujonwo/)
+- **Safety & Technology Director:** [Chad La Fournie](/about/board-members/chad-la-fournie/)
+- **Parks Chair:** [Jared Spitzmacher](/about/board-members/jared-spitzmacher/)
+- **Communications Chair:** [Talah Al Zamel](/about/board-members/talah-al-zamel/)
+- **Sponsorship Chair:** [Udit Jariwala](/about/board-members/udit-jariwala/)
+- **Immediate Past President:** [Dino Petrakos](/about/board-members/dino-petrakos/)
 
-### Vice President
-**Name:** _To be announced_  
-Supports the president, helps coordinate board initiatives, and steps in when needed across portfolios.
+Browse the full [board member directory](/about/board-members/) for simple profile pages migrated from the legacy RRROCA website.
 
-### Secretary
-**Name:** _To be announced_  
-Keeps board records, meeting minutes, and key governance documents organized and up to date.
+## Open portfolios
 
-### Treasurer
-**Name:** _To be announced_  
-Oversees finances, reporting, budgeting, and good stewardship of community association funds.
+The legacy board listing also showed these positions as vacant:
 
-### Safety Director
-**Name:** Chad La Fournie  
-Leads community safety initiatives, shares prevention updates, and works with residents and agency partners on local concerns.
-
-### Communications Director
-**Name:** _To be announced_  
-Manages resident communications across the website, newsletters, and social channels.
-
-### Playground Director
-**Name:** _To be announced_  
-Supports playground planning, amenity improvements, and family-focused outdoor spaces.
-
-### Development Director
-**Name:** _To be announced_  
-Reviews local development matters and helps represent community interests as projects move forward.
-
-### Sports Director
-**Name:** _To be announced_  
-Supports sports programming, community recreation partnerships, and active living opportunities for residents.
+- Programs Chair
+- Membership Chair
+- Schools Chair
+- Volunteers Chair

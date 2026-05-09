@@ -1,24 +1,21 @@
 ---
 title: "Board Governance"
 date: 2025-05-09
-description: "Formal motions, resolutions, and governance records for the RRROCA Board of Directors."
+description: "Transparent motions, voting, and decisions — see what your board is working on right now."
 layout: "list"
+github_motion_url: "https://github.com/CanChad/rrroca-site/issues/new?template=motion.yml"
 ---
 
-## How Board Governance Works
+## Open, Transparent Governance
 
-The Rocky Ridge Royal Oak Community Association is governed by a volunteer Board of Directors under the [Alberta Societies Act](https://www.alberta.ca/societies-act-resources.aspx). All significant decisions — budget approvals, capital expenditures, policy changes, and bylaw amendments — are made through **formal motions** voted on by the Board.
+The Rocky Ridge Royal Oak Community Association is governed by a volunteer Board of Directors under the [Alberta Societies Act](https://www.alberta.ca/societies-act-resources.aspx). Every significant decision — budget approvals, capital expenditures, policy changes, and bylaw amendments — is made through **formal motions** voted on by the Board, and every vote is published here for full community transparency.
 
-### Our Process
+### How It Works
 
-1. **A director submits a motion** with supporting details (cost, vendor, rationale)
-2. **The motion is posted here** as the official record, with a linked pull request on GitHub
-3. **Board members review** the motion and supporting documents
-4. **Directors vote** by approving or requesting changes on the GitHub pull request
-5. **Results are recorded** — the motion is marked Approved, Defeated, or Tabled
+1. **A board member proposes a motion** by filling out a simple online form
+2. **The motion appears here automatically** for full community visibility
+3. **Board members review** and discuss the motion
+4. **Directors vote** with a single click — 👍 For, 👎 Against, or 😐 Abstain
+5. **Results are recorded permanently** — every vote is part of the public record
 
-Every motion and vote is tracked in version control, providing a **permanent, transparent, and auditable record** of all board decisions.
-
-### Active Motions
-
-Motions currently open for voting are listed below. Past motions are available in the archive.
+This is what transparent governance looks like. No backroom decisions. No lost meeting minutes. Every motion, every vote, every outcome — right here.

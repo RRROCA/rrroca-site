@@ -27,7 +27,44 @@
     </div>
   </div>
   <div class="safety-chart-container">
-    <canvas id="safety-chart" width="600" height="250" aria-label="Crime trend chart"></canvas>
+    <div class="safety-chart-header">
+      <div class="safety-chart-copy">
+        <h3 class="safety-chart-title">Quarterly reported incidents</h3>
+        <p class="safety-chart-description" id="safety-chart-summary">
+          Blue shows Rocky Ridge, green shows Royal Oak, and the dashed rust line shows the Calgary average. Hover or tap a point to see the count for that quarter.
+        </p>
+      </div>
+      <ul class="safety-chart-legend" aria-label="Chart legend">
+        <li class="safety-legend-item">
+          <span class="safety-legend-swatch safety-legend-swatch--ridge" aria-hidden="true"></span>
+          <span>Rocky Ridge</span>
+        </li>
+        <li class="safety-legend-item">
+          <span class="safety-legend-swatch safety-legend-swatch--oak" aria-hidden="true"></span>
+          <span>Royal Oak</span>
+        </li>
+        <li class="safety-legend-item">
+          <span class="safety-legend-swatch safety-legend-swatch--calgary" aria-hidden="true"></span>
+          <span>Calgary average</span>
+        </li>
+      </ul>
+    </div>
+    <div class="safety-chart-frame">
+      <div class="safety-axis-label safety-axis-label-y">Reported incidents</div>
+      <div class="safety-chart-canvas-wrap">
+        <canvas
+          id="safety-chart"
+          width="600"
+          height="250"
+          tabindex="0"
+          role="img"
+          aria-label="Quarterly reported incidents in Rocky Ridge, Royal Oak, and Calgary average"
+          aria-describedby="safety-chart-summary"
+        >Quarterly reported incidents for Rocky Ridge, Royal Oak, and the Calgary average.</canvas>
+        <div class="safety-chart-tooltip" id="safety-chart-tooltip" role="status" aria-live="polite" hidden></div>
+      </div>
+      <div class="safety-axis-label safety-axis-label-x">Time period (quarter)</div>
+    </div>
   </div>
   <p class="safety-source">Source: <a href="https://data.calgary.ca/stories/s/Community-Crime-Data-Lens/sycx-s5a6/" target="_blank" rel="noopener">Calgary Open Data</a> &amp; <a href="https://www.calgarypolice.ca/transparency-and-accountability/crime-statistics.html" target="_blank" rel="noopener">Calgary Police Service</a>. Updated Q1 2026.</p>
 </div>

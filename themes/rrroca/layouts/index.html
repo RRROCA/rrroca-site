@@ -204,6 +204,48 @@
   </div>
 </section>
 
+<!-- Your Board at Work -->
+{{ $motionsSection := .Site.GetPage "/board/motions" }}
+{{ if $motionsSection }}
+{{ $activeMotions := slice }}
+{{ range $motionsSection.Pages }}
+  {{ $ms := .Params.motion_status | default (.Params.status | default "open") }}
+  {{ if eq (lower $ms) "open" }}
+    {{ $activeMotions = $activeMotions | append . }}
+  {{ end }}
+{{ end }}
+{{ if gt (len $activeMotions) 0 }}
+<section class="section governance-preview">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Transparent governance</span>
+      <h2 class="section-heading">Your Board at Work</h2>
+      <p class="section-intro">Every decision the board makes is published here — open, transparent, and on the record. See what's being decided right now.</p>
+    </div>
+    <div class="governance-preview-grid">
+      {{ range first 3 $activeMotions }}
+      <a href="{{ .RelPermalink }}" class="governance-card">
+        <div class="governance-card-status">🗳️ Open for Voting</div>
+        <h3 class="governance-card-title">{{ .Title }}</h3>
+        <p class="governance-card-summary">{{ .Summary | plainify | truncate 120 }}</p>
+        <div class="governance-card-meta">
+          <span>{{ .Params.proposed_by | default (.Params.mover | default "Board") }}</span>
+          {{ with .Params.deadline }}
+          <span>Vote by {{ time . | dateFormat "Jan 2" }}</span>
+          {{ end }}
+        </div>
+        <span class="governance-card-cta">View Motion →</span>
+      </a>
+      {{ end }}
+    </div>
+    <div class="text-center" style="margin-top: var(--space-xl);">
+      <a href="{{ "board/" | absURL }}" class="btn btn-outline-dark">All Governance Records →</a>
+    </div>
+  </div>
+</section>
+{{ end }}
+{{ end }}
+
 <!-- Latest News -->
 <section class="section bg-alt">
   <div class="container">

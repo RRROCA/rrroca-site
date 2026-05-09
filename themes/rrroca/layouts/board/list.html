@@ -38,6 +38,14 @@
         <strong>{{ len $allMotions }}</strong> Total
       </span>
     </div>
+    {{ with .Params.github_motion_url }}
+    <div class="motion-propose-cta">
+      <a href="{{ . }}" target="_blank" rel="noopener" class="btn btn-primary">
+        ✏️ Propose a Motion
+      </a>
+      <span class="motion-propose-note">Board members: create a new motion in seconds</span>
+    </div>
+    {{ end }}
   </div>
 </section>
 

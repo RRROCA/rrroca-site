@@ -1,19 +1,20 @@
 <header class="site-header">
   <div class="container header-inner">
-    <a href="{{ "" | absURL }}" class="logo">
-      <img src="{{ "images/rrroca-logo.png" | absURL }}" alt="RRROCA" class="logo-img" width="40" height="40">
-      <div class="logo-text">
-        <strong>RRROCA</strong>
-        <small>Rocky Ridge Royal Oak Community Association</small>
-      </div>
+    <a href="{{ "" | absURL }}" class="logo" aria-label="RRROCA Home">
+      <img src="{{ "images/rrroca-logo.png" | absURL }}" alt="RRROCA" class="logo-img" width="36" height="36">
+      <strong class="logo-wordmark">RRROCA</strong>
     </a>
-    <button class="menu-toggle" aria-label="Toggle menu" onclick="document.querySelector('.nav-main').classList.toggle('open')">☰</button>
+    <button class="menu-toggle" aria-label="Toggle menu" onclick="document.querySelector('.nav-main').classList.toggle('open')">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
     <nav class="nav-main">
       {{ range .Site.Menus.main }}
         <a href="{{ .URL }}" class="{{ if $.IsMenuCurrent "main" . }}active{{ end }}">{{ .Name }}</a>
       {{ end }}
-      <button class="search-trigger" onclick="openSearch()" aria-label="Search">🔍 Search <kbd>Ctrl+K</kbd></button>
-      <a href="{{ "membership/" | absURL }}" class="btn btn-primary btn-sm">Join / Renew</a>
+      <button class="search-trigger" onclick="openSearch()" aria-label="Search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+      <a href="{{ "membership/" | absURL }}" class="btn btn-primary btn-sm nav-cta">Join</a>
     </nav>
   </div>
 </header>
