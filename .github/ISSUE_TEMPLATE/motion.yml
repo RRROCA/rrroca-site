@@ -1,0 +1,90 @@
+name: "🗳️ Board Motion"
+description: "Propose a new motion for board vote. Fill out this form and submit — your motion will automatically appear on the RRROCA website and board members will be notified to vote."
+title: "Motion: "
+labels: ["motion", "voting-open"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## How This Works
+        1. **Fill out this form** — describe what you want the board to approve
+        2. **Submit** — your motion automatically appears on the [RRROCA website](https://canchad.github.io/rrroca-site/board/)
+        3. **Board votes** — members react to this issue: 👍 = For, 👎 = Against, 😐 = Abstain
+        4. **Result published** — when voting closes, the outcome is posted to the website
+
+        💡 **Tip:** You can use AI (ChatGPT, Copilot, Gemini) to help draft your motion text — just tell it what you want to propose and ask it to write a formal board motion.
+
+  - type: textarea
+    id: motion-text
+    attributes:
+      label: "What are you proposing?"
+      description: "Describe what you want the board to approve. Start with 'BE IT RESOLVED THAT' if you want to be formal, or just describe it in plain language — we'll format it."
+      placeholder: |
+        Example: "Approve spending up to $1,200 for permanent fencing around the tiny forest planting bed, replacing the wind-damaged snow fence."
+    validations:
+      required: true
+
+  - type: textarea
+    id: background
+    attributes:
+      label: "Why is this needed?"
+      description: "Help board members understand the context. What's the problem? Why now? What happens if we don't act?"
+      placeholder: |
+        Example: "The orange snow fence was destroyed in a windstorm. Without fencing, the young trees in the planting bed are unprotected. Dave Spencer has a quote from Windscape for $1,128.75."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: "What type of decision is this?"
+      options:
+        - "💰 Spending money (unplanned expense)"
+        - "📋 Policy change"
+        - "🔧 Operations (how we do things)"
+        - "🏛️ Governance (how we make decisions)"
+        - "📐 Strategy (direction or vision)"
+        - "✅ Ratify something already in progress"
+        - "📌 Other"
+    validations:
+      required: true
+
+  - type: input
+    id: amount
+    attributes:
+      label: "How much money? (leave blank if not a spending decision)"
+      description: "Enter the dollar amount requested, e.g. 1200"
+      placeholder: "1200"
+
+  - type: input
+    id: portfolio
+    attributes:
+      label: "Which portfolio does this fall under?"
+      description: "e.g. Parks, Safety, Technology, Communications, Events"
+      placeholder: "Parks"
+
+  - type: input
+    id: deadline
+    attributes:
+      label: "When do you need a decision by?"
+      description: "YYYY-MM-DD format, or just say 'next board meeting' or 'urgent'"
+      placeholder: "2026-06-01"
+
+  - type: textarea
+    id: supporting
+    attributes:
+      label: "Any supporting documents or links?"
+      description: "Attach quotes, photos, links, or any other supporting information."
+      placeholder: "Vendor quote attached, see photo of damaged fence below."
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ## What happens after you submit
+
+        - ✅ Your motion appears on the [RRROCA Board Governance](https://canchad.github.io/rrroca-site/board/) page within minutes
+        - 📧 All board members are notified by email
+        - 🗳️ Board members vote by reacting to this issue: **👍 = For, 👎 = Against, 😐 = Abstain**
+        - 📊 Vote totals are automatically tracked
+        - 🌐 The result is published on the website for community transparency

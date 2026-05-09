@@ -1,11 +1,11 @@
 {{ define "main" }}
-{{ $status := .Params.status | default "Open" }}
+{{ $status := .Params.motion_status | default (.Params.status | default "open") }}
 {{ $for := .Params.votes_for | default 0 }}
 {{ $against := .Params.votes_against | default 0 }}
 {{ $abstain := .Params.votes_abstain | default 0 }}
 {{ $total := add (add $for $against) $abstain }}
 {{ $quorum := .Params.quorum_required | default 5 }}
-{{ $isOpen := eq $status "Open" }}
+{{ $isOpen := eq (lower $status) "open" }}
 {{ $pctFor := 0 }}
 {{ $pctAgainst := 0 }}
 {{ $pctAbstain := 0 }}
@@ -26,13 +26,13 @@
     <div class="motion-header-meta">
       {{ if $isOpen }}
         <span class="motion-status motion-status--open">🗳️ Open for Voting</span>
-      {{ else if eq $status "Approved" }}
+      {{ else if or (eq (lower $status) "approved") (eq (lower $status) "passed") }}
         <span class="motion-status motion-status--approved">✅ Approved</span>
-      {{ else if eq $status "Defeated" }}
+      {{ else if eq (lower $status) "defeated" }}
         <span class="motion-status motion-status--defeated">❌ Defeated</span>
-      {{ else if eq $status "Tabled" }}
+      {{ else if eq (lower $status) "tabled" }}
         <span class="motion-status motion-status--tabled">⏸️ Tabled</span>
-      {{ else if eq $status "Withdrawn" }}
+      {{ else if eq (lower $status) "withdrawn" }}
         <span class="motion-status motion-status--withdrawn">↩️ Withdrawn</span>
       {{ end }}
       <span class="motion-number-badge">Motion #{{ .Params.motion_number }}</span>
@@ -50,7 +50,7 @@
         <div class="motion-detail-grid">
           <div class="motion-detail-item">
             <span class="motion-detail-label">Moved by</span>
-            <strong>{{ .Params.mover | default "TBD" }}</strong>
+            <strong>{{ .Params.proposed_by | default (.Params.mover | default "TBD") }}</strong>
           </div>
           <div class="motion-detail-item">
             <span class="motion-detail-label">Seconded by</span>
@@ -132,16 +132,17 @@
           {{ end }}
         </div>
 
-        {{ if and $isOpen .Params.github_pr }}
+        {{ $voteUrl := .Params.github_issue_url | default .Params.github_pr }}
+        {{ if and $isOpen $voteUrl }}
         <div class="motion-vote-cta">
-          <a href="{{ .Params.github_pr }}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
-            🗳️ Review & Vote on GitHub
+          <a href="{{ $voteUrl }}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+            🗳️ Vote on This Motion
           </a>
-          <p class="motion-vote-note">Board members: approve, request changes, or comment on the pull request to cast your vote.</p>
+          <p class="motion-vote-note">Board members: react with 👍 (For), 👎 (Against), or 😐 (Abstain) to cast your vote.</p>
         </div>
         {{ else if $isOpen }}
         <div class="motion-vote-cta">
-          <p class="motion-vote-note">Voting link will be posted here once the pull request is created. Board members will be notified via email.</p>
+          <p class="motion-vote-note">Voting link will be posted here once the motion is submitted. Board members will be notified via email.</p>
         </div>
         {{ end }}
       </div>

@@ -1,15 +1,7 @@
 {{ define "main" }}
-{{ $allMotions := slice }}
-{{ $motionsSection := .GetPage "motions" }}
-{{ if $motionsSection }}
-  {{ range $motionsSection.Pages }}
-    {{ $allMotions = $allMotions | append . }}
-  {{ end }}
-{{ end }}
-
 {{ $activeMotions := slice }}
 {{ $pastMotions := slice }}
-{{ range $allMotions }}
+{{ range .Pages }}
   {{ $motionStatus := .Params.motion_status | default (.Params.status | default "open") }}
   {{ if eq (lower $motionStatus) "open" }}
     {{ $activeMotions = $activeMotions | append . }}
@@ -21,11 +13,13 @@
 <section class="page-header page-header--board">
   <div class="container">
     <div class="page-breadcrumb">
-      <a href="{{ "" | absURL }}">Home</a> · <span>Board Governance</span>
+      <a href="{{ "" | absURL }}">Home</a> ·
+      <a href="{{ "board/" | absURL }}">Board Governance</a> ·
+      <span>All Motions</span>
     </div>
-    <h1>🏛️ {{ .Title }}</h1>
+    <h1>🗳️ {{ .Title }}</h1>
     <p class="page-description">
-      {{ with .Description }}{{ . }}{{ else }}Formal motions, resolutions, and governance records for the RRROCA Board of Directors.{{ end }}
+      {{ with .Description }}{{ . }}{{ else }}All motions, resolutions, and governance records.{{ end }}
     </p>
     <div class="motion-summary-bar">
       <span class="motion-summary-stat motion-summary-stat--active">
@@ -35,7 +29,7 @@
         <strong>{{ len $pastMotions }}</strong> Resolved
       </span>
       <span class="motion-summary-stat">
-        <strong>{{ len $allMotions }}</strong> Total
+        <strong>{{ add (len $activeMotions) (len $pastMotions) }}</strong> Total
       </span>
     </div>
   </div>
@@ -44,11 +38,6 @@
 <section class="section">
   <div class="container content-layout">
     <div class="content-main">
-      {{ if .Content }}
-      <div class="article-content motion-intro">
-        {{ .Content }}
-      </div>
-      {{ end }}
 
       {{ if gt (len $activeMotions) 0 }}
       <div class="motion-section">
@@ -61,13 +50,12 @@
           {{ range sort $activeMotions "Date" "desc" }}
           <article class="motion-card motion-card--active">
             <div class="motion-card-header">
-              <span class="motion-number">#{{ .Params.motion_number }}</span>
               <span class="motion-status motion-status--open">🗳️ Open for Voting</span>
             </div>
             <h3 class="motion-card-title">
               <a href="{{ .RelPermalink }}">{{ .Title }}</a>
             </h3>
-            <p class="motion-card-summary">{{ .Summary | plainify | truncate 160 }}</p>
+            <p class="motion-card-summary">{{ with .Params.summary }}{{ . }}{{ else }}{{ .Summary | plainify | truncate 160 }}{{ end }}</p>
             <div class="motion-card-meta">
               {{ with .Params.amount }}
               <span class="motion-meta-item motion-meta-item--amount">
@@ -117,7 +105,6 @@
           {{ range sort $pastMotions "Date" "desc" }}
           <article class="motion-card motion-card--resolved">
             <div class="motion-card-header">
-              <span class="motion-number">#{{ .Params.motion_number }}</span>
               {{ $status := .Params.motion_status | default (.Params.status | default "unknown") }}
               {{ if or (eq (lower $status) "passed") (eq (lower $status) "approved") }}
                 <span class="motion-status motion-status--approved">✅ Approved</span>

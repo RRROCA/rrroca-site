@@ -5001,12 +5001,62 @@ p { margin-bottom: var(--space-md); }
   .motion-card-footer {
     flex-direction: column;
     gap: var(--space-md);
-    align-items: flex-start;
+    align-items: stretch;
+  }
+  .motion-card-footer .btn {
+    text-align: center;
   }
   .motion-vote-counts {
     gap: var(--space-md);
   }
   .motion-summary-bar {
     gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+  .motion-vote-cta .btn-lg {
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .motion-header-meta {
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .motion-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .motion-card {
+    padding: var(--space-md);
+  }
+  .motion-card-meta {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .motion-meta-item {
+    width: fit-content;
+  }
+  .motion-vote-counts {
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+  .motion-vote-summary {
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+  .motion-summary-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .motion-section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+  .page-header--board h1 {
+    font-size: 1.5rem;
+  }
+  .motion-card-title {
+    font-size: 1rem;
   }
 }

@@ -1,0 +1,192 @@
+name: Publish Board Motion
+
+on:
+  issues:
+    types: [opened, edited, closed, reopened]
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  publish-motion:
+    if: contains(github.event.issue.labels.*.name, 'motion')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Parse issue and generate motion page
+        uses: actions/github-script@v7
+        id: parse
+        with:
+          script: |
+            const issue = context.payload.issue;
+            const body = issue.body || '';
+            const author = issue.user.login;
+            const issueNumber = issue.number;
+            const created = issue.created_at.split('T')[0];
+            const year = created.split('-')[0];
+
+            // Parse form fields from issue body
+            function getField(body, label) {
+              // GitHub Issue Forms format: ### Label\n\nValue\n\n### Next
+              const regex = new RegExp(`### ${label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\s*\\n\\n([\\s\\S]*?)(?=\\n###|$)`, 'i');
+              const match = body.match(regex);
+              if (!match) return '';
+              return match[1].trim().replace(/_No response_/g, '');
+            }
+
+            const motionText = getField(body, 'What are you proposing?');
+            const background = getField(body, 'Why is this needed?');
+            const category = getField(body, 'What type of decision is this?');
+            const amount = getField(body, 'How much money?');
+            const portfolio = getField(body, 'Which portfolio does this fall under?');
+            const deadline = getField(body, 'When do you need a decision by?');
+            const supporting = getField(body, 'Any supporting documents or links?');
+
+            // Clean category (remove emoji prefix)
+            const cleanCategory = category.replace(/^[^\w]*/, '').trim();
+
+            // Generate slug from issue title
+            const titleClean = issue.title
+              .replace(/^Motion:\s*/i, '')
+              .toLowerCase()
+              .replace(/[^a-z0-9]+/g, '-')
+              .replace(/^-|-$/g, '')
+              .substring(0, 60);
+            const slug = `${created}-${titleClean}`;
+            const filename = `content/board/motions/${slug}.md`;
+
+            // Count existing motions this year for numbering
+            const fs = require('fs');
+            const motionDir = 'content/board/motions';
+            let motionCount = 0;
+            if (fs.existsSync(motionDir)) {
+              const files = fs.readdirSync(motionDir).filter(f => f.startsWith(year) && f.endsWith('.md'));
+              motionCount = files.length;
+            }
+            const motionNumber = `${year}-${String(motionCount + 1).padStart(3, '0')}`;
+
+            // Determine status based on issue state
+            const isClosed = issue.state === 'closed';
+            let motionStatus = 'open';
+            if (isClosed) {
+              // Count reactions to determine outcome
+              const reactions = issue.reactions;
+              const votesFor = reactions['+1'] || 0;
+              const votesAgainst = reactions['-1'] || 0;
+              motionStatus = votesFor > votesAgainst ? 'passed' : 'defeated';
+            }
+
+            // Get reaction counts for vote tracking
+            const reactions = issue.reactions || {};
+            const votesFor = reactions['+1'] || 0;
+            const votesAgainst = reactions['-1'] || 0;
+            const votesAbstain = reactions['confused'] || 0; // 😕 as abstain fallback
+
+            // Build front matter
+            let frontMatter = `---
+            title: "Motion ${motionNumber}: ${issue.title.replace(/^Motion:\s*/i, '').replace(/"/g, '\\"')}"
+            date: ${created}
+            summary: "${motionText.split('\n')[0].substring(0, 200).replace(/"/g, '\\"')}"
+            proposed_by: "${author}"
+            motion_status: "${motionStatus}"
+            votes_for: ${votesFor}
+            votes_against: ${votesAgainst}
+            votes_abstain: ${votesAbstain}
+            github_issue: ${issueNumber}
+            github_issue_url: "${issue.html_url}"`;
+
+            if (amount) {
+              frontMatter += `\namount: ${parseFloat(amount) || 0}`;
+            }
+            if (cleanCategory) {
+              frontMatter += `\ncategory: "${cleanCategory}"`;
+            }
+            if (portfolio) {
+              frontMatter += `\nportfolio: "${portfolio}"`;
+            }
+            if (deadline && deadline.match(/^\d{4}-\d{2}-\d{2}$/)) {
+              frontMatter += `\ndeadline: "${deadline}"`;
+            }
+
+            frontMatter += `\nquorum_required: 5
+            draft: false
+            ---`;
+
+            // Clean up indentation
+            frontMatter = frontMatter.replace(/^            /gm, '');
+
+            // Build content
+            let content = frontMatter + '\n\n';
+            content += `## Motion\n\n${motionText}\n\n`;
+            content += `## Background\n\n${background}\n\n`;
+
+            if (amount) {
+              content += `## Financial Impact\n\n`;
+              content += `| Item | Amount |\n|------|--------|\n`;
+              content += `| Requested approval | $${parseFloat(amount).toLocaleString()} |\n`;
+              if (portfolio) {
+                content += `| Budget category | ${portfolio} |\n`;
+              }
+              content += '\n';
+            }
+
+            if (supporting) {
+              content += `## Supporting Documents\n\n${supporting}\n\n`;
+            }
+
+            content += `---\n\n`;
+            content += `> 🗳️ **[Vote on this motion](${issue.html_url})** — React with 👍 (For), 👎 (Against), or 😐 (Abstain)\n`;
+
+            // Write the file
+            fs.mkdirSync(motionDir, { recursive: true });
+            fs.writeFileSync(filename, content);
+
+            core.setOutput('filename', filename);
+            core.setOutput('motion-number', motionNumber);
+            core.setOutput('slug', slug);
+
+            console.log(`Created motion ${motionNumber} at ${filename}`);
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/board/motions/
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "Auto-publish motion from issue #${{ github.event.issue.number }}
+
+          Motion ${{ steps.parse.outputs.motion-number }} created from GitHub Issue.
+          See: ${{ github.event.issue.html_url }}"
+          git push
+
+      - name: Comment on issue with website link
+        if: github.event.action == 'opened'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const motionNumber = '${{ steps.parse.outputs.motion-number }}';
+            const slug = '${{ steps.parse.outputs.slug }}';
+            const siteUrl = `https://canchad.github.io/rrroca-site/board/motions/${slug}/`;
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## ✅ Motion ${motionNumber} Published!
+
+            Your motion is now live on the RRROCA website:
+            🌐 **[View on website](${siteUrl})**
+
+            ### How to Vote
+            React to **this issue** (not this comment):
+            - 👍 = **For** (approve the motion)
+            - 👎 = **Against** (reject the motion)
+            - 😐 = **Abstain**
+
+            Votes are tracked automatically. When voting closes, the result will be published on the website.
+
+            ---
+            *This motion was auto-published by the RRROCA Board Governance system.*`
+            });
