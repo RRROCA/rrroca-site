@@ -1,7 +1,6 @@
 baseURL = "https://rrroca.org/"
 locale = "en-US"
-locale = "en-US"
-title = "Rocky Ridge Royal Oak Community Association"
+title= "Rocky Ridge Royal Oak Community Association"
 theme = "rrroca"
 [pagination]
   pagerSize = 10
