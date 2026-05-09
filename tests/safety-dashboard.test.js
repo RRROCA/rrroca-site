@@ -92,12 +92,12 @@ describe('safety-dashboard.js', () => {
   it('defines quarterly datasets with aligned labels and series lengths', () => {
     const crimeData = extractCrimeData();
 
-    expect(crimeData.labels).toHaveLength(8);
-    expect(crimeData.rockyRidge).toHaveLength(8);
-    expect(crimeData.royalOak).toHaveLength(8);
-    expect(crimeData.calgaryAvg).toHaveLength(8);
-    expect(crimeData.labels[0]).toBe('Q1 2023');
-    expect(crimeData.labels[7]).toBe('Q4 2024');
+    expect(crimeData.labels).toHaveLength(5);
+    expect(crimeData.rockyRidge).toHaveLength(5);
+    expect(crimeData.royalOak).toHaveLength(5);
+    expect(crimeData.calgaryAvg).toHaveLength(5);
+    expect(crimeData.labels[0]).toBe('Q1 2025');
+    expect(crimeData.labels[4]).toBe('Q1 2026');
   });
 
   it('renders the chart onto the canvas when the document is ready', () => {
@@ -110,10 +110,10 @@ describe('safety-dashboard.js', () => {
     expect(canvas.style.height).toBe('250px');
     expect(ctx.scale).toHaveBeenCalledWith(2, 2);
     expect(ctx.clearRect).toHaveBeenCalledWith(0, 0, 720, 250);
-    expect(ctx.fillText).toHaveBeenCalledWith('Q1 2023', expect.any(Number), 242);
+    expect(ctx.fillText).toHaveBeenCalledWith('Q1 2025', expect.any(Number), 242);
     expect(ctx.setLineDash).toHaveBeenCalledWith([5, 5]);
-    expect(ctx.arc.mock.calls.length).toBeGreaterThanOrEqual(24);
-    expect(ctx.arc.mock.calls.length % 24).toBe(0);
+    expect(ctx.arc.mock.calls.length).toBeGreaterThanOrEqual(15);
+    expect(ctx.arc.mock.calls.length % 15).toBe(0);
   });
 
   it('redraws the chart after a debounced resize event', () => {
