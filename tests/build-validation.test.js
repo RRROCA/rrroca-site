@@ -27,13 +27,27 @@ function loadDocument(relativePath) {
   return dom.window.document;
 }
 
+// Detect baseURL path prefix from the build output (e.g. /rrroca-site/)
+const BASE_PREFIX = (() => {
+  const indexPath = path.join(PUBLIC_DIR, 'index.html');
+  if (!fs.existsSync(indexPath)) return '';
+  const html = fs.readFileSync(indexPath, 'utf8');
+  const match = html.match(/href=["']?(\/[^"'\s>]+?)\/about\/["'\s>]/);
+  return match ? match[1] : '';
+})();
+
 function routeExists(href) {
   const cleanHref = href.split('#')[0].split('?')[0];
-  if (!cleanHref || cleanHref === '/') {
+  if (!cleanHref || cleanHref === '/' || cleanHref === `${BASE_PREFIX}/`) {
     return fs.existsSync(path.join(PUBLIC_DIR, 'index.html'));
   }
 
-  const relativePath = cleanHref.replace(/^\/+/, '');
+  // Strip the baseURL path prefix if present (e.g. /rrroca-site/about/ → /about/)
+  let relativePath = cleanHref;
+  if (BASE_PREFIX && relativePath.startsWith(BASE_PREFIX)) {
+    relativePath = relativePath.slice(BASE_PREFIX.length);
+  }
+  relativePath = relativePath.replace(/^\/+/, '');
   const directPath = path.join(PUBLIC_DIR, relativePath);
 
   return (
@@ -229,5 +243,143 @@ describe('Hugo build validation', () => {
       expect(html).toMatch(/<meta\s+property=(?:"|')?og:title(?:"|')?/i);
       expect(html).toMatch(/<link\s+rel=(?:"|')?canonical(?:"|')?/i);
     });
+  });
+});
+
+/* ============================================
+   LINK GUARD — prevent broken links from reaching production
+   ============================================ */
+describe('Link guard', () => {
+  const allHtmlFiles = collectFiles(PUBLIC_DIR, '.html');
+
+  it('no href contains a duplicate path segment (e.g. /rrroca-site/rrroca-site/)', () => {
+    const duplicatePattern = /\/([^/]+)\/\1\//;
+    const violations = [];
+
+    allHtmlFiles.forEach((file) => {
+      const html = fs.readFileSync(file, 'utf8');
+      const dom = new JSDOM(html);
+      const anchors = dom.window.document.querySelectorAll('a[href]');
+
+      anchors.forEach((a) => {
+        const href = a.getAttribute('href');
+        if (href && duplicatePattern.test(href)) {
+          violations.push({
+            file: path.relative(PUBLIC_DIR, file),
+            href,
+            text: a.textContent.trim().substring(0, 40)
+          });
+        }
+      });
+    });
+
+    expect(violations).toEqual([]);
+  });
+
+  it('no asset src contains a duplicate path segment', () => {
+    const duplicatePattern = /\/([^/]+)\/\1\//;
+    const violations = [];
+
+    allHtmlFiles.forEach((file) => {
+      const html = fs.readFileSync(file, 'utf8');
+      const dom = new JSDOM(html);
+      const doc = dom.window.document;
+      const assets = [
+        ...doc.querySelectorAll('link[href]'),
+        ...doc.querySelectorAll('script[src]'),
+        ...doc.querySelectorAll('img[src]')
+      ];
+
+      assets.forEach((el) => {
+        const src = el.getAttribute('href') || el.getAttribute('src');
+        if (src && duplicatePattern.test(src)) {
+          violations.push({
+            file: path.relative(PUBLIC_DIR, file),
+            src,
+            tag: el.tagName.toLowerCase()
+          });
+        }
+      });
+    });
+
+    expect(violations).toEqual([]);
+  });
+
+  it('all internal links in the build output resolve to existing files', () => {
+    const missing = [];
+    const checked = new Set();
+
+    allHtmlFiles.forEach((file) => {
+      const html = fs.readFileSync(file, 'utf8');
+      const dom = new JSDOM(html);
+      const anchors = dom.window.document.querySelectorAll('a[href]');
+
+      anchors.forEach((a) => {
+        const href = a.getAttribute('href');
+        if (!href || href.startsWith('http') || href.startsWith('mailto:') ||
+            href.startsWith('tel:') || href.startsWith('#') || href.startsWith('javascript:')) {
+          return;
+        }
+        const cleanHref = href.split('#')[0].split('?')[0];
+        if (checked.has(cleanHref)) return;
+        checked.add(cleanHref);
+
+        if (!routeExists(cleanHref)) {
+          missing.push({
+            file: path.relative(PUBLIC_DIR, file),
+            href: cleanHref,
+            text: a.textContent.trim().substring(0, 40)
+          });
+        }
+      });
+    });
+
+    expect(missing).toEqual([]);
+  });
+
+  it('all CSS and JS assets referenced in HTML exist on disk', () => {
+    const missing = [];
+    const checked = new Set();
+
+    allHtmlFiles.forEach((file) => {
+      const html = fs.readFileSync(file, 'utf8');
+      const dom = new JSDOM(html);
+      const doc = dom.window.document;
+      const assets = [
+        ...Array.from(doc.querySelectorAll('link[rel="stylesheet"][href]')).map((el) => el.getAttribute('href')),
+        ...Array.from(doc.querySelectorAll('script[src]')).map((el) => el.getAttribute('src'))
+      ];
+
+      assets.forEach((src) => {
+        if (!src || src.startsWith('http') || checked.has(src)) return;
+        checked.add(src);
+        const cleanSrc = src.split('?')[0].replace(/^\/+/, '');
+        const diskPath = path.join(PUBLIC_DIR, cleanSrc);
+        if (!fs.existsSync(diskPath)) {
+          missing.push({ file: path.relative(PUBLIC_DIR, file), src });
+        }
+      });
+    });
+
+    expect(missing).toEqual([]);
+  });
+
+  it('nav menu links all resolve to existing routes', () => {
+    const indexHtml = fs.readFileSync(path.join(PUBLIC_DIR, 'index.html'), 'utf8');
+    const dom = new JSDOM(indexHtml);
+    const navLinks = dom.window.document.querySelectorAll('.nav-main a[href]');
+
+    expect(navLinks.length).toBeGreaterThanOrEqual(8);
+
+    const broken = [];
+    navLinks.forEach((a) => {
+      const href = a.getAttribute('href');
+      if (!href || href.startsWith('http') || href.startsWith('#') || href.startsWith('javascript:')) return;
+      if (!routeExists(href)) {
+        broken.push({ href, text: a.textContent.trim() });
+      }
+    });
+
+    expect(broken).toEqual([]);
   });
 });

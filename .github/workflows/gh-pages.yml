@@ -31,6 +31,17 @@ jobs:
       - name: Build
         run: hugo --gc --minify --buildFuture --baseURL "https://canchad.github.io/rrroca-site/"
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install test dependencies
+        run: npm ci
+
+      - name: Run link guard tests
+        run: npx jest tests/build-validation.test.js --verbose
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

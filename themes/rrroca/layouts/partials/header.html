@@ -10,10 +10,10 @@
     <button class="menu-toggle" aria-label="Toggle menu" onclick="document.querySelector('.nav-main').classList.toggle('open')">☰</button>
     <nav class="nav-main">
       {{ range .Site.Menus.main }}
-        <a href="{{ .URL | strings.TrimPrefix "/" | absURL }}" class="{{ if $.IsMenuCurrent "main" . }}active{{ end }}">{{ .Name }}</a>
+        <a href="{{ .URL }}" class="{{ if $.IsMenuCurrent "main" . }}active{{ end }}">{{ .Name }}</a>
       {{ end }}
       <button class="search-trigger" onclick="openSearch()" aria-label="Search">🔍 Search <kbd>Ctrl+K</kbd></button>
-      <a href="{{ .Site.Params.membershipURL | strings.TrimPrefix "/" | absURL }}" class="btn btn-primary btn-sm">Join / Renew</a>
+      <a href="{{ "membership/" | absURL }}" class="btn btn-primary btn-sm">Join / Renew</a>
     </nav>
   </div>
 </header>
