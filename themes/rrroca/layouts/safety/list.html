@@ -1,56 +1,134 @@
 {{ define "main" }}
-<section class="page-header page-header-safety">
-  <div class="container">
-    <h1>🛡️ Community Safety Hub</h1>
-    <p class="page-description">Rocky Ridge &amp; Royal Oak — among Calgary's safest communities</p>
+{{ $safetyPages := .Pages.ByDate.Reverse }}
+<section class="inner-hero inner-hero--safety" data-accent="safety">
+  <div class="inner-hero-scenery" aria-hidden="true">
+    <span class="inner-hero-glow inner-hero-glow--one"></span>
+    <span class="inner-hero-glow inner-hero-glow--two"></span>
+    <span class="inner-hero-ridge inner-hero-ridge--back"></span>
+    <span class="inner-hero-ridge inner-hero-ridge--front"></span>
+  </div>
+  <div class="container inner-hero-content">
+    <nav class="breadcrumb-trail reveal-on-scroll" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="{{ "" | absURL }}">Home</a></li>
+        <li aria-current="page">{{ .Title }}</li>
+      </ol>
+    </nav>
+
+    <div class="inner-hero-grid">
+      <div class="inner-hero-copy reveal-on-scroll">
+        <span class="inner-hero-kicker">🛡️ Safety-first community</span>
+        <h1>{{ .Title }}</h1>
+        <p class="inner-hero-description">{{ .Description }}</p>
+        <div class="inner-hero-meta">
+          <span>Below-city-average incidents</span>
+          <span>{{ len $safetyPages }} practical resources</span>
+          <span>Prepared for every season</span>
+        </div>
+        <div class="inner-hero-actions">
+          <a href="{{ "safety/report/" | absURL }}" class="btn btn-primary">Report a concern</a>
+          <a href="{{ .Site.Params.calgary311 }}" class="btn btn-outline" target="_blank" rel="noopener">Calgary 311</a>
+        </div>
+      </div>
+
+      <aside class="inner-hero-panel reveal-on-scroll" aria-label="Emergency contact summary">
+        <div class="inner-hero-panel-card inner-hero-panel-card--alert">
+          <p class="inner-hero-panel-label">Immediate help</p>
+          <ul class="inner-hero-facts inner-hero-facts--stacked">
+            <li>
+              <span>Emergency</span>
+              <strong><a href="tel:911">911</a></strong>
+            </li>
+            <li>
+              <span>CPS non-emergency</span>
+              <strong><a href="tel:{{ replaceRE "[^0-9]" "" .Site.Params.cpsNonEmergency }}">{{ .Site.Params.cpsNonEmergency }}</a></strong>
+            </li>
+            <li>
+              <span>City services</span>
+              <strong><a href="{{ .Site.Params.calgary311 }}" target="_blank" rel="noopener">Calgary 311</a></strong>
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </div>
   </div>
 </section>
 
 <section class="section">
-  <div class="container">
+  <div class="container reveal-on-scroll">
     {{ partial "safety-dashboard.html" . }}
   </div>
 </section>
 
-<section class="section bg-alt">
-  <div class="container content-layout">
+<section class="section bg-alt inner-page-shell">
+  <div class="container content-layout content-layout--immersive">
     <div class="content-main">
-      {{ .Content }}
-      <h2>Safety Resources</h2>
-      <div class="news-grid">
-        {{ range .Pages }}
-        <article class="news-card">
+      <div class="inner-list-intro inner-content reveal-on-scroll">
+        <div class="inner-content-body">
+          {{ .Content }}
+        </div>
+      </div>
+      <div class="inner-section-heading reveal-on-scroll">
+        <span class="section-label">Trusted guidance</span>
+        <h2>Safety Resources</h2>
+        <p>Actionable guidance for emergencies, prevention, weather, wildlife, and reporting concerns without friction.</p>
+      </div>
+      <div class="news-grid inner-list-grid inner-list-grid--safety">
+        {{ range $safetyPages }}
+        <article class="news-card news-card--enhanced reveal-on-scroll" data-accent="safety">
           <div class="news-card-body">
+            <div class="news-card-badge-row">
+              <span class="news-status">🛡️ Safety Updates</span>
+              {{ if not .Date.IsZero }}
+              <time class="news-date">{{ .Date.Format "January 2, 2006" }}</time>
+              {{ end }}
+            </div>
             <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
-            <p>{{ .Summary | truncate 160 }}</p>
-            <a href="{{ .RelPermalink }}" class="read-more">Read more →</a>
+            <p>{{ .Summary | plainify | truncate 160 }}</p>
+            <div class="news-card-footer">
+              <span class="news-card-stat">{{ cond (gt .ReadingTime 0) (printf "%d min read" .ReadingTime) "Quick read" }}</span>
+              <a href="{{ .RelPermalink }}" class="read-more">Read more →</a>
+            </div>
           </div>
         </article>
         {{ end }}
       </div>
     </div>
-    <aside class="content-sidebar">
-      <div class="sidebar-card sidebar-emergency">
-        <h3>🚨 Emergency Contacts</h3>
-        <ul>
-          <li><strong>911</strong> — Emergency</li>
-          <li><strong>{{ .Site.Params.cpsNonEmergency }}</strong> — CPS Non-Emergency</li>
-          <li><a href="{{ .Site.Params.calgary311 }}">Calgary 311</a></li>
+    <aside class="content-sidebar reveal-on-scroll">
+      <div class="sidebar-card sidebar-emergency sidebar-emergency-pulse">
+        <div class="sidebar-card-header">
+          <span class="sidebar-card-icon">🚨</span>
+          <div>
+            <p class="sidebar-eyebrow">Emergency contacts</p>
+            <h3>Act fast when minutes matter</h3>
+          </div>
+        </div>
+        <ul class="sidebar-link-list">
+          <li><a href="tel:911"><span>Emergency</span><strong>911</strong></a></li>
+          <li><a href="tel:{{ replaceRE "[^0-9]" "" .Site.Params.cpsNonEmergency }}"><span>CPS Non-Emergency</span><strong>{{ .Site.Params.cpsNonEmergency }}</strong></a></li>
+          <li><a href="{{ .Site.Params.calgary311 }}" target="_blank" rel="noopener"><span>City Services</span><strong>Calgary 311</strong></a></li>
         </ul>
       </div>
       <div class="sidebar-card">
-        <h3>Safety Tips</h3>
-        <ul>
-          <li>🔒 Lock vehicles &amp; garage doors</li>
-          <li>💡 Keep exterior lights on at night</li>
-          <li>📱 Report suspicious activity to CPS</li>
-          <li>🏘️ Know your neighbours</li>
-          <li>🐻 Secure garbage from wildlife</li>
+        <div class="sidebar-card-header">
+          <span class="sidebar-card-icon">✨</span>
+          <div>
+            <p class="sidebar-eyebrow">Everyday prevention</p>
+            <h3>Neighbourhood safety habits</h3>
+          </div>
+        </div>
+        <ul class="sidebar-tip-list">
+          <li>🔒 Lock vehicles, garages, and side gates every night.</li>
+          <li>💡 Keep walkways and entries well lit after dusk.</li>
+          <li>📱 Report suspicious activity early to CPS or RRROCA.</li>
+          <li>🏘️ Know nearby neighbours and share contact details.</li>
+          <li>🐻 Secure bins and remove wildlife attractants quickly.</li>
         </ul>
       </div>
     </aside>
   </div>
 </section>
 
+<script src="{{ "js/inner-page.js" | absURL }}" defer></script>
 <script src="{{ "js/safety-dashboard.js" | absURL }}" defer></script>
 {{ end }}

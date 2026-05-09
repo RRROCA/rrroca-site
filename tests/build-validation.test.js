@@ -351,7 +351,7 @@ describe('Link guard', () => {
       ];
 
       assets.forEach((src) => {
-        if (!src || src.startsWith('http') || checked.has(src)) return;
+        if (!src || src.startsWith('http') || src.includes('livereload') || checked.has(src)) return;
         checked.add(src);
         const cleanSrc = src.split('?')[0].replace(/^\/+/, '');
         const diskPath = path.join(PUBLIC_DIR, cleanSrc);

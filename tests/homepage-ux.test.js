@@ -45,7 +45,9 @@ function toPublicAssetPath(assetUrl) {
     return null;
   }
 
-  const relativePath = parsed.pathname.replace(/^\/+/, '');
+  let relativePath = parsed.pathname.replace(/^\/+/, '');
+  // Strip baseURL prefix (e.g. "rrroca-site/") for GitHub Pages subdirectory
+  relativePath = relativePath.replace(/^rrroca-site\//, '');
   return path.join(PUBLIC_DIR, relativePath.split('/').join(path.sep));
 }
 
@@ -55,8 +57,10 @@ function routeExists(href) {
   }
 
   const parsed = new URL(href, 'http://localhost:1314/');
-  const cleanPath = parsed.pathname;
-  if (cleanPath === '/') {
+  let cleanPath = parsed.pathname;
+  // Strip baseURL prefix for GitHub Pages subdirectory
+  cleanPath = cleanPath.replace(/^\/rrroca-site/, '');
+  if (cleanPath === '/' || cleanPath === '') {
     return fs.existsSync(HOMEPAGE_HTML);
   }
 

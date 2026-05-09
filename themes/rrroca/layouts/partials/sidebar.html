@@ -1,25 +1,34 @@
 <div class="sidebar">
-  <!-- Emergency Contacts -->
   <div class="sidebar-card sidebar-emergency">
-    <h3>🚨 Emergency</h3>
-    <ul>
-      <li><strong>911</strong> — Emergency</li>
-      <li><strong>{{ .Site.Params.cpsNonEmergency }}</strong> — CPS Non-Emergency</li>
-      <li><a href="{{ .Site.Params.calgary311 }}">Calgary 311</a></li>
+    <div class="sidebar-card-header">
+      <span class="sidebar-card-icon">🚨</span>
+      <div>
+        <p class="sidebar-eyebrow">Need help now?</p>
+        <h3>Emergency contacts</h3>
+      </div>
+    </div>
+    <ul class="sidebar-link-list">
+      <li><a href="tel:911"><span>Emergency response</span><strong>911</strong></a></li>
+      <li><a href="tel:{{ replaceRE "[^0-9]" "" .Site.Params.cpsNonEmergency }}"><span>CPS non-emergency</span><strong>{{ .Site.Params.cpsNonEmergency }}</strong></a></li>
+      <li><a href="{{ .Site.Params.calgary311 }}" target="_blank" rel="noopener"><span>City support</span><strong>Calgary 311</strong></a></li>
     </ul>
   </div>
 
-  <!-- Quick Links -->
   <div class="sidebar-card">
-    <h3>Quick Links</h3>
-    <ul>
-      <li><a href="{{ "safety/" | absURL }}">Safety Hub</a></li>
-      <li><a href="{{ "events/" | absURL }}">Events</a></li>
-      <li><a href="{{ "get-involved/" | absURL }}">Get Involved</a></li>
-      <li><a href="{{ "business-directory/" | absURL }}">Business Directory</a></li>
+    <div class="sidebar-card-header">
+      <span class="sidebar-card-icon">🧭</span>
+      <div>
+        <p class="sidebar-eyebrow">Popular destinations</p>
+        <h3>Quick links</h3>
+      </div>
+    </div>
+    <ul class="sidebar-link-list">
+      <li><a href="{{ "safety/" | absURL }}"><span>Stay informed</span><strong>Safety Hub</strong></a></li>
+      <li><a href="{{ "events/" | absURL }}"><span>Plan your month</span><strong>Events</strong></a></li>
+      <li><a href="{{ "get-involved/" | absURL }}"><span>Support RRROCA</span><strong>Get Involved</strong></a></li>
+      <li><a href="{{ "business-directory/" | absURL }}"><span>Shop local</span><strong>Business Directory</strong></a></li>
     </ul>
   </div>
 
-  <!-- Facebook Group CTA -->
   {{ partial "facebook-group-cta.html" . }}
 </div>

@@ -1,39 +1,102 @@
 {{ define "main" }}
-<section class="page-header">
-  <div class="container">
-    <h1>{{ .Title }}</h1>
-    {{ with .Description }}<p class="page-description">{{ . }}</p>{{ end }}
+{{ $sectionKey := lower (default "general" (or .Section .Type)) }}
+{{ $iconMap := dict "about" "⛰️" "community" "🏘️" "events" "🎉" "news" "📰" "safety" "🛡️" "get-involved" "🤝" "business-directory" "💼" "general" "✦" }}
+{{ $labelMap := dict "about" "About RRROCA" "community" "Community Living" "events" "Upcoming Experiences" "news" "Neighbourhood News" "safety" "Safety Updates" "get-involved" "Ways to Help" "business-directory" "Business Highlights" "general" "Community Highlights" }}
+{{ $heroSummary := .Description }}
+{{ if not $heroSummary }}
+  {{ $heroSummary = (.Summary | plainify | truncate 190) }}
+{{ end }}
+{{ $pages := .Pages.ByDate.Reverse }}
+{{ $paginator := .Paginate $pages }}
+
+<section class="inner-hero inner-hero--list" data-accent="{{ $sectionKey }}">
+  <div class="inner-hero-scenery" aria-hidden="true">
+    <span class="inner-hero-glow inner-hero-glow--one"></span>
+    <span class="inner-hero-glow inner-hero-glow--two"></span>
+    <span class="inner-hero-ridge inner-hero-ridge--back"></span>
+    <span class="inner-hero-ridge inner-hero-ridge--front"></span>
+  </div>
+  <div class="container inner-hero-content">
+    <nav class="breadcrumb-trail reveal-on-scroll" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="{{ "" | absURL }}">Home</a></li>
+        <li aria-current="page">{{ .Title }}</li>
+      </ol>
+    </nav>
+
+    <div class="inner-hero-grid">
+      <div class="inner-hero-copy reveal-on-scroll">
+        <span class="inner-hero-kicker">{{ default "✦" (index $iconMap $sectionKey) }} {{ default "Community Highlights" (index $labelMap $sectionKey) }}</span>
+        <h1>{{ .Title }}</h1>
+        {{ with $heroSummary }}<p class="inner-hero-description">{{ . }}</p>{{ end }}
+        <div class="inner-hero-meta">
+          <span>{{ len $pages }} stories</span>
+          {{ if gt $paginator.TotalPages 1 }}<span>{{ $paginator.TotalPages }} pages</span>{{ end }}
+          <span>Mobile-first reading experience</span>
+        </div>
+      </div>
+
+      <aside class="inner-hero-panel reveal-on-scroll" aria-label="Section overview">
+        <div class="inner-hero-panel-card">
+          <p class="inner-hero-panel-label">Why this page matters</p>
+          <p class="inner-hero-panel-copy">Stay connected to decisions, opportunities, and neighbours with a polished experience built to feel as premium as the RRROCA homepage.</p>
+          <div class="inner-hero-pill-row">
+            <span class="inner-hero-pill">Fast to scan</span>
+            <span class="inner-hero-pill">Easy on mobile</span>
+            <span class="inner-hero-pill">Built for trust</span>
+          </div>
+        </div>
+      </aside>
+    </div>
   </div>
 </section>
 
-<section class="section">
-  <div class="container content-layout">
+<section class="section inner-page-shell">
+  <div class="container content-layout content-layout--immersive">
     <div class="content-main">
-      {{ .Content }}
+      {{ with .Content }}
+      <div class="inner-list-intro inner-content reveal-on-scroll">
+        <div class="inner-content-body">
+          {{ . }}
+        </div>
+      </div>
+      {{ end }}
 
-      {{ $pages := .Pages }}
       {{ if gt (len $pages) 0 }}
-      <div class="news-grid">
-        {{ range $pages }}
-        <article class="news-card">
+      <div class="news-grid inner-list-grid">
+        {{ range $paginator.Pages }}
+        {{ $itemSectionKey := lower (default $sectionKey (or .Section .Type)) }}
+        <article class="news-card news-card--enhanced reveal-on-scroll" data-accent="{{ $itemSectionKey }}">
           <div class="news-card-body">
-            {{ if not .Date.IsZero }}
-            <time class="news-date">{{ .Date.Format "January 2, 2006" }}</time>
-            {{ end }}
+            <div class="news-card-badge-row">
+              <span class="news-status">{{ default "✦" (index $iconMap $itemSectionKey) }} {{ default "Community Highlights" (index $labelMap $itemSectionKey) }}</span>
+              {{ if not .Date.IsZero }}
+              <time class="news-date">{{ .Date.Format "January 2, 2006" }}</time>
+              {{ end }}
+            </div>
             <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
             <p>{{ .Summary | plainify | truncate 160 }}</p>
-            <a href="{{ .RelPermalink }}" class="read-more">Read more →</a>
+            <div class="news-card-footer">
+              <span class="news-card-stat">{{ cond (gt .ReadingTime 0) (printf "%d min read" .ReadingTime) "Quick read" }}</span>
+              <a href="{{ .RelPermalink }}" class="read-more">Read more →</a>
+            </div>
           </div>
         </article>
         {{ end }}
       </div>
 
-      {{ template "_internal/pagination.html" . }}
+      {{ if gt $paginator.TotalPages 1 }}
+      <div class="pagination-shell reveal-on-scroll">
+        {{ template "_internal/pagination.html" . }}
+      </div>
+      {{ end }}
       {{ end }}
     </div>
-    <aside class="content-sidebar">
+    <aside class="content-sidebar reveal-on-scroll">
       {{ partial "sidebar.html" . }}
     </aside>
   </div>
 </section>
+
+<script src="{{ "js/inner-page.js" | absURL }}" defer></script>
 {{ end }}

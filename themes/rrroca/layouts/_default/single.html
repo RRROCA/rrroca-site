@@ -1,43 +1,116 @@
 {{ define "main" }}
-<section class="page-header">
-  <div class="container">
-    {{ with .Params.categories }}
-    <div class="page-breadcrumb">
-      {{ range . }}<a href="{{ (printf "categories/%s/" (. | urlize)) | absURL }}">{{ . }}</a>{{ end }}
+{{ $sectionKey := lower (default "general" (or .Section .Type)) }}
+{{ $iconMap := dict "about" "⛰️" "community" "🏘️" "events" "🎉" "news" "📰" "safety" "🛡️" "get-involved" "🤝" "business-directory" "💼" "general" "✦" }}
+{{ $labelMap := dict "about" "Community Association" "community" "Neighbourhood Life" "events" "Community Experience" "news" "Community Bulletin" "safety" "Safety Resource" "get-involved" "Volunteer Momentum" "business-directory" "Local Business Spotlight" "general" "Community Story" }}
+{{ $sectionPage := .CurrentSection }}
+{{ $sectionTitle := "Community" }}
+{{ $sectionLink := "" | absURL }}
+{{ if $sectionPage }}
+  {{ $sectionTitle = $sectionPage.Title }}
+  {{ $sectionLink = $sectionPage.RelPermalink }}
+{{ end }}
+{{ $heroSummary := .Description }}
+{{ if not $heroSummary }}
+  {{ $heroSummary = (.Summary | plainify | truncate 190) }}
+{{ end }}
+
+<section class="inner-hero inner-hero--single" data-accent="{{ $sectionKey }}">
+  <div class="inner-hero-scenery" aria-hidden="true">
+    <span class="inner-hero-glow inner-hero-glow--one"></span>
+    <span class="inner-hero-glow inner-hero-glow--two"></span>
+    <span class="inner-hero-ridge inner-hero-ridge--back"></span>
+    <span class="inner-hero-ridge inner-hero-ridge--front"></span>
+  </div>
+  <div class="container inner-hero-content">
+    <nav class="breadcrumb-trail reveal-on-scroll" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="{{ "" | absURL }}">Home</a></li>
+        <li><a href="{{ $sectionLink }}">{{ $sectionTitle }}</a></li>
+        <li aria-current="page">{{ .Title }}</li>
+      </ol>
+    </nav>
+
+    <div class="inner-hero-grid">
+      <div class="inner-hero-copy reveal-on-scroll">
+        <span class="inner-hero-kicker">{{ default "✦" (index $iconMap $sectionKey) }} {{ default "Community Story" (index $labelMap $sectionKey) }}</span>
+        <h1>{{ .Title }}</h1>
+        {{ with $heroSummary }}<p class="inner-hero-description">{{ . }}</p>{{ end }}
+        <div class="inner-hero-meta">
+          {{ if not .Date.IsZero }}<span>Published {{ .Date.Format "January 2, 2006" }}</span>{{ end }}
+          {{ if gt .ReadingTime 0 }}<span>{{ .ReadingTime }} min read</span>{{ end }}
+          <span>{{ $sectionTitle }}</span>
+        </div>
+      </div>
+
+      <aside class="inner-hero-panel reveal-on-scroll" aria-label="Page highlights">
+        <div class="inner-hero-panel-card">
+          <p class="inner-hero-panel-label">Highlights</p>
+          <ul class="inner-hero-facts">
+            <li>
+              <span>Section</span>
+              <strong>{{ $sectionTitle }}</strong>
+            </li>
+            {{ if not .Date.IsZero }}
+            <li>
+              <span>Updated</span>
+              <strong>{{ .Lastmod.Format "Jan 2, 2006" }}</strong>
+            </li>
+            {{ end }}
+            <li>
+              <span>Reading time</span>
+              <strong>{{ cond (gt .ReadingTime 0) (printf "%d min" .ReadingTime) "Quick read" }}</strong>
+            </li>
+          </ul>
+          {{ with .Params.tags }}
+          <div class="inner-hero-pill-row">
+            {{ range first 3 . }}
+            <span class="inner-hero-pill">{{ . }}</span>
+            {{ end }}
+          </div>
+          {{ end }}
+        </div>
+      </aside>
     </div>
-    {{ end }}
-    <h1>{{ .Title }}</h1>
-    {{ if not .Date.IsZero }}
-    <time class="page-meta">{{ .Date.Format "January 2, 2006" }}</time>
-    {{ end }}
   </div>
 </section>
 
-<section class="section">
-  <div class="container content-layout">
-    <article class="content-main article-content">
-      {{ .Content }}
+<section class="section inner-page-shell">
+  <div class="container content-layout content-layout--immersive">
+    <article class="content-main article-content inner-content">
+      <div class="inner-content-body reveal-on-scroll">
+        {{ .Content }}
+      </div>
 
       {{ with .Params.tags }}
-      <div class="article-tags">
+      <div class="article-tags reveal-on-scroll" aria-label="Tags">
         {{ range . }}
         <a href="{{ (printf "tags/%s/" (. | urlize)) | absURL }}" class="tag">{{ . }}</a>
         {{ end }}
       </div>
       {{ end }}
 
-      <div class="article-nav">
+      {{ if or .PrevInSection .NextInSection }}
+      <nav class="article-nav article-nav--cards reveal-on-scroll" aria-label="Article navigation">
         {{ with .PrevInSection }}
-        <a href="{{ .RelPermalink }}" class="article-nav-link prev">← {{ .Title }}</a>
+        <a href="{{ .RelPermalink }}" class="article-nav-link article-nav-card prev">
+          <span class="article-nav-label">← Previous</span>
+          <strong>{{ .Title }}</strong>
+        </a>
         {{ end }}
         {{ with .NextInSection }}
-        <a href="{{ .RelPermalink }}" class="article-nav-link next">{{ .Title }} →</a>
+        <a href="{{ .RelPermalink }}" class="article-nav-link article-nav-card next">
+          <span class="article-nav-label">Next →</span>
+          <strong>{{ .Title }}</strong>
+        </a>
         {{ end }}
-      </div>
+      </nav>
+      {{ end }}
     </article>
-    <aside class="content-sidebar">
+    <aside class="content-sidebar reveal-on-scroll">
       {{ partial "sidebar.html" . }}
     </aside>
   </div>
 </section>
+
+<script src="{{ "js/inner-page.js" | absURL }}" defer></script>
 {{ end }}
