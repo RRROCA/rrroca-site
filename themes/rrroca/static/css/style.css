@@ -1035,17 +1035,49 @@ p { margin-bottom: var(--space-md); }
    Emergency Bar
    ============================================ */
 .emergency-bar {
-  background: var(--color-alert); color: white;
-  padding: var(--space-md) 0;
+  background: var(--color-sky);
+  color: white;
+  padding: var(--space-lg) 0;
 }
 .emergency-inner {
-  display: flex; align-items: center; gap: var(--space-xl);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xl);
   flex-wrap: wrap;
 }
-.emergency-label { font-weight: 700; font-size: 1.1rem; }
-.emergency-contacts { display: flex; gap: var(--space-xl); flex-wrap: wrap; }
-.emergency-contacts a { color: white; text-decoration: none; font-size: 0.9rem; }
-.emergency-contacts a:hover { text-decoration: underline; }
+.emergency-label {
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+.emergency-contacts {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+  align-items: center;
+}
+.emergency-contacts a {
+  color: white;
+  text-decoration: none;
+  font-size: 0.95rem;
+  padding: 0.4rem 1rem;
+  background: rgba(255,255,255,0.15);
+  border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,0.25);
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+.emergency-contacts a strong {
+  font-size: 1.05rem;
+  letter-spacing: 0.3px;
+}
+.emergency-contacts a:hover {
+  background: rgba(255,255,255,0.25);
+  border-color: rgba(255,255,255,0.5);
+}
 
 /* ============================================
    Background Sections
