@@ -26,7 +26,8 @@
   async function loadIndex() {
     if (searchIndex) return;
     try {
-      const resp = await fetch('/index.json');
+      const base = (window.RRROCA_BASE_URL || '/').replace(/\/$/, '');
+      const resp = await fetch(base + '/index.json');
       searchIndex = await resp.json();
       await loadFuse();
       fuse = new Fuse(searchIndex, {

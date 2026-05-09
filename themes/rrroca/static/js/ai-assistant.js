@@ -9,9 +9,9 @@ const RRROCA_KNOWLEDGE = {
     keywords: ['safe', 'crime', 'dangerous', 'security', 'police', 'break in', 'theft', 'steal', 'robbery', 'assault', 'violent'],
     response: `🛡️ **Rocky Ridge & Royal Oak are among Calgary's safest communities!**
 
-📊 **Latest Stats (2024):**
-• Total incidents: ~26/year (down 26% year-over-year)
-• Monthly average: only 2.2 crimes/month
+📊 **Latest Stats (Q1 2025 – Q1 2026):**
+• Total incidents: ~22/year
+• Monthly average: ~1.8 crimes/month
 • Violent crime: near zero
 • Most incidents: vehicle-related property crime
 
@@ -223,10 +223,14 @@ function addMessage(text, type) {
   div.className = `ai-message ai-${type}`;
 
   // Simple markdown-like rendering
+  const base = (window.RRROCA_BASE_URL || '/').replace(/\/$/, '');
   const html = text
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
-    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+    .replace(/\[(.*?)\]\((.*?)\)/g, (_, label, href) => {
+      const url = href.startsWith('/') && !href.startsWith('//') ? base + href : href;
+      return `<a href="${url}">${label}</a>`;
+    })
     .replace(/^• /gm, '&bull; ')
     .replace(/\n/g, '<br>');
 
