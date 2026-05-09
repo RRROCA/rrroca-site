@@ -1,0 +1,62 @@
+# Copilot Coding Agent Instructions for RRROCA Website
+
+## Project Overview
+This is a Hugo static site for the Rocky Ridge Royal Oak Community Association (RRROCA) in Calgary, AB.
+- **Hugo theme**: `themes/rrroca/`
+- **Content**: `content/` directory with markdown files
+- **Styles**: `themes/rrroca/static/css/style.css`
+- **JavaScript**: `themes/rrroca/static/js/`
+- **Templates**: `themes/rrroca/layouts/`
+- **Config**: `hugo.toml`
+
+## Build & Test
+```bash
+hugo --quiet          # Build the site (must pass with no errors)
+npx jest tests/build-validation.test.js  # Run all 12 validation tests (must all pass)
+```
+
+## Content Structure
+- News articles → `content/news/`
+- Events → `content/events/`
+- Community pages → `content/community/`
+- Board / Governance → `content/board/`
+- Safety → `content/safety/`
+- Sports → `content/sports/`
+- About pages → `content/about/`
+- Board members → `content/about/board-members/`
+
+## Content File Format
+All content pages use Hugo front matter:
+```markdown
+---
+title: "Page Title"
+date: "YYYY-MM-DD"
+description: "Short description for SEO and hero section"
+categories: ["section-name"]
+tags: ["tag1", "tag2"]
+draft: false
+---
+
+Page content in markdown...
+```
+
+## Key URLs & Services
+- **Membership**: https://rrroca.getcommunal.com/memberships
+- **Contact email**: info@rrroca.org
+- **Facebook Page**: https://www.facebook.com/rrroca.org
+- **Facebook Group**: https://www.facebook.com/groups/royaloakrockyridgefamilies
+
+## Design System
+- Uses CSS custom properties (design tokens) defined in `:root`
+- Mountain-inspired palette: sky (#1a3a5c), ridge (#2c6e8a), meadow (#4a8c5c), sunset (#e8913a)
+- Fonts: Inter (body), Merriweather (headings)
+- Mobile-first responsive design with breakpoints at 480px, 768px, 1024px
+
+## Rules
+1. **Always run the build and tests** before considering work complete
+2. **Never commit personal info** (phone numbers, personal emails) — use @rrroca.org role emails only
+3. **Forms use mailto:** fallback (not API endpoints) — see `themes/rrroca/static/js/forms.js`
+4. **Membership links** must point to Communal (see `hugo.toml` membershipURL param)
+5. **Match existing code style** — check surrounding code for conventions
+6. For content updates, create/edit files in `content/` — Hugo handles the rest
+7. For visual/layout changes, edit templates in `themes/rrroca/layouts/` and CSS in `style.css`
