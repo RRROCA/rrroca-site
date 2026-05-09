@@ -12,6 +12,26 @@ These principles are ordered by priority. When principles conflict, higher-ranke
 
 ---
 
+## North Star
+
+### P0. Community First (The Engagement Principle)
+
+> **Every feature, page, and design decision exists to strengthen the connection between residents and their community. If it doesn't help a neighbour feel more informed, more safe, or more involved — it doesn't belong.**
+
+This is the north star that sits above all other principles. The website is not a technology project — it's a community engagement tool that happens to use technology. The measure of success is not uptime, page speed, or code quality. It's whether residents check the site when they hear sirens, whether new families discover their community cleanup day, whether a senior finds the right phone number during an emergency.
+
+**What this means in practice:**
+- Content hierarchy is driven by resident needs, not board structure. Safety alerts and upcoming events are more important than bylaws and meeting minutes.
+- Every page should answer a resident's question — "Is my neighbourhood safe?" "What's happening this weekend?" "How do I get involved?" — not showcase the CA's org chart.
+- Features are justified by engagement impact: a simple event calendar that 200 families check monthly is worth more than a sophisticated membership portal that 10 people use.
+- Design choices favour warmth and approachability over corporate polish. This is a neighbourhood, not a brand.
+- Accessibility is non-negotiable — the site serves everyone from tech-savvy parents to seniors who just learned to use a tablet.
+- Local voice matters: content should sound like a neighbour talking, not a press release. Real photos of real events, not stock imagery.
+
+**Decision test:** *"Does this feature help a Rocky Ridge or Royal Oak resident feel more connected to their community?"* If the answer is no or "maybe eventually," deprioritize it.
+
+---
+
 ## Core Principles
 
 ### P1. Survive Volunteer Turnover (The Bus Factor Principle)
@@ -181,6 +201,7 @@ When evaluating any new service, tool, or feature for the RRROCA site, run it th
 
 | # | Question | Acceptable Answers |
 |---|----------|-------------------|
+| 0 | Does this help residents feel more informed, safe, or involved? | Yes — clear engagement value |
 | 1 | What happens if this service disappears? | Site still works, feature degrades gracefully |
 | 2 | What does it cost? | $0 (free tier), or optional enhancement with free fallback |
 | 3 | Does it need ongoing maintenance? | No, or once/year at most |
