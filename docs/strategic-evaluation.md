@@ -43,6 +43,89 @@ This hybrid approach delivers the best of all worlds: a bulletproof, zero-cost w
 | **Customization** | ★★☆☆☆ — SharePoint Communication Sites are limited in design flexibility |
 | **ATS Synergy** | ★★★★★ — Full Microsoft ecosystem showcase |
 
+### Option D: Google Workspace + Google Sites (Existing Ecosystem)
+| Dimension | Assessment |
+|-----------|-----------|
+| **Cost** | $0/year (Google Workspace for Nonprofits free tier, up to 2,000 users, 100TB shared storage) |
+| **Security** | ★★★★☆ — Enterprise-grade Google security, managed infrastructure, no server-side code |
+| **Performance** | ★★★★☆ — Google CDN, fast for simple sites |
+| **Collaboration** | ★★★★★ — RRROCA already uses Google Workspace. Board already has accounts. Zero onboarding. |
+| **Maintenance** | ★★★★★ — Fully managed by Google. Zero server maintenance. |
+| **Customization** | ★☆☆☆☆ — Google Sites cannot use custom HTML, CSS, or JavaScript. Template-only. No custom layouts, no animations, no brand differentiation. |
+| **SEO** | ★★☆☆☆ — No control over meta tags, sitemaps, robots.txt, structured data, or URL structure |
+| **ATS Synergy** | ☆☆☆☆☆ — Competes with Microsoft ecosystem. No professional development value. |
+| **AI Features** | ★★★☆☆ — Gemini AI in Docs/Sheets/Slides, but no AI integration for the website itself |
+
+#### Option D — Deep Dive: Why RRROCA Already Has Google Workspace
+
+RRROCA has an active Google Workspace for Nonprofits organization (org ID: 237313873071). Board members already use @rrroca.org email, Google Drive for shared documents, and Google Calendar. This is a significant advantage:
+
+**What Google Workspace already provides (and RRROCA already uses):**
+- Gmail with @rrroca.org domain (board email)
+- Google Drive (shared documents, board files, president's strategic docs)
+- Google Calendar (meeting scheduling)
+- Google Forms (surveys, signups)
+- Google Meet (virtual meetings)
+- Admin console for user management
+
+**What Google Sites would add:**
+- Drag-and-drop website builder at sites.google.com
+- Embed Google Docs, Sheets, Forms, Calendar, Maps directly
+- Custom domain mapping (rrroca.org → Google Sites)
+- Zero technical skill required for any edit
+
+**What Google Sites CANNOT do (critical limitations):**
+- ❌ No custom HTML, CSS, or JavaScript — you get Google's templates and nothing else
+- ❌ No custom design — cannot recreate the glassmorphism/frosted glass UX we built
+- ❌ No SEO control — no meta tags, no structured data, no custom sitemaps
+- ❌ No build pipeline — no CI/CD, no automated testing, no link guard
+- ❌ No AI assistant — cannot embed custom interactive features
+- ❌ No Decap CMS equivalent — editing IS the tool, but so is the constraint
+- ❌ No code-level version control — no Git history, no rollback, no PR review
+
+#### Option D — Decision Framework Score
+
+| # | Question | Google Workspace + Sites |
+|---|----------|------------------------|
+| 0 | Does this help residents feel connected? | ⚠️ Basic info site yes, but can't deliver the safety dashboard, AI assistant, interactive features that differentiate |
+| 1 | What if this service disappears? | ❌ All content locked in Google Sites format — not easily portable |
+| 2 | What does it cost? | ✅ $0 |
+| 3 | Does it need ongoing maintenance? | ✅ No |
+| 4 | Can non-technical board members use it? | ✅ Yes — best option for this |
+| 5 | Does it create vendor lock-in? | ❌ Yes — Google Sites content is NOT portable markdown |
+| 6 | Does it require a single person? | ✅ No — any board member can edit |
+| 7 | Does it increase attack surface? | ✅ No — managed by Google |
+| 8 | Is it documented? | ⚠️ Google's docs, not ours |
+
+**Fails on:** P0 (limited community engagement features), P7 (vendor lock-in — content not portable)
+
+### Why NOT Google Sites for the Website
+
+1. **Design ceiling is absolute**: The god-tier homepage UX, safety dashboard, AI assistant, search overlay, gallery lightbox — NONE of this is possible on Google Sites. You get a template and that's it.
+2. **Vendor lock-in**: Google Sites content is not Markdown — it's proprietary. If Google changes/kills Sites (they've done it before — Classic Sites was sunset), migration is painful.
+3. **SEO limitations**: No meta tags, no structured data, no sitemap control. For a community site that needs local search visibility, this matters.
+4. **No interactive features**: The safety reporting form, AI assistant, business directory — none can be custom-built on Google Sites.
+5. **No development workflow**: No Git, no CI/CD, no automated testing, no link guard. Quality regressions are undetectable.
+
+### Why KEEP Google Workspace for Operations (Hybrid Approach)
+
+Google Workspace is excellent for what it already does:
+- **Board email** (@rrroca.org) — keep using Gmail
+- **Document collaboration** — Google Docs/Sheets for board documents, meeting minutes
+- **Shared Drive** — board files, financial records, president's documents
+- **Forms** — internal surveys, event RSVPs
+- **Calendar** — meeting scheduling
+
+**The strategic question is not "Google OR Microsoft" — it's "Google for what it does well + Hugo for what it does well."**
+
+Over time, if RRROCA obtains M365 nonprofit, board operations could migrate:
+- Gmail → Exchange (@rrroca.org)
+- Google Drive → SharePoint/OneDrive
+- Google Meet → Teams
+- Google Calendar → Outlook Calendar
+
+But this is optional and can be gradual. The website decision is independent.
+
 ---
 
 ## RRROCA's Legal Status — Important Clarification
@@ -92,14 +175,14 @@ This is the most important strategic consideration. A volunteer organization mus
 
 ### Scenario Matrix
 
-| Scenario | Hugo + GH Pages | 10Web (WordPress) | SharePoint Site |
-|----------|-----------------|-------------------|-----------------|
-| **Chad leaves the board** | ✅ Site runs forever with zero maintenance. Decap CMS lets any board member edit. GitHub repo is owned by RRROCA org, not Chad. | ✅ WordPress admin panel is familiar. But someone must handle updates, plugin conflicts, security patches. | ✅ If M365 tenant is RRROCA's (not Chad's personal), new admin takes over. |
-| **Chad leaves Microsoft** | ✅ Zero impact — GitHub Pages, Hugo, and Decap CMS are not Microsoft products. Nothing depends on Chad's MSFT credentials. | ✅ Zero impact — 10Web is independent of Microsoft. | ⚠️ Medium risk — M365 nonprofit grant is independent of Chad's employment, BUT if Chad set it up under his personal MSFT account, admin transfer is needed. Mitigate by ensuring RRROCA has its own tenant admin. |
-| **No technical board members** | ⚠️ Content editing is easy (Decap CMS). Theme/layout changes need a developer — but the site can run for years without any. Worst case: hire a freelancer for $200 to make changes. | ✅ WordPress has massive freelancer pool. But ongoing maintenance burden means you NEED someone technical, or pay 10Web to handle it. | ✅ SharePoint is low-maintenance. But design limitations mean you're stuck with what you have. |
-| **Budget goes to zero** | ✅ $0/year forever — GitHub Pages is free for public repos. Domain renewal (~$15/yr) is the only cost. | ❌ $84-120/year for 10Web hosting. If you stop paying, site goes offline. | ✅ M365 nonprofit grant is free. But if RRROCA loses nonprofit status or Microsoft changes the program, there's risk. |
-| **Technology becomes obsolete** | ⚠️ Hugo is actively maintained (Go foundation). Static HTML never becomes obsolete — it's the most future-proof format possible. Worst case: switch to another static site generator with same content files. | ⚠️ WordPress is huge but declining. PHP ecosystem aging. Plugin ecosystem is a constant maintenance burden. | ⚠️ SharePoint evolves on Microsoft's roadmap, not yours. Features can be deprecated. |
-| **GitHub goes down/changes pricing** | ⚠️ Low risk (Microsoft-owned, widely used). Fallback: deploy same Hugo output to Netlify, Cloudflare Pages, or any static host in <1 hour. Content is portable markdown files. | ❌ Locked to 10Web. Migration requires WordPress export + new hosting setup. | ⚠️ Locked to M365. Migration requires rebuilding. |
+| Scenario | Hugo + GH Pages | 10Web (WordPress) | SharePoint Site | Google Sites |
+|----------|-----------------|-------------------|-----------------|--------------|
+| **Chad leaves the board** | ✅ Site runs forever with zero maintenance. Decap CMS lets any board member edit. GitHub repo is owned by RRROCA org, not Chad. | ✅ WordPress admin panel is familiar. But someone must handle updates, plugin conflicts, security patches. | ✅ If M365 tenant is RRROCA's (not Chad's personal), new admin takes over. | ✅ Already runs under rrroca.org Google Workspace. Any admin can edit. Best score here. |
+| **Chad leaves Microsoft** | ✅ Zero impact — GitHub Pages, Hugo, and Decap CMS are not Microsoft products. Nothing depends on Chad's MSFT credentials. | ✅ Zero impact — 10Web is independent of Microsoft. | ⚠️ Medium risk — M365 nonprofit grant is independent of Chad's employment, BUT if Chad set it up under his personal MSFT account, admin transfer is needed. Mitigate by ensuring RRROCA has its own tenant admin. | ✅ Zero impact — Google Workspace is independent of Microsoft. |
+| **No technical board members** | ⚠️ Content editing is easy (Decap CMS). Theme/layout changes need a developer — but the site can run for years without any. Worst case: hire a freelancer for $200 to make changes. | ✅ WordPress has massive freelancer pool. But ongoing maintenance burden means you NEED someone technical, or pay 10Web to handle it. | ✅ SharePoint is low-maintenance. But design limitations mean you're stuck with what you have. | ✅ Best score — literally anyone can edit. But you're stuck with template design forever. |
+| **Budget goes to zero** | ✅ $0/year forever — GitHub Pages is free for public repos. Domain renewal (~$15/yr) is the only cost. | ❌ $84-120/year for 10Web hosting. If you stop paying, site goes offline. | ✅ M365 nonprofit grant is free. But if RRROCA loses nonprofit status or Microsoft changes the program, there's risk. | ✅ Google Workspace for Nonprofits is free. Same risk as M365 if Google changes the program. |
+| **Technology becomes obsolete** | ⚠️ Hugo is actively maintained (Go foundation). Static HTML never becomes obsolete — it's the most future-proof format possible. Worst case: switch to another static site generator with same content files. | ⚠️ WordPress is huge but declining. PHP ecosystem aging. Plugin ecosystem is a constant maintenance burden. | ⚠️ SharePoint evolves on Microsoft's roadmap, not yours. Features can be deprecated. | ❌ Google has killed Sites before (Classic → New Sites migration was forced). Content format is proprietary, not easily portable. |
+| **GitHub goes down/changes pricing** | ⚠️ Low risk (Microsoft-owned, widely used). Fallback: deploy same Hugo output to Netlify, Cloudflare Pages, or any static host in <1 hour. Content is portable markdown files. | ❌ Locked to 10Web. Migration requires WordPress export + new hosting setup. | ⚠️ Locked to M365. Migration requires rebuilding. | ⚠️ Locked to Google. If Sites is sunset again, migration requires rebuilding. Content is NOT portable markdown. |
 
 ### Resiliency Verdict
 
