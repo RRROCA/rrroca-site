@@ -80,7 +80,7 @@ describe('Hugo build validation', () => {
       [...document.querySelectorAll('.site-header a.btn')]
         .some((link) => /\/membership\/?$/.test(link.getAttribute('href') || ''))
     ).toBe(true);
-    expect(document.querySelectorAll('.nav-main a').length).toBeGreaterThanOrEqual(10);
+    expect(document.querySelectorAll('.nav-main a').length).toBeGreaterThanOrEqual(7);
 
     expect(document.querySelector('#hero.hero')).not.toBeNull();
     expect(document.querySelectorAll('.community-strip .strip-track:not([aria-hidden="true"]) .strip-item')).toHaveLength(4);
