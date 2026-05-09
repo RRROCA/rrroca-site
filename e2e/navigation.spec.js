@@ -5,9 +5,9 @@ const destinations = [
   { name: 'Safety', locator: '.nav-main a[href="/safety/"]', path: '/safety/', heading: /Safety/i },
   { name: 'News', locator: '.nav-main a[href="/news/"]', path: '/news/', heading: /News/i },
   { name: 'Events', locator: '.nav-main a[href="/events/"]', path: '/events/', heading: /Events/i },
-  { name: 'Get Involved', locator: '.nav-main a[href="/get-involved/"]', path: '/get-involved/', heading: /Get Involved/i },
+  { name: 'Get Involved', locator: '.nav-main a[href="/get-involved/"]', path: '/get-involved/', heading: /Join us|Get Involved/i },
   { name: 'Community', locator: '.quick-link-card[href="/community/"]', path: '/community/', heading: /Community/i },
-  { name: 'Sports', locator: '.quick-link-card[href="/sports/"]', path: '/sports/', heading: /Sports/i },
+  { name: 'Sports', locator: '.quick-link-card[href="/sports/"]', path: '/sports/', heading: /Sport/i },
 ];
 
 test.describe('Navigation', () => {
@@ -16,7 +16,7 @@ test.describe('Navigation', () => {
       await page.goto('/');
       await page.locator(destination.locator).click();
       await expect(page).toHaveURL(new RegExp(`${destination.path.replace(/\//g, '\\/')}`));
-      await expect(page.getByRole('heading', { level: 1 })).toContainText(destination.heading);
+      await expect(page.locator('.page-header h1').first()).toContainText(destination.heading);
     }
   });
 
@@ -26,7 +26,7 @@ test.describe('Navigation', () => {
 
     for (const destination of destinations) {
       await page.goto(destination.path);
-      await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      await expect(page.locator('.page-header h1').first()).toBeVisible();
     }
 
     expect(pageErrors).toEqual([]);

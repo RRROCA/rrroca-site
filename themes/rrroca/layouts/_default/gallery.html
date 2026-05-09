@@ -1,0 +1,127 @@
+{{ define "main" }}
+{{ $photos := .Params.photos }}
+{{ $categories := slice "All" "Events" "Parks & Nature" "Community" "Neighbourhood" }}
+<section class="page-header gallery-page-header">
+  <div class="container">
+    <span class="gallery-eyebrow">Community moments</span>
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="page-description gallery-description">{{ . }}</p>{{ end }}
+    {{ with .Content }}<div class="gallery-intro">{{ . }}</div>{{ end }}
+  </div>
+</section>
+
+<section class="section gallery-section">
+  <div class="container">
+    <div class="gallery-filters" role="toolbar" aria-label="Filter gallery photos">
+      {{ range $index, $category := $categories }}
+      <button
+        type="button"
+        class="gallery-filter{{ if eq $index 0 }} is-active{{ end }}"
+        data-filter="{{ $category }}"
+        aria-pressed="{{ if eq $index 0 }}true{{ else }}false{{ end }}">
+        {{ $category }}
+      </button>
+      {{ end }}
+    </div>
+
+    {{ if gt (len $photos) 0 }}
+    <div class="gallery-grid" id="community-gallery">
+      {{ range $photos }}
+      <figure class="gallery-card" data-category="{{ .category }}">
+        <button
+          type="button"
+          class="gallery-card-button"
+          data-lightbox-src="{{ .src }}"
+          data-lightbox-caption="{{ .caption }}"
+          data-lightbox-category="{{ .category }}"
+          aria-label="Open photo: {{ .caption }}">
+          <img
+            src="{{ .src }}"
+            alt="{{ .caption }}"
+            class="gallery-image"
+            loading="lazy">
+          <span class="gallery-card-overlay">
+            <span class="gallery-card-category">{{ .category }}</span>
+            <span class="gallery-card-caption">{{ .caption }}</span>
+          </span>
+        </button>
+        <figcaption class="gallery-caption">{{ .caption }}</figcaption>
+      </figure>
+      {{ end }}
+    </div>
+    {{ else }}
+    <p class="gallery-empty">Gallery photos are coming soon.</p>
+    {{ end }}
+  </div>
+</section>
+
+<div class="gallery-lightbox" id="gallery-lightbox" hidden>
+  <button type="button" class="gallery-lightbox-backdrop" data-lightbox-close aria-label="Close gallery lightbox"></button>
+  <div class="gallery-lightbox-dialog" role="dialog" aria-modal="true" aria-labelledby="gallery-lightbox-caption">
+    <button type="button" class="gallery-lightbox-close" data-lightbox-close aria-label="Close gallery lightbox">&times;</button>
+    <img src="" alt="" class="gallery-lightbox-image" id="gallery-lightbox-image">
+    <div class="gallery-lightbox-meta">
+      <span class="gallery-lightbox-category" id="gallery-lightbox-category"></span>
+      <p class="gallery-lightbox-caption" id="gallery-lightbox-caption"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const filters = Array.from(document.querySelectorAll('.gallery-filter'));
+  const cards = Array.from(document.querySelectorAll('.gallery-card'));
+  const lightbox = document.getElementById('gallery-lightbox');
+  const lightboxImage = document.getElementById('gallery-lightbox-image');
+  const lightboxCaption = document.getElementById('gallery-lightbox-caption');
+  const lightboxCategory = document.getElementById('gallery-lightbox-category');
+  const triggers = Array.from(document.querySelectorAll('.gallery-card-button'));
+  const closeControls = Array.from(document.querySelectorAll('[data-lightbox-close]'));
+
+  filters.forEach(function (filter) {
+    filter.addEventListener('click', function () {
+      const selected = filter.dataset.filter;
+
+      filters.forEach(function (button) {
+        const active = button === filter;
+        button.classList.toggle('is-active', active);
+        button.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+
+      cards.forEach(function (card) {
+        const matches = selected === 'All' || card.dataset.category === selected;
+        card.classList.toggle('is-hidden', !matches);
+      });
+    });
+  });
+
+  const closeLightbox = function () {
+    lightbox.hidden = true;
+    document.body.classList.remove('gallery-lightbox-open');
+    lightboxImage.src = '';
+    lightboxImage.alt = '';
+  };
+
+  triggers.forEach(function (trigger) {
+    trigger.addEventListener('click', function () {
+      lightboxImage.src = trigger.dataset.lightboxSrc;
+      lightboxImage.alt = trigger.dataset.lightboxCaption;
+      lightboxCaption.textContent = trigger.dataset.lightboxCaption;
+      lightboxCategory.textContent = trigger.dataset.lightboxCategory;
+      lightbox.hidden = false;
+      document.body.classList.add('gallery-lightbox-open');
+    });
+  });
+
+  closeControls.forEach(function (control) {
+    control.addEventListener('click', closeLightbox);
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && !lightbox.hidden) {
+      closeLightbox();
+    }
+  });
+});
+</script>
+{{ end }}

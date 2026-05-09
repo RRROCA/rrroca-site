@@ -1,0 +1,148 @@
+{{ define "main" }}
+{{ $hasStructuredEvent := and (ne .Params.endDate nil) (ne .Params.location nil) }}
+
+<section class="page-header">
+  <div class="container">
+    {{ with .Params.categories }}
+    <div class="page-breadcrumb">
+      <a href="/events/">Events</a> · <span>{{ index . 0 }}</span>
+    </div>
+    {{ end }}
+    <h1>{{ .Title }}</h1>
+    {{ if not .Date.IsZero }}
+    <time class="page-meta">{{ .Date.Format "Monday, January 2, 2006" }}</time>
+    {{ end }}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container content-layout">
+    <article class="content-main article-content">
+      {{ if $hasStructuredEvent }}
+      <div class="event-detail-hero">
+        <div class="event-detail-date">
+          <span class="event-detail-month">{{ .Date.Format "Jan" }}</span>
+          <span class="event-detail-day">{{ .Date.Format "2" }}</span>
+          <span class="event-detail-year">{{ .Date.Format "2006" }}</span>
+        </div>
+        <div class="event-detail-meta">
+          {{ with .Params.categories }}
+          <span class="event-category-tag">{{ index . 0 }}</span>
+          {{ end }}
+          <div class="event-detail-card">
+            <p><strong>Time</strong><span>{{ .Date.Format "3:04 PM" }}{{ with .Params.endDate }} – {{ time . | dateFormat "3:04 PM" }}{{ end }}</span></p>
+            {{ with .Params.location }}
+            <p><strong>Location</strong><span>{{ . }}</span></p>
+            {{ end }}
+            {{ with .Params.address }}
+            <p><strong>Address</strong><span>{{ . }}</span></p>
+            {{ end }}
+          </div>
+          {{ with .Params.address }}
+          <div class="event-detail-actions">
+            <a class="btn btn-secondary" href="https://www.google.com/maps/search/?api=1&query={{ . | urlquery }}" target="_blank" rel="noopener">Open in Google Maps</a>
+            {{ if $.Params.endDate }}
+            <button
+              type="button"
+              class="btn btn-primary event-calendar-btn"
+              data-title="{{ $.Title }}"
+              data-start="{{ $.Date.Format "2006-01-02T15:04:05-07:00" }}"
+              data-end="{{ time $.Params.endDate | dateFormat "2006-01-02T15:04:05-07:00" }}"
+              data-location="{{ $.Params.location }}"
+              data-address="{{ . }}"
+              data-url="{{ $.Permalink }}"
+              data-description="{{ $.Summary | plainify }}"
+            >
+              Add to Calendar
+            </button>
+            {{ end }}
+          </div>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+
+      {{ .Content }}
+
+      {{ with .Params.tags }}
+      <div class="article-tags">
+        {{ range . }}
+        <a href="/tags/{{ . | urlize }}/" class="tag">{{ . }}</a>
+        {{ end }}
+      </div>
+      {{ end }}
+
+      <div class="event-back-link">
+        <a href="/events/" class="read-more">← Back to events</a>
+      </div>
+    </article>
+
+    <aside class="content-sidebar">
+      {{ partial "sidebar.html" . }}
+    </aside>
+  </div>
+</section>
+
+{{ if $hasStructuredEvent }}
+<script>
+  (function () {
+    const button = document.querySelector('.event-calendar-btn');
+    if (!button) return;
+
+    const pad = (value) => String(value).padStart(2, '0');
+    const toICSDate = (iso) => {
+      const date = new Date(iso);
+      return [
+        date.getUTCFullYear(),
+        pad(date.getUTCMonth() + 1),
+        pad(date.getUTCDate())
+      ].join('') + 'T' + [
+        pad(date.getUTCHours()),
+        pad(date.getUTCMinutes()),
+        pad(date.getUTCSeconds())
+      ].join('') + 'Z';
+    };
+    const escapeICS = (value) => (value || '')
+      .replace(/\\/g, '\\\\')
+      .replace(/\n/g, '\\n')
+      .replace(/,/g, '\\,')
+      .replace(/;/g, '\\;');
+
+    button.addEventListener('click', function () {
+      const title = button.dataset.title;
+      const start = button.dataset.start;
+      const end = button.dataset.end;
+      const location = [button.dataset.location, button.dataset.address].filter(Boolean).join(', ');
+      const description = [button.dataset.description, button.dataset.url].filter(Boolean).join('\\n\\n');
+      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'event';
+      const nowStamp = toICSDate(new Date().toISOString());
+
+      const ics = [
+        'BEGIN:VCALENDAR',
+        'VERSION:2.0',
+        'PRODID:-//RRROCA//Community Events//EN',
+        'BEGIN:VEVENT',
+        'UID:' + slug + '@rrroca.org',
+        'DTSTAMP:' + nowStamp,
+        'DTSTART:' + toICSDate(start),
+        'DTEND:' + toICSDate(end),
+        'SUMMARY:' + escapeICS(title),
+        'LOCATION:' + escapeICS(location),
+        'DESCRIPTION:' + escapeICS(description),
+        'END:VEVENT',
+        'END:VCALENDAR'
+      ].join('\r\n');
+
+      const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = slug + '.ics';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    });
+  }());
+</script>
+{{ end }}
+{{ end }}

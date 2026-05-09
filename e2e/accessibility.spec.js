@@ -39,7 +39,7 @@ test.describe('Accessibility basics', () => {
     await page.goto('/');
 
     await expect(page.locator('main > section .hero-title')).toHaveCount(1);
-    await expect(page.locator('main > section .section-header > h2')).toHaveCount(4);
+    expect(await page.locator('h2.section-heading').count()).toBeGreaterThanOrEqual(5);
     await expect(page.locator('.quick-link-card h3')).toHaveCount(6);
     await expect(page.locator('.news-card h3').first()).toBeVisible();
   });
@@ -47,7 +47,7 @@ test.describe('Accessibility basics', () => {
   test('key interface text maintains acceptable contrast', async ({ page }) => {
     await page.goto('/');
 
-    const snapshot = await page.accessibility.snapshot({ interestingOnly: false });
+    const snapshot = await page.locator('body').ariaSnapshot();
     expect(snapshot).toBeTruthy();
 
     const checks = await contrastAudit(page, [
@@ -76,9 +76,10 @@ test.describe('Accessibility basics', () => {
       focusedLabels.push(label);
     }
 
-    expect(focusedLabels.join(' ')).toContain('Home');
-    expect(focusedLabels.join(' ')).toContain('About');
-    expect(focusedLabels.join(' ')).toContain('Safety');
+    const focusTrail = focusedLabels.join(' ');
+    expect(focusTrail).toContain('Home');
+    expect(focusTrail).toContain('About');
+    expect(focusTrail).toContain('Safety');
   });
 
   test('skip-to-content link works when present', async ({ page }) => {

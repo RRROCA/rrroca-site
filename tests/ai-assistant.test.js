@@ -121,14 +121,14 @@ describe('ai-assistant.js', () => {
     expect(message.innerHTML).toContain('<strong>Hello</strong>');
     expect(message.innerHTML).toContain('<em>neighbour</em>');
     expect(message.innerHTML).toContain('<a href="/safety/">Safety Hub</a>');
-    expect(message.innerHTML).toContain('&bull;');
+    expect(message.innerHTML).toContain('•');
   });
 
   it('submits a question, hides suggestions, and appends user and bot messages', () => {
     const input = document.getElementById('ai-input-field');
     const suggestions = document.getElementById('ai-suggestions');
 
-    input.value = 'How do I join RRROCA?';
+    input.value = 'What is the membership fee?';
 
     assistant.handleAISubmit({
       preventDefault: jest.fn()
@@ -136,10 +136,10 @@ describe('ai-assistant.js', () => {
 
     const messages = document.querySelectorAll('#ai-messages .ai-message');
     expect(messages).toHaveLength(2);
-    expect(messages[0]).toHaveTextContent('How do I join RRROCA?');
+    expect(messages[0]).toHaveTextContent('What is the membership fee?');
     expect(messages[0]).toHaveClass('ai-user');
     expect(messages[1]).toHaveClass('ai-bot');
-    expect(messages[1].innerHTML).toContain('Join RRROCA');
+    expect(messages[1].innerHTML).toContain('Membership Tiers');
     expect(suggestions).toHaveStyle({ display: 'none' });
     expect(input.value).toBe('');
   });

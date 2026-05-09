@@ -15,14 +15,15 @@ test.describe('Smart search', () => {
 
   test('shows search results and navigates when a result is clicked', async ({ page }) => {
     await page.keyboard.press('Control+k');
+    await page.waitForResponse(response => response.url().endsWith('/index.json') && response.status() === 200);
     await page.locator('#search-input').fill('safety');
 
+    await page.waitForFunction(() => document.querySelectorAll('.search-result').length > 0);
     const results = page.locator('.search-result');
-    await expect(results.first()).toBeVisible();
     await results.first().click();
 
     await expect(page).toHaveURL(/\/safety\/|\/community\/|\/news\//);
-    await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+    await expect(page.locator('.page-header h1').first()).toBeVisible();
   });
 
   test('closes the search overlay with Escape', async ({ page }) => {

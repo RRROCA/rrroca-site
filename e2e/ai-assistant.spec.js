@@ -52,9 +52,9 @@ test.describe('AI assistant', () => {
     const botMessages = page.locator('.ai-message.ai-bot');
     const initialCount = await botMessages.count();
 
-    await page.locator('#ai-suggestions button').filter({ hasText: 'Join RRROCA' }).click();
+    await page.locator('#ai-suggestions button').filter({ hasText: 'Is it safe here?' }).click();
 
     await expect(botMessages).toHaveCount(initialCount + 1);
-    await expect(botMessages.last()).toContainText(/Join RRROCA|Membership Tiers|Family/i);
+    await expect(botMessages.last()).toContainText(/safest communities|Safety Dashboard|crime/i);
   });
 });

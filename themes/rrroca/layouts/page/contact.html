@@ -1,0 +1,80 @@
+{{ define "main" }}
+<section class="page-header">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">Home</a> / <span>{{ .Title }}</span></div>
+    <h1>{{ .Title }}</h1>
+    <p>Questions, ideas, and community updates from Rocky Ridge and Royal Oak.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container contact-layout">
+    <article class="contact-content article-content">
+      {{ .Content }}
+    </article>
+
+    <aside class="contact-form-card">
+      <span class="section-label">Contact RRROCA</span>
+      <h2>Send a message</h2>
+      <p>Use our free Formspree endpoint for static hosting on Azure Static Web Apps. Replace the placeholder before going live.</p>
+
+      <form
+        class="rr-form"
+        data-formspree
+        data-success-message="Thanks for reaching out. Your message has been sent to RRROCA."
+        method="POST"
+        action="https://formspree.io/f/your-formspree-id"
+        novalidate
+      >
+        <input type="hidden" name="form_name" value="RRROCA Contact Form">
+        <div class="honeypot" aria-hidden="true">
+          <label for="contact-company">Leave this field empty</label>
+          <input id="contact-company" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+        </div>
+
+        <p class="form-note"><strong>Setup:</strong> replace <code>your-formspree-id</code> with your Formspree form ID.</p>
+
+        <div class="rr-field">
+          <label for="contact-name">Name</label>
+          <input id="contact-name" name="name" type="text" autocomplete="name" required data-label="Name">
+          <p class="field-error" aria-live="polite"></p>
+        </div>
+
+        <div class="rr-field">
+          <label for="contact-email">Email</label>
+          <input id="contact-email" name="email" type="email" autocomplete="email" required data-label="Email">
+          <p class="field-error" aria-live="polite"></p>
+        </div>
+
+        <div class="rr-field">
+          <label for="contact-subject">Subject</label>
+          <select id="contact-subject" name="subject" required data-label="Subject">
+            <option value="">Select a topic</option>
+            <option>General</option>
+            <option>Safety Concern</option>
+            <option>Membership</option>
+            <option>Volunteer</option>
+            <option>Sponsorship</option>
+            <option>Development Issue</option>
+          </select>
+          <p class="field-error" aria-live="polite"></p>
+        </div>
+
+        <div class="rr-field">
+          <label for="contact-message">Message</label>
+          <textarea id="contact-message" name="message" rows="6" required data-label="Message"></textarea>
+          <p class="field-error" aria-live="polite"></p>
+        </div>
+
+        <div class="form-status" aria-live="polite"></div>
+        <button type="submit" class="btn btn-primary rr-form-submit">Send message</button>
+      </form>
+
+      <!-- ALTERNATIVE: mailto fallback -->
+      <!-- <a href="mailto:info@rrroca.org?subject=RRROCA%20Website%20Inquiry">Email RRROCA directly</a> -->
+    </aside>
+  </div>
+</section>
+
+<script src="/js/forms.js" defer></script>
+{{ end }}

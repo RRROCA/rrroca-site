@@ -8,7 +8,8 @@ test.describe('Homepage', () => {
   test('loads with the expected title and mountain hero', async ({ page }) => {
     await expect(page).toHaveTitle(/RRROCA|Rocky Ridge/i);
     await expect(page.locator('.hero')).toBeVisible();
-    await expect(page.locator('.mountain-silhouette')).toBeVisible();
+    await expect(page.locator('.hero-photo')).toBeVisible();
+    await expect(page.locator('.hero-logo')).toBeVisible();
   });
 
   test('shows six quick links that are clickable', async ({ page }) => {
@@ -33,9 +34,9 @@ test.describe('Homepage', () => {
     await expect(page.getByRole('heading', { name: /Stay Connected/i })).toBeVisible();
     await expect(page.getByText(/Latest from RRROCA on Facebook/i)).toBeVisible();
 
-    await expect(page.locator('.membership-tiers .tier-card')).toHaveCount(3);
+    await expect(page.locator('.membership-tiers-inline .tier-inline')).toHaveCount(3);
     await expect(page.locator('.emergency-bar')).toBeVisible();
-    await expect(page.getByText('403-266-1234')).toBeVisible();
+    await expect(page.locator('.emergency-contacts a[href="tel:403-266-1234"]').first()).toBeVisible();
   });
 
   test('keeps the navigation header visible while scrolling', async ({ page }) => {

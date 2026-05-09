@@ -1,0 +1,107 @@
+{{ define "main" }}
+{{ $eventPages := where .RegularPages "Params.endDate" "!=" nil }}
+<section class="page-header">
+  <div class="container">
+    <h1>{{ if .Title }}{{ .Title }}{{ else }}Events{{ end }}</h1>
+    <p class="page-description">
+      {{ with .Description }}{{ . }}{{ else }}From family fun to neighbourhood meetings, see what is coming up in Rocky Ridge and Royal Oak.{{ end }}
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container content-layout">
+    <div class="content-main">
+      {{ if .Content }}<div class="article-content">{{ .Content }}</div>{{ end }}
+
+      {{ $upcoming := slice }}
+      {{ $past := slice }}
+      {{ range sort $eventPages "Date" "asc" }}
+        {{ if ge (.Date.Format "2006-01-02") (now.Format "2006-01-02") }}
+          {{ $upcoming = $upcoming | append . }}
+        {{ else }}
+          {{ $past = $past | append . }}
+        {{ end }}
+      {{ end }}
+
+      <div class="events-section-intro">
+        <span class="section-label">Community Calendar</span>
+        <h2 class="section-heading">Upcoming Events</h2>
+        <p class="section-intro">Mark your calendar and join your neighbours for great local events all year long.</p>
+      </div>
+
+      {{ if gt (len $upcoming) 0 }}
+      <div class="events-grid">
+        {{ range $upcoming }}
+        <article class="event-card">
+          <a class="event-card-link" href="{{ .Permalink }}" aria-label="View details for {{ .Title }}">
+            <div class="event-card-date">
+              <span class="event-card-month">{{ .Date.Format "Jan" }}</span>
+              <span class="event-card-day">{{ .Date.Format "2" }}</span>
+            </div>
+            <div class="event-card-content">
+              {{ with .Params.categories }}
+              <span class="event-category-tag">{{ index . 0 }}</span>
+              {{ end }}
+              <h3>{{ .Title }}</h3>
+              <p class="event-meta">
+                <strong>Time:</strong>
+                {{ .Date.Format "3:04 PM" }}{{ with .Params.endDate }}–{{ time . | dateFormat "3:04 PM" }}{{ end }}
+              </p>
+              {{ with .Params.location }}
+              <p class="event-meta"><strong>Location:</strong> {{ . }}</p>
+              {{ end }}
+              <p class="event-summary">{{ .Summary | plainify | truncate 140 }}</p>
+              <span class="read-more">View event →</span>
+            </div>
+          </a>
+        </article>
+        {{ end }}
+      </div>
+      {{ else }}
+      <div class="events-empty-state">
+        <p>No upcoming events are posted yet. Please check back soon.</p>
+      </div>
+      {{ end }}
+
+      {{ if gt (len $past) 0 }}
+      <details class="events-past-accordion">
+        <summary>
+          <span>Past Events</span>
+          <span class="events-count">{{ len $past }}</span>
+        </summary>
+        <div class="events-grid events-grid-past">
+          {{ range sort $past "Date" "desc" }}
+          <article class="event-card event-card-past">
+            <a class="event-card-link" href="{{ .Permalink }}" aria-label="View details for {{ .Title }}">
+              <div class="event-card-date">
+                <span class="event-card-month">{{ .Date.Format "Jan" }}</span>
+                <span class="event-card-day">{{ .Date.Format "2" }}</span>
+              </div>
+              <div class="event-card-content">
+                {{ with .Params.categories }}
+                <span class="event-category-tag">{{ index . 0 }}</span>
+                {{ end }}
+                <h3>{{ .Title }}</h3>
+                <p class="event-meta">
+                  <strong>Date:</strong> {{ .Date.Format "Monday, January 2, 2006" }}
+                </p>
+                {{ with .Params.location }}
+                <p class="event-meta"><strong>Location:</strong> {{ . }}</p>
+                {{ end }}
+                <p class="event-summary">{{ .Summary | plainify | truncate 120 }}</p>
+              </div>
+            </a>
+          </article>
+          {{ end }}
+        </div>
+      </details>
+      {{ end }}
+    </div>
+
+    <aside class="content-sidebar">
+      {{ partial "sidebar.html" . }}
+    </aside>
+  </div>
+</section>
+{{ end }}

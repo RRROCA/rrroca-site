@@ -5,6 +5,16 @@ const { JSDOM } = require('jsdom');
 
 const SCRIPT_PATH = path.join(__dirname, '..', 'themes', 'rrroca', 'static', 'js', 'search.js');
 const SOURCE = fs.readFileSync(SCRIPT_PATH, 'utf8');
+const INSTRUMENTED_SOURCE = SOURCE.replace(
+  'window.closeSearch = closeSearch;',
+  `window.closeSearch = closeSearch;
+  window.__searchTestHooks = {
+    loadIndex,
+    handleSearch,
+    getFuse: () => fuse,
+    getSearchIndex: () => searchIndex
+  };`
+);
 
 const SEARCH_INDEX = [
   {
@@ -22,12 +32,6 @@ const SEARCH_INDEX = [
     permalink: '/events/'
   }
 ];
-
-async function flushPromises() {
-  await Promise.resolve();
-  await Promise.resolve();
-  await Promise.resolve();
-}
 
 describe('search.js', () => {
   let window;
@@ -90,7 +94,7 @@ describe('search.js', () => {
       clearTimeout
     });
 
-    vm.runInContext(SOURCE, context, { filename: SCRIPT_PATH });
+    vm.runInContext(INSTRUMENTED_SOURCE, context, { filename: SCRIPT_PATH });
     document.dispatchEvent(new window.Event('DOMContentLoaded'));
   });
 
@@ -103,12 +107,13 @@ describe('search.js', () => {
     const input = document.getElementById('search-input');
 
     window.openSearch();
-    await flushPromises();
+    await window.__searchTestHooks.loadIndex();
 
     expect(overlay).toHaveClass('open');
     expect(input.focus).toHaveBeenCalledTimes(1);
     expect(document.body).toHaveStyle({ overflow: 'hidden' });
     expect(fetchMock).toHaveBeenCalledWith('/index.json');
+    expect(window.__searchTestHooks.getSearchIndex()).toEqual(SEARCH_INDEX);
     expect(FuseMock).toHaveBeenCalledWith(
       SEARCH_INDEX,
       expect.objectContaining({
@@ -126,14 +131,14 @@ describe('search.js', () => {
     const results = document.getElementById('search-results');
 
     window.openSearch();
-    await flushPromises();
+    await window.__searchTestHooks.loadIndex();
 
     input.value = 'safety';
     input.dispatchEvent(new window.Event('input', { bubbles: true }));
 
     expect(results.innerHTML).toContain('Safety Hub');
     expect(results.innerHTML).toContain('/safety/');
-    expect(results.innerHTML).toContain('crime stats');
+    expect(results.innerHTML).toContain('Crime stats');
   });
 
   it('shows helpful messages for short queries and empty result sets', async () => {
@@ -145,7 +150,7 @@ describe('search.js', () => {
     expect(results.innerHTML).toContain('Start typing to search across all community content');
 
     window.openSearch();
-    await flushPromises();
+    await window.__searchTestHooks.loadIndex();
 
     input.value = 'gardening';
     input.dispatchEvent(new window.Event('input', { bubbles: true }));

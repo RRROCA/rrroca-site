@@ -1,0 +1,75 @@
+<section class="rr-form-section">
+  <div class="rr-form-intro">
+    <span class="section-label">Volunteer Signup</span>
+    <h2>Tell us how you’d like to help</h2>
+    <p>RRROCA uses Formspree’s free tier for up to 50 submissions per month. Replace the placeholder ID before publishing.</p>
+  </div>
+
+  <form
+    class="rr-form"
+    data-formspree
+    data-success-message="Thanks for volunteering. RRROCA will be in touch soon."
+    method="POST"
+    action="https://formspree.io/f/your-formspree-id"
+    novalidate
+  >
+    <input type="hidden" name="form_name" value="RRROCA Volunteer Form">
+    <div class="honeypot" aria-hidden="true">
+      <label for="volunteer-company">Leave this field empty</label>
+      <input id="volunteer-company" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+    </div>
+
+    <p class="form-note"><strong>Setup:</strong> replace <code>your-formspree-id</code> with your Formspree form ID.</p>
+
+    <div class="rr-form-grid">
+      <div class="rr-field">
+        <label for="volunteer-name">Name</label>
+        <input id="volunteer-name" name="name" type="text" autocomplete="name" required data-label="Name">
+        <p class="field-error" aria-live="polite"></p>
+      </div>
+
+      <div class="rr-field">
+        <label for="volunteer-email">Email</label>
+        <input id="volunteer-email" name="email" type="email" autocomplete="email" required data-label="Email">
+        <p class="field-error" aria-live="polite"></p>
+      </div>
+
+      <div class="rr-field">
+        <label for="volunteer-phone">Phone <span class="form-optional">(optional)</span></label>
+        <input id="volunteer-phone" name="phone" type="tel" autocomplete="tel">
+        <p class="field-error" aria-live="polite"></p>
+      </div>
+
+      <div class="rr-field">
+        <label for="volunteer-availability">Availability</label>
+        <input id="volunteer-availability" name="availability" type="text" placeholder="Weeknights, weekends, occasional events" required data-label="Availability">
+        <p class="field-error" aria-live="polite"></p>
+      </div>
+    </div>
+
+    <fieldset class="rr-form-group" data-checkbox-group data-required="true">
+      <legend>Areas of interest</legend>
+      <div class="checkbox-grid">
+        <label class="checkbox-option"><input type="checkbox" name="areas_of_interest[]" value="Safety"> <span>Safety</span></label>
+        <label class="checkbox-option"><input type="checkbox" name="areas_of_interest[]" value="Events"> <span>Events</span></label>
+        <label class="checkbox-option"><input type="checkbox" name="areas_of_interest[]" value="Communications"> <span>Communications</span></label>
+        <label class="checkbox-option"><input type="checkbox" name="areas_of_interest[]" value="Playground"> <span>Playground</span></label>
+        <label class="checkbox-option"><input type="checkbox" name="areas_of_interest[]" value="Park Maintenance"> <span>Park Maintenance</span></label>
+        <label class="checkbox-option"><input type="checkbox" name="areas_of_interest[]" value="Snow Angels"> <span>Snow Angels</span></label>
+        <label class="checkbox-option"><input type="checkbox" name="areas_of_interest[]" value="Board Member"> <span>Board Member</span></label>
+      </div>
+      <p class="field-error" aria-live="polite"></p>
+    </fieldset>
+
+    <div class="rr-field">
+      <label for="volunteer-message">Message</label>
+      <textarea id="volunteer-message" name="message" rows="5" placeholder="Tell us about your experience, ideas, or any questions you have."></textarea>
+      <p class="field-error" aria-live="polite"></p>
+    </div>
+
+    <div class="form-status" aria-live="polite"></div>
+    <button type="submit" class="btn btn-primary rr-form-submit">Join as a volunteer</button>
+  </form>
+</section>
+
+<script src="/js/forms.js" defer></script>

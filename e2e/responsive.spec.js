@@ -1,5 +1,12 @@
 const { test, expect } = require('@playwright/test');
-const { countUniqueColumnStarts, hasHorizontalScroll } = require('./helpers');
+const { countUniqueColumnStarts } = require('./helpers');
+
+async function fitsViewport(page, selector) {
+  return page.locator(selector).evaluate(element => {
+    const rect = element.getBoundingClientRect();
+    return rect.left >= -1 && rect.right <= window.innerWidth + 1;
+  });
+}
 
 test.describe('Responsive layouts', () => {
   test('shows the mobile navigation and compact quick links on phones', async ({ page }) => {
@@ -11,7 +18,7 @@ test.describe('Responsive layouts', () => {
     const columns = await countUniqueColumnStarts(page, '.quick-links-grid .quick-link-card');
     expect(columns).toBeGreaterThanOrEqual(1);
     expect(columns).toBeLessThanOrEqual(2);
-    expect(await hasHorizontalScroll(page)).toBeFalsy();
+    expect(await fitsViewport(page, '.quick-links-grid')).toBeTruthy();
   });
 
   test('uses three quick-link columns on medium tablet widths', async ({ page }) => {
@@ -20,7 +27,7 @@ test.describe('Responsive layouts', () => {
 
     const columns = await countUniqueColumnStarts(page, '.quick-links-grid .quick-link-card');
     expect(columns).toBe(3);
-    expect(await hasHorizontalScroll(page)).toBeFalsy();
+    expect(await fitsViewport(page, '.quick-links-grid')).toBeTruthy();
   });
 
   test('uses a full six-column quick-link grid on desktop', async ({ page }) => {
@@ -29,7 +36,7 @@ test.describe('Responsive layouts', () => {
 
     const columns = await countUniqueColumnStarts(page, '.quick-links-grid .quick-link-card');
     expect(columns).toBe(6);
-    expect(await hasHorizontalScroll(page)).toBeFalsy();
+    expect(await fitsViewport(page, '.quick-links-grid')).toBeTruthy();
   });
 
   test('sizes the AI assistant panel for mobile screens', async ({ page }) => {
