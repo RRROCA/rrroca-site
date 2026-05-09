@@ -2,7 +2,7 @@
 {{ $eventPages := slice }}
 {{ range readDir "content/events" }}
   {{ if and (not .IsDir) (ne .Name "_index.md") }}
-    {{ $eventPage := site.GetPage (printf "/events/%s" (replaceRE "\\.md$" "" .Name)) }}
+    {{ $eventPage := site.GetPage (printf "events/%s" (replaceRE "\\.md$" "" .Name)) }}
     {{ if and $eventPage $eventPage.Params.enddate }}
       {{ $eventPages = $eventPages | append $eventPage }}
     {{ end }}

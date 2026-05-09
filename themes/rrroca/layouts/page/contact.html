@@ -1,7 +1,7 @@
 {{ define "main" }}
 <section class="page-header">
   <div class="container">
-    <div class="breadcrumb"><a href="{{ "/" | absURL }}">Home</a> / <span>{{ .Title }}</span></div>
+    <div class="breadcrumb"><a href="{{ "" | absURL }}">Home</a> / <span>{{ .Title }}</span></div>
     <h1>{{ .Title }}</h1>
     <p>Questions, ideas, and community updates from Rocky Ridge and Royal Oak.</p>
   </div>
@@ -76,5 +76,5 @@
   </div>
 </section>
 
-<script src="{{ "/js/forms.js" | absURL }}" defer></script>
+<script src="{{ "js/forms.js" | absURL }}" defer></script>
 {{ end }}

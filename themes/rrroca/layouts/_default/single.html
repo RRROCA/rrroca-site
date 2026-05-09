@@ -3,7 +3,7 @@
   <div class="container">
     {{ with .Params.categories }}
     <div class="page-breadcrumb">
-      {{ range . }}<a href="{{ (printf "/categories/%s/" (. | urlize)) | absURL }}">{{ . }}</a>{{ end }}
+      {{ range . }}<a href="{{ (printf "categories/%s/" (. | urlize)) | absURL }}">{{ . }}</a>{{ end }}
     </div>
     {{ end }}
     <h1>{{ .Title }}</h1>
@@ -21,7 +21,7 @@
       {{ with .Params.tags }}
       <div class="article-tags">
         {{ range . }}
-        <a href="{{ (printf "/tags/%s/" (. | urlize)) | absURL }}" class="tag">{{ . }}</a>
+        <a href="{{ (printf "tags/%s/" (. | urlize)) | absURL }}" class="tag">{{ . }}</a>
         {{ end }}
       </div>
       {{ end }}
