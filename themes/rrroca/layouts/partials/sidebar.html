@@ -1,0 +1,25 @@
+<div class="sidebar">
+  <!-- Emergency Contacts -->
+  <div class="sidebar-card sidebar-emergency">
+    <h3>🚨 Emergency</h3>
+    <ul>
+      <li><strong>911</strong> — Emergency</li>
+      <li><strong>{{ .Site.Params.cpsNonEmergency }}</strong> — CPS Non-Emergency</li>
+      <li><a href="{{ .Site.Params.calgary311 }}">Calgary 311</a></li>
+    </ul>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="sidebar-card">
+    <h3>Quick Links</h3>
+    <ul>
+      <li><a href="/safety/">Safety Hub</a></li>
+      <li><a href="/events/">Events</a></li>
+      <li><a href="/get-involved/">Get Involved</a></li>
+      <li><a href="/business-directory/">Business Directory</a></li>
+    </ul>
+  </div>
+
+  <!-- Facebook Group CTA -->
+  {{ partial "facebook-group-cta.html" . }}
+</div>

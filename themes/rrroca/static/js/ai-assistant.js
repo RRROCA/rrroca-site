@@ -1,0 +1,246 @@
+/**
+ * RRROCA AI Community Assistant
+ * Client-side knowledge-based chatbot — zero API cost.
+ * Uses a curated knowledge base to answer community questions.
+ */
+
+const RRROCA_KNOWLEDGE = {
+  safety: {
+    keywords: ['safe', 'crime', 'dangerous', 'security', 'police', 'break in', 'theft', 'steal', 'robbery', 'assault', 'violent'],
+    response: `🛡️ **Rocky Ridge & Royal Oak are among Calgary's safest communities!**
+
+📊 **Latest Stats (2024):**
+• Total incidents: ~26/year (down 26% year-over-year)
+• Monthly average: only 2.2 crimes/month
+• Violent crime: near zero
+• Most incidents: vehicle-related property crime
+
+🔒 **Safety Tips:**
+• Lock vehicles & garage doors nightly
+• Keep exterior lights on
+• Report suspicious activity: CPS Non-Emergency 403-266-1234
+• Emergency: always call 911
+
+📈 [View the full Safety Dashboard →](/safety/)`
+  },
+  membership: {
+    keywords: ['join', 'member', 'membership', 'sign up', 'register', 'fee', 'cost', 'dues'],
+    response: `🏔️ **Join RRROCA — Your Community Association!**
+
+💰 **Membership Tiers:**
+• Individual: $25/year
+• Family: $35/year ⭐ Most popular
+• Business: $100/year
+
+✅ **Benefits:**
+• Vote at the Annual General Meeting
+• Community newsletter
+• Event discounts & early access
+• Sports program priority (Family)
+• Business directory listing (Business)
+
+👉 [Join or Renew →](/get-involved/)`
+  },
+  events: {
+    keywords: ['event', 'happening', 'party', 'festival', 'gathering', 'bbq', 'block party', 'upcoming'],
+    response: `🎉 **Community Events**
+
+RRROCA hosts events throughout the year:
+• 🏘️ Block parties (summer)
+• 🎃 Halloween events
+• 🎄 Holiday celebrations
+• ⚽ Sports leagues & programs
+• 🌻 Community garden events
+
+📱 Join the **RRROCA Families Facebook Group** (5,000+ members) for the latest:
+[Facebook Group →](https://www.facebook.com/groups/royaloakrockyridgefamilies)
+
+📅 [View All Events →](/events/)`
+  },
+  parks: {
+    keywords: ['park', 'playground', 'green space', 'path', 'trail', 'coulee', 'nature', 'walk', 'hike'],
+    response: `🌳 **Parks & Green Spaces**
+
+Rocky Ridge & Royal Oak are blessed with amazing natural spaces:
+• 🏞️ Twelve Mile Coulee — major natural park
+• 🌿 Community parks with playgrounds
+• 🚶 Extensive pathway network
+• 🌻 Community garden plots available
+• 🐻 Wildlife corridors (deer, coyotes — please secure garbage!)
+
+[Community & Parks Info →](/community/)`
+  },
+  schools: {
+    keywords: ['school', 'education', 'daycare', 'childcare', 'kindergarten', 'elementary', 'junior high'],
+    response: `🏫 **Schools in Our Community**
+
+Our neighbourhoods are served by several schools:
+• Public schools (CBE)
+• Catholic schools (CCSD)
+• Various daycare & preschool options
+
+[Full Schools Directory →](/community/schools/)`
+  },
+  sports: {
+    keywords: ['sport', 'soccer', 'hockey', 'baseball', 'basketball', 'swim', 'recreation', 'league', 'club', 'fitness'],
+    response: `⚽ **Sports & Recreation**
+
+Active community with many options:
+• ⚾ Baseball leagues
+• ⚽ Soccer programs
+• 🏒 Hockey (various levels)
+• 🏃 Running & fitness groups
+• 🏊 Nearby recreation centres
+
+[Sports & Clubs Info →](/sports/)`
+  },
+  volunteer: {
+    keywords: ['volunteer', 'help', 'contribute', 'board', 'committee', 'give back'],
+    response: `🤝 **Volunteer with RRROCA!**
+
+We're a volunteer-run community association and we need YOU:
+• 📋 Board of Directors positions
+• 🛡️ Safety committee
+• 🎉 Event planning
+• 📰 Newsletter contributions
+• 🌻 Community garden
+
+👉 [Volunteer Opportunities →](/get-involved/volunteer/)`
+  },
+  business: {
+    keywords: ['business', 'restaurant', 'store', 'shop', 'service', 'plumber', 'electrician', 'local'],
+    response: `🏪 **Local Business Directory**
+
+Support businesses in Rocky Ridge & Royal Oak!
+Our directory features local services, restaurants, and shops.
+
+💼 **List your business:** $100/year with RRROCA Business membership includes directory listing.
+
+[Business Directory →](/business-directory/)`
+  },
+  about: {
+    keywords: ['about', 'what is', 'rrroca', 'community association', 'who', 'board', 'bylaws', 'history'],
+    response: `🏔️ **About RRROCA**
+
+The Rocky Ridge Royal Oak Community Association represents ~25,000 residents in NW Calgary.
+
+👥 **What we do:**
+• Advocate for our communities with the City of Calgary
+• Organize events & programs
+• Maintain community safety initiatives
+• Support sports & recreation
+• Coordinate with CPS & emergency services
+
+📋 Run entirely by volunteers!
+
+[Learn More →](/about/)`
+  },
+  emergency: {
+    keywords: ['emergency', '911', 'fire', 'ambulance', 'flood', 'gas leak', 'power out'],
+    response: `🚨 **Emergency Contacts**
+
+• **911** — Police, Fire, Ambulance (life-threatening)
+• **403-266-1234** — CPS Non-Emergency (suspicious activity, noise, etc.)
+• **311** — City of Calgary (roads, water, bylaws)
+• **1-800-511-3447** — ATCO Gas Emergency
+• **403-514-6100** — ENMAX Power Outages
+
+⚠️ **If in doubt, call 911.**`
+  }
+};
+
+function toggleAssistant() {
+  const panel = document.getElementById('ai-panel');
+  const fab = document.getElementById('ai-fab');
+  panel.classList.toggle('open');
+  fab.classList.toggle('hidden');
+  if (panel.classList.contains('open')) {
+    document.getElementById('ai-input-field').focus();
+  }
+}
+
+function askAI(question) {
+  const input = document.getElementById('ai-input-field');
+  input.value = question;
+  handleAISubmit(new Event('submit'));
+}
+
+function handleAISubmit(e) {
+  e.preventDefault();
+  const input = document.getElementById('ai-input-field');
+  const question = input.value.trim();
+  if (!question) return;
+
+  addMessage(question, 'user');
+  input.value = '';
+
+  // Hide suggestion buttons after first question
+  const suggestions = document.getElementById('ai-suggestions');
+  if (suggestions) suggestions.style.display = 'none';
+
+  // Find best matching response
+  setTimeout(() => {
+    const response = findAnswer(question);
+    addMessage(response, 'bot');
+  }, 300 + Math.random() * 400);
+}
+
+function findAnswer(question) {
+  const q = question.toLowerCase();
+  let bestMatch = null;
+  let bestScore = 0;
+
+  for (const [topic, data] of Object.entries(RRROCA_KNOWLEDGE)) {
+    let score = 0;
+    for (const keyword of data.keywords) {
+      if (q.includes(keyword)) {
+        score += keyword.length; // Longer keyword matches are more specific
+      }
+    }
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = data;
+    }
+  }
+
+  if (bestMatch && bestScore > 0) {
+    return bestMatch.response;
+  }
+
+  return `🤔 I'm not sure about that, but here are some ways to get help:
+
+• 📧 **Email:** info@rrroca.org
+• 👨‍👩‍👧‍👦 **Facebook Group:** [RRROCA Families](https://www.facebook.com/groups/royaloakrockyridgefamilies) (5,000+ members)
+• 📘 **Facebook Page:** [RRROCA Official](https://www.facebook.com/rrroca.org)
+• 🔍 Try the **site search** (Ctrl+K) to find what you need
+
+Or try asking about: safety, events, membership, parks, sports, volunteering, or local businesses!`;
+}
+
+function addMessage(text, type) {
+  const messages = document.getElementById('ai-messages');
+  const div = document.createElement('div');
+  div.className = `ai-message ai-${type}`;
+
+  // Simple markdown-like rendering
+  const html = text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>')
+    .replace(/^• /gm, '&bull; ')
+    .replace(/\n/g, '<br>');
+
+  div.innerHTML = `<p>${html}</p>`;
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+}
+
+// Keyboard shortcut: Escape to close
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    const panel = document.getElementById('ai-panel');
+    if (panel && panel.classList.contains('open')) {
+      toggleAssistant();
+    }
+  }
+});

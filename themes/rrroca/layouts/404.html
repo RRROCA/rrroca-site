@@ -1,0 +1,23 @@
+{{ define "main" }}
+<section class="page-header">
+  <div class="container">
+    <h1>404 — Page Not Found</h1>
+    <p class="page-description">Sorry, this page doesn't exist or may have moved.</p>
+  </div>
+</section>
+<section class="section">
+  <div class="container text-center">
+    <p style="font-size: 4rem; margin-bottom: var(--space-lg);">🏔️</p>
+    <p>The page you're looking for might have been removed or relocated during our recent site rebuild.</p>
+    <div style="margin-top: var(--space-xl);">
+      <a href="/" class="btn btn-primary">Go Home</a>
+      <a href="/safety/" class="btn btn-outline" style="margin-left: var(--space-md);">Safety Hub</a>
+    </div>
+    <div style="margin-top: var(--space-2xl);">
+      <p>Try the <strong>search</strong> (Ctrl+K) or <button onclick="toggleAssistant()" style="color: var(--color-ridge); text-decoration: underline; background: none; border: none; cursor: pointer; font-size: inherit;">ask the RRROCA AI Assistant</button>.</p>
+    </div>
+  </div>
+</section>
+{{ partial "ai-assistant.html" . }}
+<script src="/js/ai-assistant.js" defer></script>
+{{ end }}

@@ -1,0 +1,218 @@
+{{ define "main" }}
+<!-- Hero Section with Mountain Silhouette -->
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <svg class="mountain-silhouette" viewBox="0 0 1440 320" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,320 L0,220 Q60,180 120,200 L200,160 Q240,120 280,140 L360,100 Q400,60 440,80 L520,50 Q560,20 600,40 L680,70 Q720,90 760,60 L840,30 Q880,10 920,40 L1000,80 Q1040,100 1080,70 L1160,50 Q1200,30 1240,60 L1320,100 Q1360,130 1400,110 L1440,120 L1440,320 Z" fill="rgba(26,58,92,0.3)"/>
+      <path d="M0,320 L0,260 Q80,230 160,250 L280,200 Q340,170 400,190 L520,150 Q580,120 640,150 L760,180 Q820,200 880,170 L1000,140 Q1060,120 1120,150 L1240,180 Q1300,200 1360,170 L1440,190 L1440,320 Z" fill="rgba(44,110,138,0.25)"/>
+    </svg>
+    <div class="hero-stars"></div>
+  </div>
+  <div class="container hero-content">
+    <h1 class="hero-title">Rocky Ridge &amp; Royal Oak</h1>
+    <p class="hero-tagline">{{ .Site.Params.tagline }}</p>
+    <p class="hero-subtitle">{{ .Site.Params.description }}</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-number">🛡️</span>
+        <span class="hero-stat-label">Among Calgary's Safest Communities</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-number">26↓</span>
+        <span class="hero-stat-label">Crimes/Year (Down 26%)</span>
+      </div>
+      <div class="hero-stat">
+        <span class="hero-stat-number">{{ .Site.Params.facebookGroupMembers }}</span>
+        <span class="hero-stat-label">Families Connected</span>
+      </div>
+    </div>
+    <div class="hero-actions">
+      <a href="/get-involved/" class="btn btn-primary btn-lg">Join RRROCA</a>
+      <a href="/safety/" class="btn btn-outline btn-lg">Safety Hub</a>
+      <button class="btn btn-secondary btn-lg" onclick="toggleAssistant()">🤖 Ask RRROCA AI</button>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Links Grid -->
+<section class="quick-links">
+  <div class="container">
+    <div class="quick-links-grid">
+      <a href="/safety/" class="quick-link-card">
+        <span class="quick-link-icon">🛡️</span>
+        <h3>Safety Hub</h3>
+        <p>Crime stats, alerts &amp; CPS resources</p>
+      </a>
+      <a href="/events/" class="quick-link-card">
+        <span class="quick-link-icon">🎉</span>
+        <h3>Events</h3>
+        <p>Block parties, community gatherings</p>
+      </a>
+      <a href="/news/" class="quick-link-card">
+        <span class="quick-link-icon">📰</span>
+        <h3>News</h3>
+        <p>Development permits, updates</p>
+      </a>
+      <a href="/sports/" class="quick-link-card">
+        <span class="quick-link-icon">⚽</span>
+        <h3>Sports</h3>
+        <p>Clubs, leagues &amp; recreation</p>
+      </a>
+      <a href="/community/" class="quick-link-card">
+        <span class="quick-link-icon">🌳</span>
+        <h3>Community</h3>
+        <p>Parks, gardens, schools &amp; groups</p>
+      </a>
+      <a href="/business-directory/" class="quick-link-card">
+        <span class="quick-link-icon">🏪</span>
+        <h3>Local Business</h3>
+        <p>Directory of neighbourhood services</p>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Safety Dashboard Preview -->
+<section class="section safety-preview" id="safety-dashboard">
+  <div class="container">
+    <div class="section-header">
+      <h2>🛡️ Community Safety Dashboard</h2>
+      <p class="section-subtitle">Live crime statistics — among Calgary's safest neighbourhoods</p>
+    </div>
+    {{ partial "safety-dashboard.html" . }}
+    <div class="text-center" style="margin-top: var(--space-xl);">
+      <a href="/safety/" class="btn btn-primary">Full Safety Hub →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Latest News -->
+<section class="section bg-alt">
+  <div class="container">
+    <div class="section-header">
+      <h2>📰 Latest Community News</h2>
+      <p class="section-subtitle">What's happening in Rocky Ridge &amp; Royal Oak</p>
+    </div>
+    <div class="news-grid">
+      {{ range first 3 (where .Site.RegularPages "Section" "news") }}
+      <article class="news-card">
+        <div class="news-card-body">
+          <time class="news-date">{{ .Date.Format "January 2, 2006" }}</time>
+          <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
+          <p>{{ .Summary | truncate 120 }}</p>
+          <a href="{{ .Permalink }}" class="read-more">Read more →</a>
+        </div>
+      </article>
+      {{ end }}
+    </div>
+    <div class="text-center" style="margin-top: var(--space-xl);">
+      <a href="/news/" class="btn btn-outline">All News →</a>
+    </div>
+  </div>
+</section>
+
+<!-- Facebook Integration -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <h2>🤝 Stay Connected</h2>
+      <p class="section-subtitle">Join the conversation with your neighbours</p>
+    </div>
+    <div class="social-grid">
+      <div class="social-col">
+        {{ partial "facebook-page-widget.html" . }}
+      </div>
+      <div class="social-col">
+        {{ partial "facebook-group-cta.html" . }}
+        <div class="social-extra" style="margin-top: var(--space-lg);">
+          <div class="card">
+            <h3>📧 Newsletter</h3>
+            <p>Monthly community updates delivered to your inbox.</p>
+            <form class="newsletter-form" onsubmit="return handleNewsletter(event)">
+              <input type="email" placeholder="your@email.com" required>
+              <button type="submit" class="btn btn-primary">Subscribe</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Membership CTA -->
+<section class="section bg-sky" id="membership">
+  <div class="container">
+    <div class="section-header text-white">
+      <h2>🏔️ Become a Member</h2>
+      <p class="section-subtitle">Support your community — memberships fund events, safety programs, and local improvements</p>
+    </div>
+    <div class="membership-tiers">
+      <div class="tier-card">
+        <div class="tier-name">Individual</div>
+        <div class="tier-price">$25<span>/year</span></div>
+        <ul class="tier-features">
+          <li>✅ Vote at AGM</li>
+          <li>✅ Community newsletter</li>
+          <li>✅ Event discounts</li>
+        </ul>
+        <a href="/get-involved/" class="btn btn-primary btn-block">Join Now</a>
+      </div>
+      <div class="tier-card featured">
+        <div class="tier-badge">Most Popular</div>
+        <div class="tier-name">Family</div>
+        <div class="tier-price">$35<span>/year</span></div>
+        <ul class="tier-features">
+          <li>✅ Everything in Individual</li>
+          <li>✅ Family event access</li>
+          <li>✅ Sports program priority</li>
+          <li>✅ Community garden access</li>
+        </ul>
+        <a href="/get-involved/" class="btn btn-sunset btn-block">Join Now</a>
+      </div>
+      <div class="tier-card">
+        <div class="tier-name">Business</div>
+        <div class="tier-price">$100<span>/year</span></div>
+        <ul class="tier-features">
+          <li>✅ Directory listing</li>
+          <li>✅ Newsletter feature</li>
+          <li>✅ Event sponsorship perks</li>
+        </ul>
+        <a href="/get-involved/" class="btn btn-primary btn-block">Join Now</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Emergency Contacts Bar -->
+<section class="emergency-bar">
+  <div class="container">
+    <div class="emergency-inner">
+      <span class="emergency-label">🚨 Emergency</span>
+      <div class="emergency-contacts">
+        <a href="tel:911"><strong>911</strong> — Emergency</a>
+        <a href="tel:{{ .Site.Params.cpsNonEmergency }}"><strong>{{ .Site.Params.cpsNonEmergency }}</strong> — CPS Non-Emergency</a>
+        <a href="{{ .Site.Params.calgary311 }}" target="_blank" rel="noopener"><strong>311</strong> — City of Calgary</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI Assistant Widget -->
+{{ partial "ai-assistant.html" . }}
+
+<!-- Smart Search Overlay -->
+{{ partial "smart-search.html" . }}
+
+<script src="/js/ai-assistant.js" defer></script>
+<script src="/js/safety-dashboard.js" defer></script>
+<script src="/js/search.js" defer></script>
+<script>
+function handleNewsletter(e) {
+  e.preventDefault();
+  const email = e.target.querySelector('input[type="email"]').value;
+  alert('Thanks for subscribing! Newsletter coming soon to ' + email);
+  e.target.reset();
+  return false;
+}
+</script>
+{{ end }}

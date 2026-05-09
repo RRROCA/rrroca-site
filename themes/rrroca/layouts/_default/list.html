@@ -1,0 +1,39 @@
+{{ define "main" }}
+<section class="page-header">
+  <div class="container">
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="page-description">{{ . }}</p>{{ end }}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container content-layout">
+    <div class="content-main">
+      {{ .Content }}
+
+      {{ $pages := .Pages }}
+      {{ if gt (len $pages) 0 }}
+      <div class="news-grid">
+        {{ range $pages }}
+        <article class="news-card">
+          <div class="news-card-body">
+            {{ if not .Date.IsZero }}
+            <time class="news-date">{{ .Date.Format "January 2, 2006" }}</time>
+            {{ end }}
+            <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
+            <p>{{ .Summary | truncate 160 }}</p>
+            <a href="{{ .Permalink }}" class="read-more">Read more →</a>
+          </div>
+        </article>
+        {{ end }}
+      </div>
+
+      {{ template "_internal/pagination.html" . }}
+      {{ end }}
+    </div>
+    <aside class="content-sidebar">
+      {{ partial "sidebar.html" . }}
+    </aside>
+  </div>
+</section>
+{{ end }}

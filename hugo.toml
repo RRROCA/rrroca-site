@@ -1,0 +1,66 @@
+baseURL = "https://rrroca.org/"
+locale = "en-US"
+title = "Rocky Ridge Royal Oak Community Association"
+theme = "rrroca"
+paginate = 10
+
+[params]
+  description = "Serving the Rocky Ridge and Royal Oak communities in Northwest Calgary"
+  tagline = "Your Community. Your Voice."
+  facebookPage = "https://www.facebook.com/rrroca.org"
+  facebookGroup = "https://www.facebook.com/groups/royaloakrockyridgefamilies"
+  email = "info@rrroca.org"
+  phone = ""
+  address = "Rocky Ridge / Royal Oak, Calgary, AB"
+  membershipURL = "/get-involved/#membership"
+
+  # Social proof
+  facebookGroupMembers = "5,000+"
+
+  # CPS / City integration
+  cpsNonEmergency = "403-266-1234"
+  calgary311 = "https://www.calgary.ca/311.html"
+  ward1Councillor = "Ward 1 Councillor"
+
+[menus]
+  [[menus.main]]
+    name = "Home"
+    url = "/"
+    weight = 1
+  [[menus.main]]
+    name = "About"
+    url = "/about/"
+    weight = 2
+  [[menus.main]]
+    name = "Safety"
+    url = "/safety/"
+    weight = 3
+  [[menus.main]]
+    name = "News"
+    url = "/news/"
+    weight = 4
+  [[menus.main]]
+    name = "Events"
+    url = "/events/"
+    weight = 5
+  [[menus.main]]
+    name = "Get Involved"
+    url = "/get-involved/"
+    weight = 6
+  [[menus.main]]
+    name = "Business Directory"
+    url = "/business-directory/"
+    weight = 7
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+  section = ["HTML", "RSS"]
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"

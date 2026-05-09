@@ -1,0 +1,33 @@
+<!-- Live Safety Dashboard — CPS Open Data powered -->
+<div class="safety-dashboard" id="safety-dash-widget">
+  <div class="safety-grid">
+    <div class="safety-stat-card safe">
+      <div class="safety-stat-icon">🛡️</div>
+      <div class="safety-stat-value" id="stat-total">26</div>
+      <div class="safety-stat-label">Total incidents (12 mo)</div>
+      <div class="safety-stat-trend down">↓ 26% vs prior year</div>
+    </div>
+    <div class="safety-stat-card safe">
+      <div class="safety-stat-icon">📊</div>
+      <div class="safety-stat-value" id="stat-monthly">2.2</div>
+      <div class="safety-stat-label">Avg crimes/month</div>
+      <div class="safety-stat-trend">Calgary avg: 15+</div>
+    </div>
+    <div class="safety-stat-card safe">
+      <div class="safety-stat-icon">🏘️</div>
+      <div class="safety-stat-value" id="stat-violent">~0</div>
+      <div class="safety-stat-label">Violent crimes</div>
+      <div class="safety-stat-trend">Near-zero violent crime</div>
+    </div>
+    <div class="safety-stat-card info">
+      <div class="safety-stat-icon">🚗</div>
+      <div class="safety-stat-value" id="stat-property">~20</div>
+      <div class="safety-stat-label">Property crimes</div>
+      <div class="safety-stat-trend">Mostly vehicle theft</div>
+    </div>
+  </div>
+  <div class="safety-chart-container">
+    <canvas id="safety-chart" width="600" height="250" aria-label="Crime trend chart"></canvas>
+  </div>
+  <p class="safety-source">Source: <a href="https://data.calgary.ca/stories/s/Community-Crime-Data-Lens/sycx-s5a6/" target="_blank" rel="noopener">Calgary Open Data</a> &amp; <a href="https://www.calgarypolice.ca/transparency-and-accountability/crime-statistics.html" target="_blank" rel="noopener">Calgary Police Service</a>. Updated quarterly.</p>
+</div>

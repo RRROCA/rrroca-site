@@ -1,0 +1,47 @@
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-col">
+        <h3>RRROCA</h3>
+        <p>{{ .Site.Params.description }}</p>
+        <p class="footer-address">{{ .Site.Params.address }}</p>
+      </div>
+      <div class="footer-col">
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="/about/">About Us</a></li>
+          <li><a href="/safety/">Safety Hub</a></li>
+          <li><a href="/news/">Community News</a></li>
+          <li><a href="/events/">Events & Programs</a></li>
+          <li><a href="/get-involved/">Get Involved</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Emergency Contacts</h3>
+        <ul>
+          <li>🚨 Emergency: <strong>911</strong></li>
+          <li>📞 CPS Non-Emergency: <strong>{{ .Site.Params.cpsNonEmergency }}</strong></li>
+          <li>🏙️ <a href="{{ .Site.Params.calgary311 }}" target="_blank" rel="noopener">Calgary 311</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h3>Connect With Us</h3>
+        <div class="social-links">
+          {{ with .Site.Params.facebookPage }}
+            <a href="{{ . }}" target="_blank" rel="noopener" aria-label="Facebook Page">📘 Facebook Page</a>
+          {{ end }}
+          {{ with .Site.Params.facebookGroup }}
+            <a href="{{ . }}" target="_blank" rel="noopener" aria-label="Facebook Group">👨‍👩‍👧‍👦 Families Group</a>
+          {{ end }}
+          {{ with .Site.Params.email }}
+            <a href="mailto:{{ . }}">✉️ {{ . }}</a>
+          {{ end }}
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; {{ now.Year }} Rocky Ridge Royal Oak Community Association. All rights reserved.</p>
+      <p>A volunteer-run organization serving Calgary's Rocky Ridge and Royal Oak communities.</p>
+    </div>
+  </div>
+</footer>

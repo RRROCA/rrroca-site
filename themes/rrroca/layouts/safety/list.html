@@ -1,0 +1,56 @@
+{{ define "main" }}
+<section class="page-header page-header-safety">
+  <div class="container">
+    <h1>🛡️ Community Safety Hub</h1>
+    <p class="page-description">Rocky Ridge &amp; Royal Oak — among Calgary's safest communities</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {{ partial "safety-dashboard.html" . }}
+  </div>
+</section>
+
+<section class="section bg-alt">
+  <div class="container content-layout">
+    <div class="content-main">
+      {{ .Content }}
+      <h2>Safety Resources</h2>
+      <div class="news-grid">
+        {{ range .Pages }}
+        <article class="news-card">
+          <div class="news-card-body">
+            <h3><a href="{{ .Permalink }}">{{ .Title }}</a></h3>
+            <p>{{ .Summary | truncate 160 }}</p>
+            <a href="{{ .Permalink }}" class="read-more">Read more →</a>
+          </div>
+        </article>
+        {{ end }}
+      </div>
+    </div>
+    <aside class="content-sidebar">
+      <div class="sidebar-card sidebar-emergency">
+        <h3>🚨 Emergency Contacts</h3>
+        <ul>
+          <li><strong>911</strong> — Emergency</li>
+          <li><strong>{{ .Site.Params.cpsNonEmergency }}</strong> — CPS Non-Emergency</li>
+          <li><a href="{{ .Site.Params.calgary311 }}">Calgary 311</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-card">
+        <h3>Safety Tips</h3>
+        <ul>
+          <li>🔒 Lock vehicles &amp; garage doors</li>
+          <li>💡 Keep exterior lights on at night</li>
+          <li>📱 Report suspicious activity to CPS</li>
+          <li>🏘️ Know your neighbours</li>
+          <li>🐻 Secure garbage from wildlife</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<script src="/js/safety-dashboard.js" defer></script>
+{{ end }}
