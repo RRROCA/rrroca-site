@@ -143,7 +143,8 @@
     canvas.style.height = height + 'px';
     ctx.scale(dpr, dpr);
 
-    const padding = { top: 18, right: 118, bottom: 40, left: 48 };
+    const isMobile = width < 480;
+    const padding = { top: 18, right: isMobile ? 80 : 118, bottom: isMobile ? 58 : 40, left: 38 };
     const chartW = width - padding.left - padding.right;
     const chartH = height - padding.top - padding.bottom;
 
@@ -180,13 +181,22 @@
     ctx.strokeStyle = palette.textMuted;
     ctx.stroke();
 
-    // X-axis labels
+    // X-axis labels — rotate on narrow screens to avoid overlap
     ctx.fillStyle = palette.textMuted;
-    ctx.font = '11px Inter, sans-serif';
-    ctx.textAlign = 'center';
+    ctx.font = (isMobile ? '10' : '11') + 'px Inter, sans-serif';
     crimeData.labels.forEach((label, i) => {
       const x = padding.left + step * i;
-      ctx.fillText(label, x, height - 8);
+      if (isMobile) {
+        ctx.save();
+        ctx.translate(x, height - padding.bottom + 12);
+        ctx.rotate(-Math.PI / 5);
+        ctx.textAlign = 'right';
+        ctx.fillText(label, 0, 0);
+        ctx.restore();
+      } else {
+        ctx.textAlign = 'center';
+        ctx.fillText(label, x, height - 8);
+      }
     });
 
     // Draw line function
@@ -251,7 +261,7 @@
         }
       });
 
-    ctx.font = '600 11px Inter, sans-serif';
+    ctx.font = '600 ' + (isMobile ? '10' : '11') + 'px Inter, sans-serif';
     ctx.textAlign = 'left';
     labelPositions.forEach((label) => {
       ctx.fillStyle = label.seriesItem.color;

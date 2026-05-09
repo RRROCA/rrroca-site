@@ -4767,9 +4767,25 @@ p { margin-bottom: var(--space-md); }
 /* Summary bar */
 .motion-summary-bar {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--space-lg);
   margin-top: var(--space-lg);
   flex-wrap: wrap;
+}
+.motion-summary-stats {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+.motion-propose-cta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+.motion-propose-note {
+  font-size: 0.8rem;
+  color: rgba(255,255,255,.6);
 }
 .motion-summary-stat {
   background: rgba(255,255,255,.12);
@@ -5172,6 +5188,11 @@ p { margin-bottom: var(--space-md); }
     gap: var(--space-sm);
   }
   .motion-summary-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-sm);
+  }
+  .motion-propose-cta {
     flex-direction: column;
     align-items: flex-start;
   }

@@ -28,24 +28,26 @@
       {{ with .Description }}{{ . }}{{ else }}Formal motions, resolutions, and governance records for the RRROCA Board of Directors.{{ end }}
     </p>
     <div class="motion-summary-bar">
-      <span class="motion-summary-stat motion-summary-stat--active">
-        <strong>{{ len $activeMotions }}</strong> Active {{ if eq (len $activeMotions) 1 }}Motion{{ else }}Motions{{ end }}
-      </span>
-      <span class="motion-summary-stat">
-        <strong>{{ len $pastMotions }}</strong> Resolved
-      </span>
-      <span class="motion-summary-stat">
-        <strong>{{ len $allMotions }}</strong> Total
-      </span>
+      <div class="motion-summary-stats">
+        <span class="motion-summary-stat motion-summary-stat--active">
+          <strong>{{ len $activeMotions }}</strong> Active {{ if eq (len $activeMotions) 1 }}Motion{{ else }}Motions{{ end }}
+        </span>
+        <span class="motion-summary-stat">
+          <strong>{{ len $pastMotions }}</strong> Resolved
+        </span>
+        <span class="motion-summary-stat">
+          <strong>{{ len $allMotions }}</strong> Total
+        </span>
+      </div>
+      {{ with $.Params.github_motion_url }}
+      <div class="motion-propose-cta">
+        <a href="{{ . }}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
+          ✏️ Propose a Motion
+        </a>
+        <span class="motion-propose-note">Board members: create a new motion in seconds</span>
+      </div>
+      {{ end }}
     </div>
-    {{ with .Params.github_motion_url }}
-    <div class="motion-propose-cta">
-      <a href="{{ . }}" target="_blank" rel="noopener" class="btn btn-primary">
-        ✏️ Propose a Motion
-      </a>
-      <span class="motion-propose-note">Board members: create a new motion in seconds</span>
-    </div>
-    {{ end }}
   </div>
 </section>
 
