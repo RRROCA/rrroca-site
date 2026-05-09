@@ -1,0 +1,33 @@
+name: PR CI
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Hugo Extended
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.161.1'
+          extended: true
+
+      - name: Build site
+        run: hugo --gc --minify
+
+      - name: Install htmltest
+        run: |
+          HT_VERSION=0.17.0
+          curl -sSL "https://github.com/wjdp/htmltest/releases/download/v${HT_VERSION}/htmltest_${HT_VERSION}_linux_amd64.tar.gz" -o htmltest.tar.gz
+          tar -xzf htmltest.tar.gz htmltest
+          sudo mv htmltest /usr/local/bin/htmltest
+
+      - name: Validate generated HTML
+        run: htmltest --path public --skip-external

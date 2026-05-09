@@ -187,65 +187,44 @@ p { margin-bottom: var(--space-md); }
 }
 
 /* ================================
-   HERO — Mountain skyline
+   HERO — Full-bleed community photo
    ================================ */
 .hero {
-  background: linear-gradient(170deg, var(--color-sky) 0%, var(--color-ridge) 60%, #3a9cb8 100%);
-  color: white;
-  padding: var(--space-4xl) 0 0;
   position: relative;
   overflow: hidden;
-  min-height: 520px;
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  color: white;
 }
-
-/* Mountain silhouette at bottom of hero */
-.hero::after {
-  content: '';
+.hero-photo {
   position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 120px;
-  background:
-    /* far mountains — faint */
-    linear-gradient(165deg, transparent 40%, rgba(255,255,255,0.06) 40.5%, rgba(255,255,255,0.06) 41%, transparent 41.5%),
-    linear-gradient(195deg, transparent 35%, rgba(255,255,255,0.06) 35.5%, rgba(255,255,255,0.06) 36%, transparent 36.5%);
+  inset: 0;
+  background-size: cover;
+  background-position: center 30%;
   z-index: 0;
 }
-
-/* Mountain SVG silhouette */
-.hero-mountains {
+.hero-overlay {
   position: absolute;
-  bottom: -1px; left: 0; right: 0;
+  inset: 0;
+  background: linear-gradient(
+    170deg,
+    rgba(26,58,92,0.85) 0%,
+    rgba(44,110,138,0.7) 50%,
+    rgba(26,58,92,0.8) 100%
+  );
   z-index: 1;
-  line-height: 0;
 }
-.hero-mountains svg {
-  width: 100%;
-  height: auto;
-  display: block;
+.hero-logo {
+  margin-bottom: var(--space-lg);
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
 }
-
-/* Subtle star/dot pattern for night sky feel */
-.hero::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image:
-    radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.3), transparent),
-    radial-gradient(1px 1px at 25% 8%, rgba(255,255,255,0.2), transparent),
-    radial-gradient(1.5px 1.5px at 45% 20%, rgba(255,255,255,0.25), transparent),
-    radial-gradient(1px 1px at 60% 5%, rgba(255,255,255,0.15), transparent),
-    radial-gradient(1px 1px at 75% 18%, rgba(255,255,255,0.2), transparent),
-    radial-gradient(1.5px 1.5px at 90% 12%, rgba(255,255,255,0.3), transparent),
-    radial-gradient(1px 1px at 35% 3%, rgba(255,255,255,0.15), transparent),
-    radial-gradient(1px 1px at 80% 25%, rgba(255,255,255,0.1), transparent);
-  z-index: 0;
-}
-
 .hero-content {
   position: relative;
   z-index: 2;
   max-width: 650px;
-  padding-bottom: 140px;
+  padding: var(--space-4xl) 0;
 }
 .hero-tagline {
   font-size: 0.85rem;
@@ -1168,4 +1147,232 @@ p { margin-bottom: var(--space-md); }
   .safety-grid { grid-template-columns: 1fr; }
   .ai-panel { width: calc(100vw - 16px); right: 8px; bottom: 8px; }
   .search-trigger kbd { display: none; }
+  .quick-links-grid { grid-template-columns: 1fr; }
+}
+
+/* ============================================
+   Community Photo Strip
+   ============================================ */
+.community-strip {
+  overflow: hidden;
+  background: var(--color-sky);
+  padding: var(--space-xs) 0;
+}
+.strip-scroll {
+  display: flex;
+  gap: var(--space-xs);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.strip-scroll::-webkit-scrollbar { display: none; }
+.strip-item {
+  flex: 0 0 25%;
+  min-width: 250px;
+  scroll-snap-align: start;
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16/10;
+}
+.strip-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--transition-slow);
+}
+.strip-item:hover img { transform: scale(1.05); }
+.strip-caption {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: var(--space-sm) var(--space-md);
+  background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* ============================================
+   Section Headings — Warm, human
+   ============================================ */
+.section-heading {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  color: var(--color-sky);
+  margin-bottom: var(--space-sm);
+  text-align: center;
+}
+.section-intro {
+  text-align: center;
+  color: var(--color-text-secondary);
+  font-size: 1.05rem;
+  max-width: 600px;
+  margin: 0 auto var(--space-2xl);
+  line-height: 1.7;
+}
+
+/* ============================================
+   Get Involved — Photo cards
+   ============================================ */
+.get-involved-strip {
+  background: var(--color-bg);
+}
+.involve-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xl);
+}
+.involve-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  text-decoration: none;
+  color: var(--color-text);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.involve-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.involve-card img {
+  width: 100%;
+  height: 140px;
+  object-fit: cover;
+}
+.involve-card-body {
+  padding: var(--space-lg);
+}
+.involve-card h3 {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  color: var(--color-sky);
+  margin-bottom: var(--space-sm);
+}
+.involve-card p {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+/* ============================================
+   Membership — Warm, side-by-side
+   ============================================ */
+.membership-section {
+  background: linear-gradient(170deg, var(--color-sky) 0%, var(--color-ridge) 100%);
+  color: white;
+}
+.membership-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3xl);
+  align-items: center;
+}
+.membership-text h2 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  color: white;
+  margin-bottom: var(--space-lg);
+}
+.membership-text p {
+  font-size: 1.05rem;
+  opacity: 0.9;
+  line-height: 1.8;
+  margin-bottom: var(--space-xl);
+}
+.membership-tiers-inline {
+  display: flex;
+  gap: var(--space-md);
+  margin-bottom: var(--space-xl);
+  flex-wrap: wrap;
+}
+.tier-inline {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md) var(--space-lg);
+  text-align: center;
+  flex: 1;
+  min-width: 100px;
+}
+.tier-inline strong {
+  display: block;
+  margin-bottom: var(--space-xs);
+  font-size: 0.9rem;
+}
+.tier-price-inline {
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.tier-tag {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-sunset);
+  margin-top: var(--space-xs);
+}
+.featured-inline {
+  border-color: var(--color-sunset);
+  background: rgba(232,145,58,0.15);
+}
+.membership-photo {
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+}
+.membership-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ============================================
+   Newsletter Card
+   ============================================ */
+.newsletter-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  border: 1px solid var(--color-border);
+  margin-top: var(--space-lg);
+}
+.newsletter-card h3 { margin-bottom: var(--space-sm); }
+.newsletter-card p { font-size: 0.9rem; color: var(--color-text-secondary); }
+
+/* ============================================
+   Utility classes
+   ============================================ */
+.text-center { text-align: center; }
+.btn-outline-dark {
+  background: transparent;
+  color: var(--color-sky);
+  border-color: var(--color-sky);
+}
+.btn-outline-dark:hover {
+  background: var(--color-sky);
+  color: white;
+}
+
+/* ============================================
+   Extended Responsive for Community Components
+   ============================================ */
+@media (max-width: 1024px) {
+  .involve-grid { grid-template-columns: 1fr; max-width: 400px; margin: 0 auto; }
+  .membership-hero { grid-template-columns: 1fr; text-align: center; }
+  .membership-photo { max-width: 500px; margin: 0 auto; }
+  .membership-tiers-inline { justify-content: center; }
+}
+@media (max-width: 768px) {
+  .strip-item { flex: 0 0 60%; min-width: 200px; }
+  .involve-grid { max-width: 100%; }
+  .membership-tiers-inline { flex-direction: column; }
+  .section-heading { font-size: 1.4rem; }
+}
+@media (max-width: 480px) {
+  .strip-item { flex: 0 0 80%; }
+  .hero { min-height: 480px; }
+  .hero-content { padding: var(--space-2xl) 0; }
 }

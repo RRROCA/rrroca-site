@@ -366,7 +366,6 @@ def remove_unwanted_nodes(container: Tag) -> None:
         ".comments-area",
         ".sharedaddy",
         ".jp-relatedposts",
-        ".et_pb_code",
         ".et_pb_newsletter",
         ".et_pb_signup",
         ".et_pb_social_media_follow",

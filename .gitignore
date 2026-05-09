@@ -20,6 +20,8 @@ desktop.ini
 # Node (for tests)
 node_modules/
 coverage/
+test-results/
+playwright-report/
 
 # Environment / secrets
 .env

@@ -1,0 +1,28 @@
+{
+  "name": "rrroca.org",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --verbose",
+    "test:e2e": "npx playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CanChad/rrroca-site.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CanChad/rrroca-site/issues"
+  },
+  "homepage": "https://github.com/CanChad/rrroca-site#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.59.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "jest": "^30.4.2",
+    "jsdom": "^22.1.0"
+  }
+}

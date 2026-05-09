@@ -1,0 +1,146 @@
+const { JSDOM } = require('jsdom');
+const { loadScriptExports } = require('./helpers/load-script-exports');
+
+const AI_SCRIPT = 'themes\\rrroca\\static\\js\\ai-assistant.js';
+const EXPORTED_MEMBERS = [
+  'RRROCA_KNOWLEDGE',
+  'toggleAssistant',
+  'askAI',
+  'handleAISubmit',
+  'findAnswer',
+  'addMessage'
+];
+
+function createDom() {
+  return new JSDOM(
+    `<!doctype html>
+    <body>
+      <button id="ai-fab" class="ai-fab"></button>
+      <div id="ai-panel" class="ai-panel"></div>
+      <input id="ai-input-field" />
+      <div id="ai-suggestions"></div>
+      <div id="ai-messages"></div>
+    </body>`,
+    { url: 'https://rrroca.org/' }
+  );
+}
+
+describe('ai-assistant.js', () => {
+  let window;
+  let document;
+  let assistant;
+
+  beforeEach(() => {
+    const dom = createDom();
+    window = dom.window;
+    document = window.document;
+
+    document.getElementById('ai-input-field').focus = jest.fn();
+
+    const math = Object.create(Math);
+    math.random = () => 0;
+
+    assistant = loadScriptExports(AI_SCRIPT, EXPORTED_MEMBERS, {
+      window,
+      document,
+      setTimeout: (callback) => {
+        callback();
+        return 1;
+      },
+      clearTimeout: jest.fn(),
+      Math: math
+    }).exports;
+  });
+
+  afterEach(() => {
+    window.close();
+  });
+
+  it('defines all supported knowledge topics', () => {
+    const expectedTopics = [
+      'safety',
+      'membership',
+      'events',
+      'parks',
+      'schools',
+      'sports',
+      'volunteer',
+      'business',
+      'about',
+      'emergency'
+    ];
+
+    expect(Object.keys(assistant.RRROCA_KNOWLEDGE).sort()).toEqual(expectedTopics.sort());
+
+    expectedTopics.forEach((topic) => {
+      expect(assistant.RRROCA_KNOWLEDGE[topic]).toEqual(
+        expect.objectContaining({
+          keywords: expect.any(Array),
+          response: expect.any(String)
+        })
+      );
+      expect(assistant.RRROCA_KNOWLEDGE[topic].keywords.length).toBeGreaterThan(0);
+    });
+  });
+
+  it('matches questions to the most relevant knowledge response', () => {
+    expect(assistant.findAnswer('How much does membership cost?')).toContain('Membership Tiers');
+    expect(assistant.findAnswer('Is Rocky Ridge safe and what is the crime rate?')).toContain('safest communities');
+    expect(assistant.findAnswer('Who do I call for a gas leak or power out?')).toContain('ATCO Gas Emergency');
+    expect(assistant.findAnswer('Tell me about local businesses nearby')).toContain('Business Directory');
+  });
+
+  it('returns a fallback response for unknown questions', () => {
+    const response = assistant.findAnswer('Can you recommend a knitting pattern?');
+
+    expect(response).toContain("I'm not sure about that");
+    expect(response).toContain('info@rrroca.org');
+    expect(response).toContain('site search');
+  });
+
+  it('toggles the assistant panel and focuses the input when opened', () => {
+    const panel = document.getElementById('ai-panel');
+    const fab = document.getElementById('ai-fab');
+    const input = document.getElementById('ai-input-field');
+
+    assistant.toggleAssistant();
+    expect(panel).toHaveClass('open');
+    expect(fab).toHaveClass('hidden');
+    expect(input.focus).toHaveBeenCalledTimes(1);
+
+    assistant.toggleAssistant();
+    expect(panel).not.toHaveClass('open');
+    expect(fab).not.toHaveClass('hidden');
+  });
+
+  it('renders markdown-like bot messages into the message list', () => {
+    assistant.addMessage('**Hello** *neighbour*\n• [Safety Hub](/safety/)', 'bot');
+
+    const message = document.querySelector('#ai-messages .ai-message.ai-bot');
+    expect(message).toBeInTheDocument();
+    expect(message.innerHTML).toContain('<strong>Hello</strong>');
+    expect(message.innerHTML).toContain('<em>neighbour</em>');
+    expect(message.innerHTML).toContain('<a href="/safety/">Safety Hub</a>');
+    expect(message.innerHTML).toContain('&bull;');
+  });
+
+  it('submits a question, hides suggestions, and appends user and bot messages', () => {
+    const input = document.getElementById('ai-input-field');
+    const suggestions = document.getElementById('ai-suggestions');
+
+    input.value = 'How do I join RRROCA?';
+
+    assistant.handleAISubmit({
+      preventDefault: jest.fn()
+    });
+
+    const messages = document.querySelectorAll('#ai-messages .ai-message');
+    expect(messages).toHaveLength(2);
+    expect(messages[0]).toHaveTextContent('How do I join RRROCA?');
+    expect(messages[0]).toHaveClass('ai-user');
+    expect(messages[1]).toHaveClass('ai-bot');
+    expect(messages[1].innerHTML).toContain('Join RRROCA');
+    expect(suggestions).toHaveStyle({ display: 'none' });
+    expect(input.value).toBe('');
+  });
+});
