@@ -37,8 +37,15 @@ CLOs focus on identifying and resolving neighbourhood issues — speeding, suspi
 - [CPS Online Reporting](https://www.calgarypolice.ca/our-services/online-services/) — file non-emergency reports online
 - [CPS Community Awareness](https://www.calgarypolice.ca/) — sign up for alerts
 
+## RRROCA Block Watch — Facebook Group
+
+Stay connected with your neighbours on safety matters. Our **Block Watch Facebook group** is where residents share real-time alerts, suspicious activity reports, and safety tips.
+
+<a href="https://www.facebook.com/groups/raborrroca" class="btn btn-primary" style="margin-bottom: 1rem;" target="_blank" rel="noopener">Join RRROCA Block Watch on Facebook</a>
+
 ## Get Involved in Safety
 
+- **Join the Block Watch** — [RRROCA Block Watch Facebook Group](https://www.facebook.com/groups/raborrroca)
 - **Join the Safety Committee** — email [safety@rrroca.org](mailto:safety@rrroca.org)
 - **Snow Angels** — help elderly or mobility-challenged neighbours with snow removal
 - **Block Connectors** — become a point of contact for your block

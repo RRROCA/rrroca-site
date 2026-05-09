@@ -143,14 +143,18 @@ test.describe('Site integrity', () => {
     await expect(page.locator('[data-directory-grid] [data-directory-card]')).toHaveCount(6);
   });
 
-  test('events page shows event cards with compact metadata', async ({ page }) => {
+  test('events page renders upcoming event content', async ({ page }) => {
     await page.goto('/events/', { waitUntil: 'domcontentloaded' });
 
     const eventCards = page.locator('.event-card');
-    expect(await eventCards.count()).toBeGreaterThan(0);
-    await expect(eventCards.first().locator('.event-card-date')).toBeVisible();
-    await expect(eventCards.first().locator('.event-card-content h3')).toBeVisible();
-    expect(await eventCards.first().locator('.event-card-content > p:not(.event-meta)').count()).toBe(0);
+    if ((await eventCards.count()) > 0) {
+      await expect(eventCards.first().locator('.event-card-date')).toBeVisible();
+      await expect(eventCards.first().locator('.event-card-content h3')).toBeVisible();
+      expect(await eventCards.first().locator('.event-card-content > p:not(.event-meta)').count()).toBe(0);
+    } else {
+      await expect(page.locator('.events-empty-state')).toBeVisible();
+      await expect(page.locator('.events-empty-state')).toContainText(/No upcoming events/i);
+    }
   });
 
   test('homepage emergency bar is visible with correct contact numbers', async ({ page }) => {

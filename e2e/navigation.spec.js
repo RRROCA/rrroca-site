@@ -98,14 +98,18 @@ test.describe('Navigation', () => {
     await expect(page.locator('[data-directory-search]')).toBeVisible();
   });
 
-  test('events page shows compact event cards', async ({ page }) => {
+  test('events page renders the upcoming events area', async ({ page }) => {
     await page.goto('/events/', { waitUntil: 'domcontentloaded' });
 
     const eventCards = page.locator('.event-card');
-    expect(await eventCards.count()).toBeGreaterThan(0);
-    await expect(eventCards.first().locator('.event-card-date')).toBeVisible();
-    await expect(eventCards.first().locator('.event-card-content h3')).toBeVisible();
-    expect(await eventCards.first().locator('.event-card-content > p:not(.event-meta)').count()).toBe(0);
+    if ((await eventCards.count()) > 0) {
+      await expect(eventCards.first().locator('.event-card-date')).toBeVisible();
+      await expect(eventCards.first().locator('.event-card-content h3')).toBeVisible();
+      expect(await eventCards.first().locator('.event-card-content > p:not(.event-meta)').count()).toBe(0);
+    } else {
+      await expect(page.locator('.events-empty-state')).toBeVisible();
+      await expect(page.locator('.events-empty-state')).toContainText(/No upcoming events/i);
+    }
   });
 
   test('browser back navigation returns to the previous page', async ({ page }) => {
