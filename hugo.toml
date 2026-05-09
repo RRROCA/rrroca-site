@@ -1,5 +1,6 @@
 baseURL = "https://rrroca.org/"
 locale = "en-US"
+locale = "en-US"
 title = "Rocky Ridge Royal Oak Community Association"
 theme = "rrroca"
 [pagination]
@@ -14,7 +15,7 @@ buildFuture = true
   email = "info@rrroca.org"
   phone = ""
   address = "Rocky Ridge / Royal Oak, Calgary, AB"
-  membershipURL = "/get-involved/#membership"
+  membershipURL = "/membership/"
 
   # Social proof
   facebookGroupMembers = "5,000+"
@@ -57,6 +58,10 @@ buildFuture = true
     name = "Gallery"
     url = "/gallery/"
     weight = 8
+  [[menus.main]]
+    name = "Join"
+    url = "/membership/"
+    weight = 9
 
 [markup]
   [markup.goldmark]

@@ -1,0 +1,108 @@
+{{ define "main" }}
+{{ $contactLink := "/contact/" }}
+{{ with site.GetPage "/contact.md" }}{{ $contactLink = .RelPermalink }}{{ end }}
+{{ $businesses := sort (sort .RegularPages "Title") "Params.featured" "desc" }}
+
+<section class="page-header">
+  <div class="container">
+    <h1>{{ if .Title }}{{ .Title }}{{ else }}Business Directory{{ end }}</h1>
+    <p class="page-description">
+      {{ with .Description }}{{ . }}{{ else }}Discover local businesses serving Rocky Ridge and Royal Oak.{{ end }}
+    </p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    {{ if .Content }}
+    <div class="business-directory-intro article-content">
+      {{ .Content }}
+    </div>
+    {{ end }}
+
+    <div class="directory-toolbar" data-directory>
+      <div class="directory-search">
+        <label class="directory-search-label" for="directory-search">Search businesses</label>
+        <input
+          id="directory-search"
+          class="directory-search-input"
+          type="search"
+          placeholder="Search by name or description"
+          data-directory-search
+        >
+      </div>
+
+      <div class="directory-filters" aria-label="Business category filters">
+        <button class="directory-filter-btn is-active" type="button" data-category-filter="all">All</button>
+        <button class="directory-filter-btn" type="button" data-category-filter="restaurants">Restaurants</button>
+        <button class="directory-filter-btn" type="button" data-category-filter="health-wellness">Health &amp; Wellness</button>
+        <button class="directory-filter-btn" type="button" data-category-filter="home-services">Home Services</button>
+        <button class="directory-filter-btn" type="button" data-category-filter="professional-services">Professional Services</button>
+        <button class="directory-filter-btn" type="button" data-category-filter="retail">Retail</button>
+        <button class="directory-filter-btn" type="button" data-category-filter="kids-family">Kids &amp; Family</button>
+        <button class="directory-filter-btn" type="button" data-category-filter="other">Other</button>
+      </div>
+
+      <p class="directory-results-count" data-directory-count>{{ len $businesses }} businesses</p>
+
+      {{ if gt (len $businesses) 0 }}
+      <div class="business-grid" data-directory-grid>
+        {{ range $businesses }}
+        {{ $category := "Other" }}
+        {{ with .Params.categories }}{{ $category = index . 0 }}{{ end }}
+        <article
+          class="business-card{{ if .Params.featured }} is-featured{{ end }}"
+          data-directory-card
+          data-category="{{ $category | urlize }}"
+          data-search="{{ lower (printf "%s %s %s" .Title (.Params.description | default "") ($category | default "")) }}"
+        >
+          <div class="business-card-header">
+            <div>
+              <span class="business-category-badge">{{ $category }}</span>
+              <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+            </div>
+            {{ if .Params.featured }}
+            <span class="business-featured-pill">Featured</span>
+            {{ end }}
+          </div>
+
+          <p class="business-card-description">{{ .Params.description }}</p>
+
+          <ul class="business-card-meta">
+            {{ with .Params.phone }}
+            <li><strong>Phone:</strong> <a href="tel:{{ replace . "-" "" }}">{{ . }}</a></li>
+            {{ end }}
+            {{ with .Params.website }}
+            <li><strong>Website:</strong> <a href="{{ . }}" target="_blank" rel="noopener">Visit website</a></li>
+            {{ end }}
+            {{ with .Params.address }}
+            <li><strong>Address:</strong> {{ . }}</li>
+            {{ end }}
+          </ul>
+
+          <a class="read-more" href="{{ .RelPermalink }}">View details →</a>
+        </article>
+        {{ end }}
+      </div>
+
+      <div class="directory-empty-state is-hidden" data-directory-empty>
+        <p>No businesses match your search right now. Try another keyword or category.</p>
+      </div>
+      {{ else }}
+      <div class="directory-empty-state">
+        <p>Business listings are coming soon.</p>
+      </div>
+      {{ end }}
+    </div>
+
+    <div class="directory-cta">
+      <span class="section-label">Grow Local</span>
+      <h2>Want your business listed?</h2>
+      <p>RRROCA welcomes listing requests from businesses serving Rocky Ridge and Royal Oak.</p>
+      <a class="btn btn-primary" href="{{ $contactLink }}">Request a listing</a>
+    </div>
+  </div>
+</section>
+
+<script src="/js/directory-search.js" defer></script>
+{{ end }}

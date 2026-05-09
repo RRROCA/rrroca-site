@@ -1,0 +1,18 @@
+<section class="footer-newsletter" aria-labelledby="footer-newsletter-title">
+  <div class="footer-newsletter-copy">
+    <span class="section-label">Newsletter</span>
+    <h3 id="footer-newsletter-title">Get RRROCA updates by email</h3>
+    <p>Subscribe for community news, safety alerts, and event reminders. This placeholder uses Buttondown's free embed form.</p>
+  </div>
+  <form
+    class="footer-newsletter-form"
+    action="https://buttondown.email/api/emails/embed-subscribe/rrroca"
+    method="post"
+    target="popupwindow"
+    onsubmit="window.open('https://buttondown.email/rrroca', 'popupwindow')"
+  >
+    <label class="sr-only" for="footer-newsletter-email">Email address</label>
+    <input id="footer-newsletter-email" type="email" name="email" placeholder="Your email address" autocomplete="email" required>
+    <button type="submit" class="btn stripe-btn">Subscribe</button>
+  </form>
+</section>

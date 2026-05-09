@@ -1,0 +1,139 @@
+{{ define "main" }}
+<section class="membership-page-hero">
+  <div class="membership-page-hero-photo" style="background-image: url('/images/community-aerial.jpg');"></div>
+  <div class="membership-page-hero-overlay"></div>
+  <div class="container membership-page-hero-content">
+    <span class="section-label">Support RRROCA</span>
+    <h1>Join Your Community Association</h1>
+    <p>Membership helps RRROCA fund neighbourhood events, speak up on local development, and keep Rocky Ridge and Royal Oak informed year-round.</p>
+  </div>
+</section>
+
+<section class="section membership-page-section">
+  <div class="container">
+    <div class="section-header membership-page-section-header">
+      <span class="section-label">Membership Options</span>
+      <h2>Choose the membership that fits your household</h2>
+      <p>Free updates are available to every resident, with paid memberships offering added benefits and direct support for RRROCA programs.</p>
+    </div>
+
+    <div class="membership-page-tiers">
+      <article class="membership-page-tier-card">
+        <div class="membership-page-tier-card-header">
+          <h3>Resident</h3>
+          <p class="membership-page-tier-price">Free</p>
+          <p class="membership-page-tier-term">News, alerts, and newsletter access</p>
+        </div>
+        <ul class="membership-page-tier-features">
+          <li>Community news and safety alerts</li>
+          <li>RRROCA newsletter updates</li>
+          <li>No signup needed</li>
+        </ul>
+        <span class="membership-page-tier-note">Stay connected automatically by browsing the site and subscribing below.</span>
+      </article>
+
+      <article class="membership-page-tier-card featured">
+        <div class="membership-page-tier-card-header">
+          <h3>Household Member</h3>
+          <p class="membership-page-tier-price">$25<span>/year</span></p>
+          <p class="membership-page-tier-term">A simple way to support RRROCA</p>
+        </div>
+        <ul class="membership-page-tier-features">
+          <li>Voting rights at association meetings</li>
+          <li>Program and event discounts</li>
+          <li>Member directory access</li>
+        </ul>
+        <a class="btn stripe-btn" href="https://buy.stripe.com/YOUR_HOUSEHOLD_LINK" target="_blank" rel="noopener">Join Now</a>
+      </article>
+
+      <article class="membership-page-tier-card">
+        <div class="membership-page-tier-card-header">
+          <h3>Family Member</h3>
+          <p class="membership-page-tier-price">$40<span>/year</span></p>
+          <p class="membership-page-tier-term">Full household support for your family</p>
+        </div>
+        <ul class="membership-page-tier-features">
+          <li>All household member benefits</li>
+          <li>Coverage for your full family</li>
+          <li>Great for active community households</li>
+        </ul>
+        <a class="btn stripe-btn" href="https://buy.stripe.com/YOUR_FAMILY_LINK" target="_blank" rel="noopener">Join Now</a>
+      </article>
+    </div>
+
+    <div class="membership-page-business-note article-content">
+      {{ .Content }}
+    </div>
+  </div>
+</section>
+
+<section class="section membership-page-benefits">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Community Impact</span>
+      <h2>What Your Membership Supports</h2>
+      <p>Your support helps RRROCA invest in everyday neighbourhood priorities that make Rocky Ridge and Royal Oak stronger.</p>
+    </div>
+
+    <div class="membership-page-benefits-grid">
+      <article class="membership-page-benefit-card">
+        <div class="membership-page-benefit-icon" aria-hidden="true">🌳</div>
+        <h3>Parks &amp; public spaces</h3>
+        <p>Advocacy and upkeep support for playgrounds, pathways, and shared green spaces.</p>
+      </article>
+      <article class="membership-page-benefit-card">
+        <div class="membership-page-benefit-icon" aria-hidden="true">🛡️</div>
+        <h3>Neighbourhood safety</h3>
+        <p>Safety messaging, awareness programs, and stronger connections with city and police partners.</p>
+      </article>
+      <article class="membership-page-benefit-card">
+        <div class="membership-page-benefit-icon" aria-hidden="true">🎉</div>
+        <h3>Community events</h3>
+        <p>Family-friendly events, local gatherings, and programs that bring neighbours together.</p>
+      </article>
+      <article class="membership-page-benefit-card">
+        <div class="membership-page-benefit-icon" aria-hidden="true">🏗️</div>
+        <h3>Development advocacy</h3>
+        <p>Representation on planning and development issues that affect Rocky Ridge and Royal Oak.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section membership-page-faq-section">
+  <div class="container">
+    <div class="section-header">
+      <span class="section-label">Questions</span>
+      <h2>Membership FAQ</h2>
+      <p>Quick answers about how RRROCA memberships and payments work.</p>
+    </div>
+
+    <div class="membership-page-faq">
+      <details class="membership-page-faq-item">
+        <summary>Do I need a paid membership to receive RRROCA news?</summary>
+        <div class="membership-page-faq-answer">
+          <p>No. Resident updates, alerts, and the newsletter are open to everyone in Rocky Ridge and Royal Oak.</p>
+        </div>
+      </details>
+      <details class="membership-page-faq-item">
+        <summary>How do I pay for a membership?</summary>
+        <div class="membership-page-faq-answer">
+          <p>RRROCA can use Stripe Payment Links, which open a secure hosted checkout page with no custom payment code required on the website.</p>
+        </div>
+      </details>
+      <details class="membership-page-faq-item">
+        <summary>What is the difference between Household and Family memberships?</summary>
+        <div class="membership-page-faq-answer">
+          <p>Household memberships are ideal for one household membership record, while Family memberships extend the same benefits across your full family.</p>
+        </div>
+      </details>
+      <details class="membership-page-faq-item">
+        <summary>Who should I contact about business memberships or help with signup?</summary>
+        <div class="membership-page-faq-answer">
+          <p>Please use the <a href="/contact/">contact form</a> and select Membership or Sponsorship so a RRROCA volunteer can follow up.</p>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+{{ end }}

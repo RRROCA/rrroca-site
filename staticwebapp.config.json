@@ -3,31 +3,47 @@
     {
       "route": "/404",
       "statusCode": 404
+    },
+    {
+      "route": "/css/*",
+      "headers": {
+        "Cache-Control": "public, max-age=604800, must-revalidate"
+      }
+    },
+    {
+      "route": "/js/*",
+      "headers": {
+        "Cache-Control": "public, max-age=604800, must-revalidate"
+      }
+    },
+    {
+      "route": "/images/*",
+      "headers": {
+        "Cache-Control": "public, max-age=604800, must-revalidate"
+      }
+    },
+    {
+      "route": "/favicon.ico",
+      "headers": {
+        "Cache-Control": "public, max-age=604800, must-revalidate"
+      }
     }
   ],
-  "navigationFallback": {
-    "rewrite": "/index.html",
-    "exclude": [
-      "/css/*",
-      "/js/*",
-      "/images/*",
-      "/*.xml",
-      "/*.json",
-      "/*.ico"
-    ]
-  },
   "responseOverrides": {
     "404": {
-      "rewrite": "/404.html"
+      "rewrite": "/404.html",
+      "statusCode": 404
     }
   },
   "globalHeaders": {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "SAMEORIGIN",
     "X-XSS-Protection": "1; mode=block",
+    "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
-    "Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline' https://connect.facebook.net https://cdn.jsdelivr.net https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://unpkg.com; font-src 'self' https://fonts.gstatic.com; frame-src https://www.facebook.com; img-src 'self' https: data:; connect-src 'self' https://data.calgary.ca"
+    "X-Permitted-Cross-Domain-Policies": "none",
+    "Content-Security-Policy": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; script-src 'self' 'unsafe-inline' https://connect.facebook.net https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' https: data:; frame-src 'self' https://www.facebook.com; connect-src 'self' https://data.calgary.ca https://formspree.io; form-action 'self' https://formspree.io; upgrade-insecure-requests"
   },
   "mimeTypes": {
     ".json": "application/json",

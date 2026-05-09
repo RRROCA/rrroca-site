@@ -1,0 +1,73 @@
+{{ define "main" }}
+{{ $category := "Other" }}
+{{ with .Params.categories }}{{ $category = index . 0 }}{{ end }}
+{{ $mapsSearch := "" }}
+{{ with .Params.address }}{{ $mapsSearch = printf "https://www.google.com/maps/search/?api=1&query=%s" (. | urlquery) }}{{ end }}
+{{ $mapsEmbed := "" }}
+{{ with .Params.address }}{{ $mapsEmbed = printf "https://www.google.com/maps?q=%s&output=embed" (. | urlquery) }}{{ end }}
+
+<section class="page-header">
+  <div class="container">
+    <div class="page-breadcrumb">
+      <a href="/business-directory/">Business Directory</a> · <span>{{ $category }}</span>
+    </div>
+    <h1>{{ .Title }}</h1>
+    {{ with .Params.description }}<p class="page-description">{{ . }}</p>{{ end }}
+  </div>
+</section>
+
+<section class="section">
+  <div class="container content-layout business-detail-layout">
+    <article class="content-main article-content business-detail-content">
+      <div class="business-detail-hero">
+        <span class="business-category-badge">{{ $category }}</span>
+        {{ if .Params.featured }}
+        <span class="business-featured-pill">Featured business</span>
+        {{ end }}
+      </div>
+
+      {{ .Content }}
+
+      {{ with $mapsEmbed }}
+      <div class="business-map-card">
+        <h2>Location</h2>
+        <iframe
+          class="business-map-frame"
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          src="{{ . }}"
+          title="Map for {{ $.Title }}"
+        ></iframe>
+        {{ with $mapsSearch }}
+        <a class="btn btn-secondary btn-sm" href="{{ . }}" target="_blank" rel="noopener">Open in Google Maps</a>
+        {{ end }}
+      </div>
+      {{ end }}
+
+      <div class="business-back-link">
+        <a href="/business-directory/" class="read-more">← Back to directory</a>
+      </div>
+    </article>
+
+    <aside class="content-sidebar business-sidebar">
+      <div class="business-sidebar-card">
+        <h2>Business details</h2>
+        <ul class="business-detail-list">
+          {{ with .Params.phone }}
+          <li><strong>Phone</strong><a href="tel:{{ replace . "-" "" }}">{{ . }}</a></li>
+          {{ end }}
+          {{ with .Params.website }}
+          <li><strong>Website</strong><a href="{{ . }}" target="_blank" rel="noopener">{{ . }}</a></li>
+          {{ end }}
+          {{ with .Params.address }}
+          <li><strong>Address</strong><span>{{ . }}</span></li>
+          {{ end }}
+          {{ with .Params.hours }}
+          <li><strong>Hours</strong><span>{{ . }}</span></li>
+          {{ end }}
+        </ul>
+      </div>
+    </aside>
+  </div>
+</section>
+{{ end }}

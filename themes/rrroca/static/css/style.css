@@ -1530,7 +1530,7 @@ p { margin-bottom: var(--space-md); }
   background: linear-gradient(170deg, var(--color-sky) 0%, var(--color-ridge) 100%);
   color: white;
 }
-.membership-hero {
+.membership-page-hero {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-3xl);
@@ -2175,5 +2175,677 @@ p { margin-bottom: var(--space-md); }
 
   .gallery-lightbox {
     padding: 1rem;
+  }
+}
+
+/* ============================================
+   Membership + Newsletter Signup
+   ============================================ */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.membership-hero {
+  position: relative;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  color: white;
+}
+
+.membership-page-hero-photo,
+.membership-page-hero-overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.membership-page-hero-photo {
+  background-size: cover;
+  background-position: center;
+}
+
+.membership-page-hero-overlay {
+  background: linear-gradient(135deg, rgba(43, 84, 126, 0.9) 0%, rgba(74, 124, 89, 0.72) 100%);
+}
+
+.membership-page-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  padding: var(--space-4xl) 0;
+}
+
+.membership-page-hero-content h1,
+.membership-page-hero-content p,
+.membership-page-hero-content .section-label {
+  color: white;
+}
+
+.membership-page-section {
+  background: linear-gradient(180deg, rgba(250, 250, 250, 0.92) 0%, #ffffff 100%);
+}
+
+.membership-page-section-header {
+  margin-bottom: var(--space-2xl);
+}
+
+.membership-page-tiers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-xl);
+}
+
+.membership-page-tier-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: clamp(1.4rem, 2vw, 2rem);
+  border: 1px solid rgba(43, 84, 126, 0.12);
+  border-radius: 20px;
+  background: white;
+  box-shadow: var(--shadow-md);
+}
+
+.membership-page-tier-card.featured {
+  border-color: rgba(212, 168, 67, 0.55);
+  box-shadow: 0 18px 40px rgba(43, 84, 126, 0.12);
+  transform: translateY(-6px);
+}
+
+.membership-page-tier-card-header {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.membership-page-tier-card-header h3 {
+  margin: 0;
+  color: var(--mountain-blue);
+}
+
+.membership-page-tier-price {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 4vw, 2.6rem);
+  line-height: 1;
+  color: var(--alpine-green);
+}
+
+.membership-page-tier-price span {
+  font-size: 1rem;
+  color: var(--rock-gray);
+  margin-left: 0.3rem;
+}
+
+.membership-page-tier-term,
+.membership-page-tier-note {
+  margin: 0;
+  color: var(--rock-gray);
+}
+
+.membership-page-tier-features {
+  list-style: none;
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+}
+
+.membership-page-tier-features li {
+  display: flex;
+  gap: 0.65rem;
+  align-items: flex-start;
+}
+
+.membership-page-tier-features li::before {
+  content: '✓';
+  color: var(--sunset-gold);
+  font-weight: 700;
+}
+
+.stripe-btn {
+  justify-content: center;
+  width: fit-content;
+  min-width: 150px;
+  background: linear-gradient(135deg, var(--mountain-blue) 0%, var(--alpine-green) 100%);
+  border-color: transparent;
+  color: var(--snow-white);
+  box-shadow: var(--shadow-sm);
+}
+
+.stripe-btn:hover,
+.stripe-btn:focus-visible {
+  color: var(--snow-white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  outline: none;
+}
+
+.membership-page-business-note {
+  margin-top: var(--space-2xl);
+  padding: 1.25rem 1.4rem;
+  border-left: 4px solid var(--sunset-gold);
+  border-radius: var(--radius);
+  background: rgba(212, 168, 67, 0.1);
+}
+
+.membership-page-business-note p:last-child {
+  margin-bottom: 0;
+}
+
+.membership-page-benefits {
+  background: rgba(43, 84, 126, 0.04);
+}
+
+.membership-page-benefits-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+.membership-page-benefit-card {
+  padding: 1.4rem;
+  border-radius: 18px;
+  background: white;
+  border: 1px solid rgba(43, 84, 126, 0.1);
+  box-shadow: var(--shadow-sm);
+}
+
+.membership-page-benefit-card h3 {
+  margin-bottom: var(--space-sm);
+  color: var(--mountain-blue);
+}
+
+.membership-page-benefit-icon {
+  width: 3rem;
+  height: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-md);
+  border-radius: 999px;
+  background: rgba(74, 124, 89, 0.12);
+  font-size: 1.4rem;
+}
+
+.membership-page-faq {
+  display: grid;
+  gap: var(--space-md);
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.membership-page-faq-item {
+  border: 1px solid rgba(43, 84, 126, 0.12);
+  border-radius: 16px;
+  background: white;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.membership-page-faq-item summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 1.1rem 1.25rem;
+  font-weight: 700;
+  color: var(--mountain-blue);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.membership-page-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.membership-page-faq-item summary::after {
+  content: '+';
+  font-size: 1.4rem;
+  line-height: 1;
+  color: var(--sunset-gold);
+}
+
+.membership-page-faq-item[open] summary::after {
+  content: '–';
+}
+
+.membership-page-faq-answer {
+  padding: 0 1.25rem 1.1rem;
+  color: var(--color-text-secondary);
+}
+
+.membership-page-faq-answer p:last-child {
+  margin-bottom: 0;
+}
+
+.footer-newsletter {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(280px, 1fr);
+  gap: var(--space-xl);
+  align-items: center;
+  margin-bottom: var(--space-2xl);
+  padding: 1.35rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.footer-newsletter h3 {
+  margin-bottom: var(--space-sm);
+  color: white;
+}
+
+.footer-newsletter p,
+.footer-newsletter .section-label {
+  margin-bottom: 0;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.footer-newsletter-copy {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.footer-newsletter-form {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.footer-newsletter-form input[type="email"] {
+  flex: 1;
+  min-height: 48px;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.98);
+  color: var(--color-text);
+  font: inherit;
+}
+
+.footer-newsletter-form input[type="email"]:focus {
+  outline: 3px solid rgba(212, 168, 67, 0.26);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1024px) {
+  .membership-page-tiers,
+  .membership-page-benefits-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer-newsletter {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .membership-page-hero {
+    min-height: 360px;
+  }
+
+  .membership-page-tiers,
+  .membership-page-benefits-grid,
+  .footer-newsletter-form {
+    grid-template-columns: 1fr;
+  }
+
+  .membership-page-tier-card.featured {
+    transform: none;
+  }
+
+  .footer-newsletter-form {
+    display: grid;
+  }
+
+  .stripe-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .membership-page-tiers,
+  .membership-page-benefits-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .membership-page-faq-item summary {
+    padding: 1rem;
+  }
+
+  .membership-page-faq-answer {
+    padding: 0 1rem 1rem;
+  }
+}
+
+/* ============================================
+   Business Directory
+   ============================================ */
+.business-directory-intro {
+  max-width: var(--max-width-narrow);
+  margin: 0 auto var(--space-2xl);
+}
+
+.directory-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.directory-search {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.directory-search-label {
+  font-weight: 700;
+  color: var(--mountain-blue);
+}
+
+.directory-search-input {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border: 1px solid color-mix(in srgb, var(--mountain-blue) 20%, white);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  font: inherit;
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.directory-search-input:focus {
+  outline: none;
+  border-color: var(--mountain-blue);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--mountain-blue) 15%, white);
+}
+
+.directory-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+}
+
+.directory-filter-btn {
+  padding: 0.65rem 1rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--mountain-blue) 20%, white);
+  background: var(--color-surface);
+  color: var(--mountain-blue);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.directory-filter-btn:hover,
+.directory-filter-btn.is-active {
+  background: var(--mountain-blue);
+  border-color: var(--mountain-blue);
+  color: white;
+}
+
+.directory-results-count {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.page-breadcrumb {
+  margin-bottom: var(--space-md);
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.page-breadcrumb a {
+  color: white;
+}
+
+.business-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-xl);
+}
+
+.business-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  padding: var(--space-xl);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition), opacity var(--transition), border-color var(--transition);
+}
+
+.business-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+.business-card.is-featured {
+  border: 2px solid var(--sunset-gold);
+  box-shadow: 0 10px 30px color-mix(in srgb, var(--sunset-gold) 20%, white);
+}
+
+.business-card.is-hidden,
+.business-card.is-hiding {
+  opacity: 0;
+  transform: translateY(10px) scale(0.98);
+  pointer-events: none;
+}
+
+.business-card[hidden] {
+  display: none !important;
+}
+
+.business-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.business-card h2,
+.business-sidebar-card h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.business-card h2 a {
+  color: var(--color-text);
+}
+
+.business-card h2 a:hover {
+  color: var(--mountain-blue);
+}
+
+.business-category-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--alpine-green) 14%, white);
+  color: var(--alpine-green);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin-bottom: var(--space-sm);
+}
+
+.business-featured-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--sunset-gold) 18%, white);
+  color: #8a6508;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.business-card-description {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.business-card-meta,
+.business-detail-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.business-card-meta li,
+.business-detail-list li {
+  color: var(--color-text-secondary);
+}
+
+.business-card-meta strong,
+.business-detail-list strong {
+  color: var(--color-text);
+  margin-right: 0.35rem;
+}
+
+.directory-empty-state {
+  padding: var(--space-2xl);
+  border-radius: var(--radius-lg);
+  border: 1px dashed color-mix(in srgb, var(--mountain-blue) 25%, white);
+  background: color-mix(in srgb, var(--mountain-blue) 4%, white);
+  text-align: center;
+}
+
+.directory-empty-state.is-hidden {
+  display: none;
+}
+
+.directory-cta {
+  margin-top: var(--space-3xl);
+  padding: var(--space-3xl);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, var(--mountain-blue), var(--alpine-green));
+  color: white;
+  text-align: center;
+}
+
+.directory-cta h2 {
+  color: white;
+}
+
+.directory-cta p {
+  max-width: 640px;
+  margin: 0 auto var(--space-lg);
+  opacity: 0.92;
+}
+
+.directory-cta .section-label {
+  color: color-mix(in srgb, var(--sunset-gold) 85%, white);
+}
+
+.directory-cta .btn {
+  border-color: var(--sunset-gold);
+  background: var(--sunset-gold);
+  color: #1f1f1f;
+}
+
+.directory-cta .btn:hover {
+  background: color-mix(in srgb, var(--sunset-gold) 85%, black);
+  border-color: color-mix(in srgb, var(--sunset-gold) 85%, black);
+  color: white;
+}
+
+.business-detail-layout {
+  align-items: start;
+}
+
+.business-detail-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.business-detail-hero {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  align-items: center;
+}
+
+.business-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.business-sidebar-card,
+.business-map-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-sm);
+}
+
+.business-detail-list li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.business-detail-list li:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.business-map-card h2 {
+  margin-bottom: var(--space-md);
+}
+
+.business-map-frame {
+  width: 100%;
+  min-height: 320px;
+  border: 0;
+  border-radius: var(--radius);
+  margin-bottom: var(--space-md);
+}
+
+.business-back-link {
+  margin-top: var(--space-sm);
+}
+
+@media (max-width: 1024px) {
+  .business-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .directory-cta {
+    padding: var(--space-2xl);
+  }
+
+  .business-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .business-card-header {
+    flex-direction: column;
   }
 }
