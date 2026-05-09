@@ -156,7 +156,7 @@
     <h2 class="section-heading">Your Neighbourhood Needs You</h2>
     <p class="section-intro">From family events to safer streets, this community runs on neighbours who lean in and make great things happen.</p>
     <div class="involve-grid">
-      <a href="{{ "membership/" | absURL }}" class="involve-card">
+      <a href="{{ .Site.Params.membershipURL }}" target="_blank" rel="noopener" class="involve-card">
         <div class="involve-card-icon involve-card-icon--member">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         </div>
@@ -329,7 +329,7 @@
           </div>
         </div>
         <div class="membership-actions">
-          <a href="{{ "membership/" | absURL }}" class="btn btn-primary btn-lg">Join RRROCA Today</a>
+          <a href="{{ .Site.Params.membershipURL }}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Join RRROCA Today</a>
           <a href="{{ "get-involved/sponsorship/" | absURL }}" class="btn btn-outline-light btn-lg">Sponsor the Community</a>
         </div>
       </div>

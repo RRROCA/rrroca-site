@@ -96,7 +96,7 @@ draft: false
 
 **If you wish to view back issues prior to January 2015, [please contact us for details.](mailto:info@rrroca.org)**
 
-[![RRROCA Calgary Membership](/images/uploads/RRROCA-Member-Portal-Button-2.jpg "RRROCA Calgary Membership")](/membership/)
+[![RRROCA Calgary Membership](/images/uploads/RRROCA-Member-Portal-Button-2.jpg "RRROCA Calgary Membership")](https://rrroca.getcommunal.com/memberships)
 
 [![Volunteer with RRROCA Calgary](/images/uploads/become-a-rrroca-volunteer-1.jpg "Volunteer with RRROCA Calgary")](/get-involved/volunteer/)
 

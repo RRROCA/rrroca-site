@@ -5,22 +5,7 @@
     <p>This form is intended for non-emergency issues only. For police non-emergency support, call <a href="tel:4032661234">403-266-1234</a>.</p>
   </div>
 
-  <form
-    class="rr-form"
-    data-formspree
-    data-success-message="Thanks for your report. RRROCA has received your non-emergency concern."
-    method="POST"
-    action="/api/forms/safety-report"
-    novalidate
-  >
-    <input type="hidden" name="form_name" value="RRROCA Safety Concern Form">
-    <div class="honeypot" aria-hidden="true">
-      <label for="report-company">Leave this field empty</label>
-      <input id="report-company" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
-    </div>
-
-    <p class="form-note"><strong>Submission route:</strong> this form posts to RRROCA’s safety reporting endpoint. Update the action if your deployment uses a different handler.</p>
-
+  <form class="rr-form" data-mailto="info@rrroca.org" data-mailto-subject="Safety Concern Report" novalidate>
     <div class="rr-form-grid">
       <div class="rr-field">
         <label for="report-name">Name <span class="form-optional">(optional for anonymous reports)</span></label>
@@ -60,12 +45,6 @@
       <label for="report-description">Description</label>
       <textarea id="report-description" name="description" rows="6" required data-label="Description" placeholder="Describe what happened, when you noticed it, and any details that could help follow up."></textarea>
       <p class="field-error" aria-live="polite"></p>
-    </div>
-
-    <div class="rr-field rr-field-disabled">
-      <label for="report-photo">Photo upload <span class="coming-soon">Coming soon</span></label>
-      <input id="report-photo" name="photo" type="file" disabled>
-      <p class="form-help">Photo upload is coming soon.</p>
     </div>
 
     <div class="form-status" aria-live="polite"></div>

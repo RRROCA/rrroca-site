@@ -1,26 +1,11 @@
 <section class="rr-form-section">
   <div class="rr-form-intro">
     <span class="section-label">Volunteer Signup</span>
-    <h2>Tell us how you’d like to help</h2>
+    <h2>Tell us how you'd like to help</h2>
     <p>Fill out the form below and a board member will follow up within a few days.</p>
   </div>
 
-  <form
-    class="rr-form"
-    data-formspree
-    data-success-message="Thanks for volunteering. RRROCA will be in touch soon."
-    method="POST"
-    action="/api/forms/volunteer"
-    novalidate
-  >
-    <input type="hidden" name="form_name" value="RRROCA Volunteer Form">
-    <div class="honeypot" aria-hidden="true">
-      <label for="volunteer-company">Leave this field empty</label>
-      <input id="volunteer-company" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
-    </div>
-
-    <p class="form-note"><strong>Submission route:</strong> this form posts to RRROCA’s volunteer intake endpoint. Update the action if your deployment uses a different handler.</p>
-
+  <form class="rr-form" data-mailto="info@rrroca.org" data-mailto-subject="Volunteer Signup" novalidate>
     <div class="rr-form-grid">
       <div class="rr-field">
         <label for="volunteer-name">Name</label>

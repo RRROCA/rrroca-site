@@ -111,6 +111,37 @@
   }
 
   async function submitForm(form) {
+    const mailtoAddr = form.dataset.mailto;
+    if (mailtoAddr) {
+      // Mailto fallback: build email from form fields
+      var fields = new FormData(form);
+      var subject = form.dataset.mailtoSubject || '';
+      var bodyParts = [];
+
+      fields.forEach(function(value, key) {
+        if (key === '_gotcha' || !value) return;
+        // Use subject field value if no data-mailto-subject set
+        if (key === 'subject' && !form.dataset.mailtoSubject) {
+          subject = 'RRROCA Website: ' + value;
+          return;
+        }
+        bodyParts.push(key.replace(/_/g, ' ').replace(/\[\]/g, '') + ': ' + value);
+      });
+
+      if (!subject) subject = 'RRROCA Website Inquiry';
+      var replyTo = fields.get('email');
+      var mailto = 'mailto:' + encodeURIComponent(mailtoAddr)
+        + '?subject=' + encodeURIComponent(subject)
+        + '&body=' + encodeURIComponent(bodyParts.join('\n\n'));
+      if (replyTo) {
+        mailto += '&reply-to=' + encodeURIComponent(replyTo);
+      }
+
+      window.location.href = mailto;
+      setStatus(form, 'success', 'Your email app should open now. If it doesn\u2019t, email us directly at ' + mailtoAddr);
+      return;
+    }
+
     if (!form.action) {
       setStatus(form, 'error', 'This form is missing a submission endpoint. Please update the form action before publishing.');
       return;
@@ -205,6 +236,6 @@
   }
 
   document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('form[data-formspree]').forEach(wireForm);
+    document.querySelectorAll('form[data-formspree], form[data-mailto]').forEach(wireForm);
   });
 })();

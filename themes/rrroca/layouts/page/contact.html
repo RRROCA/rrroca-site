@@ -18,22 +18,7 @@
       <h2>Send a message</h2>
       <p>Questions, ideas, or feedback? We'd love to hear from you.</p>
 
-      <form
-        class="rr-form"
-        data-formspree
-        data-success-message="Thanks for reaching out. Your message has been sent to RRROCA."
-        method="POST"
-        action="/api/forms/contact"
-        novalidate
-      >
-        <input type="hidden" name="form_name" value="RRROCA Contact Form">
-        <div class="honeypot" aria-hidden="true">
-          <label for="contact-company">Leave this field empty</label>
-          <input id="contact-company" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
-        </div>
-
-        <p class="form-note"><strong>Submission route:</strong> this form posts to RRROCA’s contact endpoint. Update the action if your deployment uses a different handler.</p>
-
+      <form class="rr-form" data-mailto="info@rrroca.org" novalidate>
         <div class="rr-field">
           <label for="contact-name">Name</label>
           <input id="contact-name" name="name" type="text" autocomplete="name" required data-label="Name">
@@ -70,8 +55,9 @@
         <button type="submit" class="btn btn-primary rr-form-submit">Send message</button>
       </form>
 
-      <!-- ALTERNATIVE: mailto fallback -->
-      <!-- <a href="mailto:info@rrroca.org?subject=RRROCA%20Website%20Inquiry">Email RRROCA directly</a> -->
+      <p class="form-note" style="margin-top: var(--space-sm); font-size: 0.85rem; color: var(--color-text-muted);">
+        This opens your email app with your message pre-filled. You can also email us directly at <a href="mailto:info@rrroca.org">info@rrroca.org</a>.
+      </p>
     </aside>
   </div>
 </section>

@@ -15,7 +15,7 @@ buildFuture = true
   email = "info@rrroca.org"
   phone = ""
   address = "Rocky Ridge / Royal Oak, Calgary, AB"
-  membershipURL = "/membership/"
+  membershipURL = "https://rrroca.getcommunal.com/memberships"
 
   # Social proof
   facebookGroupMembers = "5,000+"

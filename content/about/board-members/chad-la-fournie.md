@@ -1,15 +1,15 @@
 ---
 title: "Chad La Fournie"
 date: 2026-05-03
-description: "Safety & Technology Director for the Rocky Ridge Royal Oak Community Association."
+description: "Safety & Security Director for the Rocky Ridge Royal Oak Community Association."
 categories: ["about"]
-tags: ["board", "safety", "technology"]
+tags: ["board", "safety"]
 draft: false
 ---
 
 ## Board role
 
-- **Role:** Safety & Technology Director
-- **Portfolio:** Community safety and technology
+- **Role:** Safety & Security Director
+- **Email:** safety@rrroca.org
 
-Chad La Fournie serves on the RRROCA board in the Safety & Technology portfolio.
+Chad La Fournie leads the Safety & Security portfolio for RRROCA, working with Calgary Police Service and community partners to keep Rocky Ridge and Royal Oak safe.
