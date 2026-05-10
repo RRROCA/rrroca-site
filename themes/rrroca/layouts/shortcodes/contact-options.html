@@ -3,6 +3,12 @@
     <h3>Email</h3>
     <p>For general questions, reach us at <a href="mailto:{{ .Site.Params.email }}">{{ .Site.Params.email }}</a>.</p>
   </div>
+  {{ with .Site.Params.phone }}
+  <div class="contact-method-card">
+    <h3>Phone</h3>
+    <p>Call us at <a href="tel:{{ replaceRE "[^0-9]" "" . }}">{{ . }}</a> (voicemail only).</p>
+  </div>
+  {{ end }}
   <div class="contact-method-card">
     <h3>Safety matters</h3>
     <p>For urgent issues, call <a href="tel:911">911</a>. For non-emergencies, call <a href="tel:{{ replace .Site.Params.cpsNonEmergency "-" "" }}">{{ .Site.Params.cpsNonEmergency }}</a>.</p>
