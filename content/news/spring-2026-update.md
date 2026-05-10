@@ -13,7 +13,7 @@ Spring always brings a fresh burst of energy to Rocky Ridge and Royal Oak, and t
 
 ## AGM coming up this May
 
-Our **Annual General Meeting** is an important chance to connect with residents across both neighbourhoods. The AGM is where we share updates, elect board members, and hear directly from the community about what matters most. Visit our [events page](/events/) for current details.
+Our **Annual General Meeting** is just around the corner, and we would love to see a strong turnout from residents across both neighbourhoods. The AGM is where we share updates, elect board members, and hear directly from the community about what matters most. Visit our [AGM event page](/events/2026-05-agm/) for details.
 
 ## Playground conversations are underway
 
