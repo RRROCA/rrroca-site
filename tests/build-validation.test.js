@@ -224,6 +224,15 @@ describe('Hugo build validation', () => {
     });
   });
 
+  it('shows RRROCA voicemail phone number on the contact page', () => {
+    const document = loadDocument(path.join('public', 'contact', 'index.html'));
+    const contactContent = document.querySelector('.contact-content');
+
+    expect(contactContent?.textContent).toContain('(403) 879-2820');
+    expect(contactContent?.textContent?.toLowerCase()).toContain('voicemail only');
+    expect(document.querySelector('a[href="tel:+14038792820"]')).not.toBeNull();
+  });
+
   it('includes core meta tags across generated HTML pages', () => {
     const htmlFiles = [
       path.join(PUBLIC_DIR, 'index.html'),
