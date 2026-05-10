@@ -10,6 +10,18 @@ This is a Hugo static site for the Rocky Ridge Royal Oak Community Association (
 - **Config**: `hugo.toml`
 
 ## Build & Test
+
+**IMPORTANT**: Hugo is NOT pre-installed. Install it first using the Go installer (no external downloads needed):
+```bash
+CGO_ENABLED=1 go install -tags extended github.com/gohugoio/hugo@v0.161.1
+```
+
+If Go is not available, download Hugo directly:
+```bash
+curl -sSL https://github.com/gohugoio/hugo/releases/download/v0.161.1/hugo_extended_0.161.1_linux-amd64.tar.gz | tar xz -C /usr/local/bin hugo
+```
+
+Then build and test:
 ```bash
 hugo --quiet          # Build the site (must pass with no errors)
 npx jest tests/build-validation.test.js  # Run all 12 validation tests (must all pass)
