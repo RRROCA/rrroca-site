@@ -56,6 +56,11 @@ function routeExists(href) {
     return false;
   }
 
+  // External links are valid — only check local routes
+  if (/^https?:\/\//i.test(href) && !href.includes('localhost')) {
+    return true;
+  }
+
   const parsed = new URL(href, 'http://localhost:1314/');
   let cleanPath = parsed.pathname;
   // Strip baseURL prefix for GitHub Pages subdirectory
