@@ -134,6 +134,21 @@ describe('Homepage UX contract', () => {
     expect(violations).toEqual([]);
   });
 
+  it('avoids Hugo-version-specific .Site.Language.Locale in theme layouts', () => {
+    const violations = [];
+    const htmlFiles = walkFiles(SOURCE_LAYOUTS_DIR, '.html');
+    const localePattern = /\.Site\.Language\.Locale\b/;
+
+    htmlFiles.forEach((filePath) => {
+      const source = read(filePath);
+      if (localePattern.test(source)) {
+        violations.push(path.relative(REPO_ROOT, filePath));
+      }
+    });
+
+    expect(violations).toEqual([]);
+  });
+
   it('includes the homepage animation keyframes required by the UX spec', () => {
     const css = read(SOURCE_CSS);
     ['heroReveal', 'heroParallax', 'heroGlow', 'stripMarquee'].forEach((keyframe) => {
