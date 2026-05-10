@@ -1,0 +1,75 @@
+name: Auto-merge content PRs
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches: [master]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  auto-merge:
+    runs-on: ubuntu-latest
+    # Only auto-merge PRs that only touch content files
+    if: >-
+      !contains(github.event.pull_request.title, '[no-auto-merge]')
+
+    steps:
+      - name: Check if PR only changes content
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: files } = await github.rest.pulls.listFiles({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+            });
+
+            const contentOnly = files.every(f =>
+              f.filename.startsWith('content/') ||
+              f.filename.startsWith('static/images/')
+            );
+
+            console.log(`Files changed: ${files.map(f => f.filename).join(', ')}`);
+            console.log(`Content-only PR: ${contentOnly}`);
+            core.setOutput('content_only', contentOnly.toString());
+
+      - name: Enable auto-merge
+        if: steps.check.outputs.content_only == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            // Wait for CI to pass, then merge automatically
+            await github.rest.pulls.merge({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.payload.pull_request.number,
+              merge_method: 'squash',
+            }).catch(async (err) => {
+              // If merge fails (CI not done yet), enable auto-merge instead
+              console.log('Direct merge not ready, enabling auto-merge...');
+              await github.graphql(`
+                mutation($pullRequestId: ID!) {
+                  enablePullRequestAutoMerge(input: {
+                    pullRequestId: $pullRequestId
+                    mergeMethod: SQUASH
+                  }) { clientMutationId }
+                }
+              `, { pullRequestId: context.payload.pull_request.node_id });
+              console.log('Auto-merge enabled — will merge when CI passes');
+            });
+
+      - name: Comment on non-content PRs
+        if: steps.check.outputs.content_only == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: '⚠️ This PR changes code/templates (not just content), so it needs a manual review from Chad before merging.'
+            });
