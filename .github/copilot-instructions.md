@@ -24,7 +24,8 @@ curl -sSL https://github.com/gohugoio/hugo/releases/download/v0.161.1/hugo_exten
 Then build and test:
 ```bash
 hugo --quiet          # Build the site (must pass with no errors)
-npx jest tests/build-validation.test.js  # Run all 12 validation tests (must all pass)
+npm ci                # Install test dependencies
+npx jest --verbose    # Run ALL validation tests (must all pass)
 ```
 
 ## Content Structure
@@ -64,6 +65,14 @@ Page content in markdown...
 - Fonts: Inter (body), Merriweather (headings)
 - Mobile-first responsive design with breakpoints at 480px, 768px, 1024px
 
+## Sandbox Environment Rules
+**CRITICAL**: You run in a sandboxed VM with firewall restrictions.
+- **DO NOT** use Playwright, Puppeteer, headless browsers, or any browser-based testing
+- **DO NOT** make outbound HTTP requests to external sites (they will be blocked)
+- **DO NOT** install apt packages from external repos (dl.google.com is blocked)
+- **ONLY** verify your work with `hugo --quiet` (build) and `npx jest` (tests)
+- The Jest tests validate the built HTML output — that's sufficient
+
 ## Rules
 1. **Always run the build and tests** before considering work complete
 2. **Never commit personal info** (phone numbers, personal emails) — use @rrroca.org role emails only
@@ -72,3 +81,4 @@ Page content in markdown...
 5. **Match existing code style** — check surrounding code for conventions
 6. For content updates, create/edit files in `content/` — Hugo handles the rest
 7. For visual/layout changes, edit templates in `themes/rrroca/layouts/` and CSS in `style.css`
+8. **Never launch a browser** to test — use Hugo build + Jest only (see Sandbox rules above)

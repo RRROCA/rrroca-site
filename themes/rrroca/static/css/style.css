@@ -5341,3 +5341,114 @@ p { margin-bottom: var(--space-md); }
     font-size: 1rem;
   }
 }
+
+/* ============================================
+   Report Triage — 311 vs RRROCA routing
+   ============================================ */
+.report-triage {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.report-triage-card {
+  background: var(--color-surface);
+  border: 2px solid var(--color-border);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.report-triage-card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.report-triage-311 {
+  border-color: #2563eb;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.04), rgba(37, 99, 235, 0.01));
+}
+
+.report-triage-rrroca {
+  border-color: var(--color-meadow);
+  background: linear-gradient(135deg, rgba(46, 125, 50, 0.04), rgba(46, 125, 50, 0.01));
+}
+
+.report-triage-icon {
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.report-triage-card h3 {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+}
+
+.report-triage-card p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+  margin: 0 0 1rem;
+}
+
+.report-triage-btn {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  background: #2563eb;
+  color: #fff !important;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.report-triage-btn:hover {
+  background: #1d4ed8;
+}
+
+.report-triage-note {
+  font-size: 0.85rem !important;
+  margin-top: 0.75rem !important;
+  color: var(--color-text-muted) !important;
+}
+
+.report-311-examples {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0 2.5rem;
+}
+
+.report-311-examples summary {
+  cursor: pointer;
+  font-size: 1rem;
+  color: var(--color-meadow);
+}
+
+.report-311-examples table {
+  margin-top: 1rem;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.report-311-examples th,
+.report-311-examples td {
+  text-align: left;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.report-311-examples th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .report-triage {
+    grid-template-columns: 1fr;
+  }
+}
