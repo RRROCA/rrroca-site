@@ -13,27 +13,36 @@ RRROCA is led by local volunteers who care deeply about keeping Rocky Ridge and 
 
 Interested in serving? Join us at the [Annual General Meeting](/events/2026-05-agm/) or connect through our [volunteer page](/get-involved/volunteer/).
 
-## Current board members
+## Executive
 
 - **President:** [Jason Kellock](/about/board-members/jason-kellock/)
-- **Vice President:** [Michelle Delorme](/about/board-members/michelle-delorme/)
-- **Secretary / Events Chair:** [Shahnaz Munir](/about/board-members/shahnaz-munir/)
-- **Treasurer:** [Darren Barfuss](/about/board-members/darren-barfuss/)
-- **Planning & Development Chair:** [Dave Spencer](/about/board-members/dave-spencer/)
-- **Transportation Chair:** [Yomi Olujonwo](/about/board-members/yomi-olujonwo/)
-- **Safety & Technology Director:** [Chad La Fournie](/about/board-members/chad-la-fournie/)
-- **Parks Chair:** [Jared Spitzmacher](/about/board-members/jared-spitzmacher/)
-- **Communications Chair:** [Talah Al Zamel](/about/board-members/talah-al-zamel/)
-- **Sponsorship Chair:** [Udit Jariwala](/about/board-members/udit-jariwala/)
-- **Immediate Past President:** [Dino Petrakos](/about/board-members/dino-petrakos/)
+- **Vice President:** *Vacant*
+- **Treasurer:** [Oluwaseun Ogunsola](/about/board-members/oluwaseun-ogunsola/)
+- **Secretary (Acting):** [Shahnaz Munir](/about/board-members/shahnaz-munir/)
 
-Browse the full [board member directory](/about/board-members/) for simple profile pages migrated from the legacy RRROCA website.
+## Portfolio Directors
+
+- **Communications:** *Vacant*
+- **Events:** [Shahnaz Munir](/about/board-members/shahnaz-munir/)
+- **Membership:** *Vacant*
+- **Parks:** *Vacant*
+- **Planning & Development:** [Anurag Agarwal](/about/board-members/anurag-agarwal/)
+- **Programs:** [Megan McDonald](/about/board-members/megan-mcdonald/)
+- **Safety & Security:** [Chad La Fournie](/about/board-members/chad-la-fournie/)
+- **Schools:** [Shaleni Agarwal](/about/board-members/shaleni-agarwal/)
+- **Sponsorship:** *Vacant*
+- **Transportation:** *Vacant*
+- **Volunteers:** [Fasih Rehman](/about/board-members/fasih-rehman/)
+
+Browse the full [board member directory](/about/board-members/) for profile pages.
 
 ## Open portfolios
 
-The legacy board listing also showed these positions as vacant:
+Several board positions are currently vacant — if you're interested in volunteering, please [get in touch](/get-involved/volunteer/)!
 
-- Programs Chair
-- Membership Chair
-- Schools Chair
-- Volunteers Chair
+- Vice President
+- Communications
+- Membership
+- Parks
+- Sponsorship
+- Transportation

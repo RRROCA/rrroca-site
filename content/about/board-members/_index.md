@@ -11,18 +11,18 @@ draft: false
 
 This directory captures board member profiles and roster details migrated from the legacy RRROCA WordPress site.
 
-## Current roster
+## Executive
 
 - [Jason Kellock](/about/board-members/jason-kellock/) — President
-- [Michelle Delorme](/about/board-members/michelle-delorme/) — Vice President
-- [Shahnaz Munir](/about/board-members/shahnaz-munir/) — Secretary and Events Chair
-- [Darren Barfuss](/about/board-members/darren-barfuss/) — Treasurer
-- [Dave Spencer](/about/board-members/dave-spencer/) — Planning & Development Chair
-- [Yomi Olujonwo](/about/board-members/yomi-olujonwo/) — Transportation Chair
-- [Chad La Fournie](/about/board-members/chad-la-fournie/) — Safety & Technology Director
-- [Jared Spitzmacher](/about/board-members/jared-spitzmacher/) — Parks Chair
-- [Talah Al Zamel](/about/board-members/talah-al-zamel/) — Communications Chair
-- [Udit Jariwala](/about/board-members/udit-jariwala/) — Sponsorship Chair
-- [Dino Petrakos](/about/board-members/dino-petrakos/) — Immediate Past President
+- [Oluwaseun Ogunsola](/about/board-members/oluwaseun-ogunsola/) — Treasurer
+- [Shahnaz Munir](/about/board-members/shahnaz-munir/) — Secretary (Acting) & Events Director
+
+## Portfolio Directors
+
+- [Anurag Agarwal](/about/board-members/anurag-agarwal/) — Planning & Development
+- [Chad La Fournie](/about/board-members/chad-la-fournie/) — Safety & Security
+- [Fasih Rehman](/about/board-members/fasih-rehman/) — Volunteers
+- [Megan McDonald](/about/board-members/megan-mcdonald/) — Programs
+- [Shaleni Agarwal](/about/board-members/shaleni-agarwal/) — Schools
 
 For the board overview page, visit [Board of Directors](/about/board-of-directors/).
