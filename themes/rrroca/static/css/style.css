@@ -795,6 +795,8 @@ p { margin-bottom: var(--space-md); }
   background: white; color: #1877f2; border-color: white; font-weight: 700;
 }
 .fb-group-cta .btn:hover { background: #f0f2f5; color: #1877f2; transform: translateY(-1px); }
+.sidebar .fb-group-cta-inner { flex-direction: column; text-align: center; }
+.sidebar .fb-group-cta .btn { width: 100%; text-align: center; }
 
 /* ================================
    MEMBERSHIP CTA — warm sunset tones
