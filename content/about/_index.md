@@ -26,6 +26,8 @@ Please note that the City communicates overall area issues directly with the Com
 
 If you enroll your child in a sports program in this community you must have membership so that insurance coverage is assured. If you join the Community Association voluntarily because you want to afford the association the operating budget to give good government representation, then we thank you!
 
+### [Meet Your Board of Directors →](/about/board-of-directors/)
+
 #### Mission Statement
 
 The Rocky Ridge Royal Oak Community Association is a vital organization that effectively acts upon the common interests and concerns of the community’s diverse residents.
