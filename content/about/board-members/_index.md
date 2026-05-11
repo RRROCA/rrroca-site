@@ -24,5 +24,6 @@ This directory captures board member profiles and roster details migrated from t
 - [Fasih Rehman](/about/board-members/fasih-rehman/) — Volunteers
 - [Megan McDonald](/about/board-members/megan-mcdonald/) — Programs
 - [Shaleni Agarwal](/about/board-members/shaleni-agarwal/) — Schools
+- [Udit Jariwala](/about/board-members/udit-jariwala/) — Sponsorship
 
 For the board overview page, visit [Board of Directors](/about/board-of-directors/).

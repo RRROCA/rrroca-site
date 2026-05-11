@@ -14,4 +14,4 @@ draft: false
 - **Role:** Sponsorship Chair
 - **Portfolio:** Sponsorship and partnerships
 
-Udit Jariwala was listed on the RRROCA board roster as Sponsorship Chair.
+Udit Jariwala serves as Sponsorship Chair, building partnerships with local businesses to support community programs and events in Rocky Ridge and Royal Oak.

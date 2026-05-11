@@ -30,7 +30,7 @@ Interested in serving? Join us at the [Annual General Meeting](/events/2026-05-a
 - **Programs:** [Megan McDonald](/about/board-members/megan-mcdonald/)
 - **Safety & Security:** [Chad La Fournie](/about/board-members/chad-la-fournie/)
 - **Schools:** [Shaleni Agarwal](/about/board-members/shaleni-agarwal/)
-- **Sponsorship:** *Vacant*
+- **Sponsorship:** [Udit Jariwala](/about/board-members/udit-jariwala/)
 - **Transportation:** *Vacant*
 - **Volunteers:** [Fasih Rehman](/about/board-members/fasih-rehman/)
 
@@ -44,5 +44,4 @@ Several board positions are currently vacant — if you're interested in volunte
 - Communications
 - Membership
 - Parks
-- Sponsorship
 - Transportation
