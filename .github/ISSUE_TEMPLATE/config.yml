@@ -1,8 +1,5 @@
-blank_issues_enabled: true
+blank_issues_enabled: false
 contact_links:
-  - name: "📧 Email RRROCA"
-    url: "mailto:info@rrroca.org"
-    about: "Prefer email? Send us a message directly."
-  - name: "💬 Facebook Group"
-    url: "https://www.facebook.com/groups/royaloakrockyridgefamilies"
-    about: "Ask a question or start a discussion in the community Facebook group."
+  - name: General Question
+    url: https://canchad.github.io/rrroca-site/contact/
+    about: For general questions, use the contact form on our website

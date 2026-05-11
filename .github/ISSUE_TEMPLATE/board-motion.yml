@@ -1,0 +1,54 @@
+name: "Board Motion"
+description: "Propose a motion for board vote"
+labels: ["motion", "governance"]
+body:
+  - type: input
+    id: motion-title
+    attributes:
+      label: "Motion title"
+      placeholder: "e.g., Motion 2026-003: Approve Park Upgrades"
+    validations:
+      required: true
+
+  - type: input
+    id: proposed-by
+    attributes:
+      label: "Proposed by"
+    validations:
+      required: true
+
+  - type: textarea
+    id: motion-text
+    attributes:
+      label: "Motion text"
+      description: "The formal text of the motion. Start with 'BE IT RESOLVED THAT...'"
+    validations:
+      required: true
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: "Rationale"
+      description: "Why is this motion needed? What problem does it solve?"
+    validations:
+      required: true
+
+  - type: input
+    id: financial-impact
+    attributes:
+      label: "Financial impact"
+      placeholder: "$0 or describe costs"
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        ## How to Vote
+        
+        Board members: React to this issue with:
+        - 👍 = Vote FOR
+        - 👎 = Vote AGAINST
+        - 👀 = ABSTAIN
+        
+        Discuss in comments before voting. President will close the issue with the result.

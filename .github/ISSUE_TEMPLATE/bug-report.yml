@@ -1,63 +1,37 @@
-name: "🐛 Bug Report"
-description: "Report a problem with the RRROCA website — broken links, display issues, errors, or anything that doesn't work right."
-title: "Bug: "
+name: "Bug Report"
+description: "Report a problem with the RRROCA website"
 labels: ["bug"]
 body:
-  - type: markdown
-    attributes:
-      value: |
-        ## Report a Website Bug
-        Found something broken? Tell us what happened and we'll fix it.
-
   - type: textarea
     id: what-happened
     attributes:
-      label: "What went wrong?"
-      description: "Describe the problem. What did you see? What did you expect to see instead?"
-      placeholder: |
-        Example: "The 'Join RRROCA' button on the homepage goes to a 404 page instead of the membership signup."
+      label: "What happened?"
     validations:
       required: true
 
   - type: input
-    id: page-url
+    id: page
     attributes:
-      label: "Which page?"
-      description: "Paste the URL or describe which page the bug is on."
-      placeholder: "https://canchad.github.io/rrroca-site/about/"
+      label: "What page were you on?"
+      placeholder: "e.g., /events/ or /about/board-of-directors/"
     validations:
       required: true
 
   - type: dropdown
-    id: severity
+    id: browser-device
     attributes:
-      label: "How bad is it?"
+      label: "What browser/device?"
       options:
-        - "🔴 Page is broken / can't use it at all"
-        - "🟡 Something looks wrong but still works"
-        - "🟢 Minor cosmetic issue"
-    validations:
-      required: true
-
-  - type: dropdown
-    id: device
-    attributes:
-      label: "What device were you using?"
-      options:
-        - "📱 Phone"
-        - "💻 Laptop / Desktop"
-        - "📋 Tablet"
-        - "Not sure"
+        - Chrome
+        - Firefox
+        - Safari
+        - Edge
+        - Mobile Safari
+        - Mobile Chrome
+        - Other
 
   - type: textarea
     id: screenshot
     attributes:
-      label: "Screenshot (optional)"
-      description: "Drag and drop a screenshot here if it helps explain the problem."
-      placeholder: "Paste or drag a screenshot here"
-
-  - type: markdown
-    attributes:
-      value: |
-        ---
-        Thanks for reporting! Chad will triage this and get it fixed. 🛠️
+      label: "Screenshot"
+      description: "Drag and drop an image here"

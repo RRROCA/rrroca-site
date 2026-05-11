@@ -92,24 +92,15 @@ collections:
       - { label: Draft, name: draft, widget: boolean, default: false }
       - { label: Body, name: body, widget: markdown }
 
-  - name: motions
-    label: Board Motions
-    folder: content/board/motions
-    create: true
-    extension: md
-    format: frontmatter
-    frontmatter_delimiter: "---"
-    slug: "{{year}}-{{month}}-{{slug}}"
-    fields:
-      - { label: Title, name: title, widget: string, hint: "e.g., Motion 2026-002: Approve Park Upgrades" }
-      - { label: Date, name: date, widget: datetime }
-      - { label: Summary, name: summary, widget: text }
-      - { label: Proposed By, name: proposed_by, widget: string }
-      - { label: Status, name: motion_status, widget: select, options: ["open", "passed", "failed", "tabled", "withdrawn"], default: "open" }
-      - { label: Votes For, name: votes_for, widget: number, default: 0, value_type: int }
-      - { label: Votes Against, name: votes_against, widget: number, default: 0, value_type: int }
-      - { label: Abstentions, name: votes_abstain, widget: number, default: 0, value_type: int }
-      - { label: "GitHub PR", name: github_pr, widget: string, required: false }
-      - { label: Categories, name: categories, widget: list, default: ["governance"] }
-      - { label: Draft, name: draft, widget: boolean, default: false }
-      - { label: "Motion Text & Details", name: body, widget: markdown }
+  - name: board-roster
+    label: Board Roster Page
+    files:
+      - label: "Board of Directors"
+        name: board-of-directors
+        file: content/about/board-of-directors.md
+        fields:
+          - { label: Title, name: title, widget: string }
+          - { label: Date, name: date, widget: datetime }
+          - { label: Description, name: description, widget: text }
+          - { label: Draft, name: draft, widget: boolean, default: false }
+          - { label: Body, name: body, widget: markdown }
