@@ -41,5 +41,5 @@ jobs:
       - name: Build site
         run: hugo --gc --minify
 
-      - name: Run validation tests
-        run: npx jest tests/build-validation.test.js
+      - name: Run all tests
+        run: npx jest --verbose
