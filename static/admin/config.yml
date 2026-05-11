@@ -30,14 +30,16 @@ collections:
     extension: md
     format: frontmatter
     frontmatter_delimiter: "---"
+    slug: "{{year}}-{{month}}-{{slug}}"
     fields:
       - { label: Title, name: title, widget: string }
-      - { label: Date, name: date, widget: datetime }
+      - { label: "Start Date & Time", name: date, widget: datetime }
+      - { label: "End Date & Time", name: endDate, widget: datetime }
+      - { label: Location, name: location, widget: string, hint: "Venue name (e.g., Royal Oak Community Park)" }
+      - { label: Address, name: address, widget: string, hint: "Full address with postal code" }
       - { label: Description, name: description, widget: text }
       - { label: Categories, name: categories, widget: list, default: ["events"] }
       - { label: Tags, name: tags, widget: list, required: false }
-      - { label: Event Date, name: event_date, widget: datetime }
-      - { label: Location, name: location, widget: string }
       - { label: Draft, name: draft, widget: boolean, default: false }
       - { label: Body, name: body, widget: markdown }
 
@@ -49,13 +51,13 @@ collections:
     format: frontmatter
     frontmatter_delimiter: "---"
     fields:
-      - { label: Title, name: title, widget: string }
+      - { label: Name, name: title, widget: string }
       - { label: Date, name: date, widget: datetime }
-      - { label: Description, name: description, widget: text }
+      - { label: Description, name: description, widget: text, hint: "One-line role summary" }
       - { label: Categories, name: categories, widget: list, default: ["about"] }
-      - { label: Tags, name: tags, widget: list, required: false }
+      - { label: Tags, name: tags, widget: list, required: false, hint: "e.g., board, president, safety" }
       - { label: Draft, name: draft, widget: boolean, default: false }
-      - { label: Body, name: body, widget: markdown }
+      - { label: Bio, name: body, widget: markdown }
 
   - name: community
     label: Community
@@ -88,3 +90,25 @@ collections:
       - { label: Tags, name: tags, widget: list, required: false }
       - { label: Draft, name: draft, widget: boolean, default: false }
       - { label: Body, name: body, widget: markdown }
+
+  - name: motions
+    label: Board Motions
+    folder: content/board/motions
+    create: true
+    extension: md
+    format: frontmatter
+    frontmatter_delimiter: "---"
+    slug: "{{year}}-{{month}}-{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string, hint: "e.g., Motion 2026-002: Approve Park Upgrades" }
+      - { label: Date, name: date, widget: datetime }
+      - { label: Summary, name: summary, widget: text }
+      - { label: Proposed By, name: proposed_by, widget: string }
+      - { label: Status, name: motion_status, widget: select, options: ["open", "passed", "failed", "tabled", "withdrawn"], default: "open" }
+      - { label: Votes For, name: votes_for, widget: number, default: 0, value_type: int }
+      - { label: Votes Against, name: votes_against, widget: number, default: 0, value_type: int }
+      - { label: Abstentions, name: votes_abstain, widget: number, default: 0, value_type: int }
+      - { label: "GitHub PR", name: github_pr, widget: string, required: false }
+      - { label: Categories, name: categories, widget: list, default: ["governance"] }
+      - { label: Draft, name: draft, widget: boolean, default: false }
+      - { label: "Motion Text & Details", name: body, widget: markdown }
