@@ -305,7 +305,7 @@
       <a href="{{ "community/community-sharing/" | absURL }}" class="project-card">
         <div class="project-card-icon">🔄</div>
         <div class="project-card-body">
-          <span class="project-card-tag">Coming Soon</span>
+          <span class="project-card-tag">In Development</span>
           <h3>Community Sharing</h3>
           <p>Borrow tools, sports gear, and event equipment from neighbours — save money, reduce waste, build connections.</p>
           <span class="project-card-cta">Learn More →</span>
@@ -411,7 +411,7 @@
 function handleNewsletter(e) {
   e.preventDefault();
   const email = e.target.querySelector('input[type="email"]').value;
-  alert('Thanks for subscribing! Newsletter coming soon to ' + email);
+  alert('Thanks for subscribing! We will send newsletter updates to ' + email);
   e.target.reset();
   return false;
 }

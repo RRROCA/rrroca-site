@@ -24,7 +24,7 @@ There are several local places of worship in the community; Northwest Family Chu
 Rocky Ridge – <http://www.calgary.ca/CSPS/CNS/Documents/community_social_statistics/rocky_ridge.pdf>
 Royal Oak – <http://www.calgary.ca/CSPS/CNS/Documents/community_social_statistics/royal_oak.pdf>
 
-[View Larger Map](http://maps.google.com/?ie=UTF8&ll=51.14484,-114.230862&spn=0.025846,0.054932&z=14&source=embed)
+[View Larger Map](https://maps.google.com/?ie=UTF8&ll=51.14484,-114.230862&spn=0.025846,0.054932&z=14&source=embed)
 
 #### Something regal about Royal Oak
 

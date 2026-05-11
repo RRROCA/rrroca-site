@@ -50,4 +50,4 @@ All girls aged 5 to 15 to come and join in the fun. Adults aged 18 to 118 are we
 
 RRRO 242 Beavers, Cubs & Scouts
 Scouts Canada is the country’s leading youth organization. For more than 100 years, they have brought a world of adventure, outdoor experience and friendship to 17 million Canadian youth.
-[RRROScouts@hotmail.com](mailto: RRROScouts@hotmail.com)
+[RRROScouts@hotmail.com](mailto:RRROScouts@hotmail.com)

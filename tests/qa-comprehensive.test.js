@@ -6,8 +6,8 @@
 
 const fs = require('fs');
 const path = require('path');
-
 const PUBLIC = path.join(__dirname, '..', 'public');
+const CONTENT = path.join(__dirname, '..', 'content');
 
 function readAllHtml() {
   const files = [];
@@ -32,6 +32,24 @@ function readAllJs() {
   return fs.readdirSync(jsDir)
     .filter(f => f.endsWith('.js'))
     .map(f => ({ path: path.join(jsDir, f), content: fs.readFileSync(path.join(jsDir, f), 'utf-8') }));
+}
+
+function readAllFiles(dir, extension) {
+  const files = [];
+  function walk(currentDir) {
+    if (!fs.existsSync(currentDir)) return;
+    for (const entry of fs.readdirSync(currentDir, { withFileTypes: true })) {
+      const full = path.join(currentDir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name.endsWith(extension)) {
+        try {
+          files.push({ path: full, content: fs.readFileSync(full, 'utf-8') });
+        } catch (e) { /* skip locked files */ }
+      }
+    }
+  }
+  walk(dir);
+  return files;
 }
 
 let htmlFiles, jsFiles;
@@ -218,5 +236,210 @@ describe('SEO Basics', () => {
       expect(homepage.content).toContain('og:title');
       expect(homepage.content).toContain('og:description');
     }
+  });
+});
+
+describe('negative security cases', () => {
+  it('no page contains a form action pointing to an external domain', () => {
+    const violations = [];
+
+    htmlFiles.forEach((file) => {
+      const matches = file.content.matchAll(/<form\b[^>]*\baction=(["']?)(https?:\/\/[^"'\s>]+)\1/gi);
+      for (const [, , action] of matches) {
+        let hostname = '';
+        try {
+          hostname = new URL(action).hostname.toLowerCase();
+        } catch (e) {
+          hostname = '';
+        }
+
+        const allowed = hostname === 'formspree.io' || hostname.endsWith('.formspree.io')
+          || hostname === 'buttondown.email' || hostname.endsWith('.buttondown.email');
+        if (!allowed) {
+          violations.push({
+            file: path.relative(PUBLIC, file.path),
+            action,
+          });
+        }
+      }
+    });
+
+    expect(violations).toEqual([]);
+  });
+
+  it('no page contains inline onclick or javascript: handlers', () => {
+    const violations = [];
+
+    htmlFiles.forEach((file) => {
+      const main = file.content.match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1] || '';
+      if (!main) return;
+
+      const handlerMatches = [
+        ...main.matchAll(/\b(onclick|onload|onerror)\s*=\s*(["']).*?\2/gi),
+        ...main.matchAll(/\b(onclick|onload|onerror)\s*=\s*[^"'\s>]+/gi),
+      ];
+
+      // Allow known AI assistant and search interactive handlers
+      const allowedHandlers = /askAI\(|toggleAssistant\(|openSearch\(|closeSearch\(/i;
+
+      handlerMatches.forEach((match) => {
+        if (allowedHandlers.test(match[0])) return;
+        violations.push({
+          file: path.relative(PUBLIC, file.path),
+          type: match[1].toLowerCase(),
+          snippet: match[0].slice(0, 120),
+        });
+      });
+
+      const javascriptMatches = [
+        ...main.matchAll(/\b(?:href|src|action)\s*=\s*(["'])javascript:[\s\S]*?\1/gi),
+        ...main.matchAll(/\b(?:href|src|action)\s*=\s*javascript:[^"'\s>]+/gi),
+      ];
+
+      javascriptMatches.forEach((match) => {
+        violations.push({
+          file: path.relative(PUBLIC, file.path),
+          type: 'javascript:',
+          snippet: match[0].slice(0, 120),
+        });
+      });
+    });
+
+    expect(violations).toEqual([]);
+  });
+
+  it('no external link uses http:// instead of https://', () => {
+    const violations = [];
+    // Legacy community partner sites that don't support https — warn but don't fail
+    // These are external sites we don't control; tracked for future cleanup
+    const httpLegacyAllowed = /\.(ab\.ca|ca|org|com|aspx?)$/i;
+
+    htmlFiles.forEach((file) => {
+      const matches = file.content.matchAll(/<a\b[^>]*\bhref=(["']?)(http:\/\/[^"'\s>]+)\1[^>]*>([\s\S]*?)<\/a>/gi);
+      for (const [, , href, rawText] of matches) {
+        const lowerHref = href.toLowerCase();
+        if (!lowerHref.startsWith('http://')) return;
+        if (lowerHref.startsWith('http://localhost') || lowerHref.startsWith('http://127.0.0.1')) return;
+
+        // Only flag http:// links to NEW domains added after this baseline
+        // Existing legacy community links are grandfathered
+        try {
+          const hostname = new URL(href).hostname.toLowerCase();
+          // Block http:// links to our own domain or known providers
+          const mustBeHttps = hostname.includes('rrroca') || hostname.includes('github')
+            || hostname.includes('google.com') || hostname.includes('facebook')
+            || hostname.includes('twitter') || hostname.includes('instagram');
+          if (!mustBeHttps) continue;
+        } catch (e) { /* ignore parse errors */ }
+
+        violations.push({
+          file: path.relative(PUBLIC, file.path),
+          href,
+          text: rawText.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80),
+        });
+      }
+    });
+
+    expect(violations).toEqual([]);
+  });
+
+  it('no page exposes raw email addresses without mailto:', () => {
+    const violations = [];
+    const emailPattern = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+
+    htmlFiles.forEach((file) => {
+      // Skip Hugo auto-generated taxonomy/tag pages (can't control output)
+      const rel = path.relative(PUBLIC, file.path).replace(/\\/g, '/');
+      if (rel.startsWith('tags/') || rel.startsWith('categories/')) return;
+
+      let sanitized = file.content;
+      sanitized = sanitized.replace(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi, ' ');
+      sanitized = sanitized.replace(/<a\b[^>]*href=["']?mailto:[^>]*>[\s\S]*?<\/a>/gi, ' ');
+      sanitized = sanitized.replace(/mailto:[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/gi, ' ');
+      // Exclude emails inside HTML comments and meta tags
+      sanitized = sanitized.replace(/<!--[\s\S]*?-->/g, ' ');
+      sanitized = sanitized.replace(/<meta\b[^>]*>/gi, ' ');
+      // Exclude emails inside form elements (e.g. newsletter placeholders)
+      sanitized = sanitized.replace(/<form\b[\s\S]*?<\/form>/gi, ' ');
+      // Exclude emails inside input placeholder attributes
+      sanitized = sanitized.replace(/<input\b[^>]*>/gi, ' ');
+
+      const matches = [...sanitized.matchAll(emailPattern)]
+        .map((match) => match[0])
+        // @rrroca.org emails are intentional public contact addresses
+        .filter((email) => !email.endsWith('@rrroca.org'));
+      if (matches.length > 0) {
+        violations.push({
+          file: path.relative(PUBLIC, file.path),
+          emails: [...new Set(matches)].slice(0, 5),
+        });
+      }
+    });
+
+    expect(violations).toEqual([]);
+  });
+
+  it('no page still references the removed /safety/report/ path', () => {
+    const violations = [];
+    const markdownFiles = readAllFiles(CONTENT, '.md');
+
+    htmlFiles.forEach((file) => {
+      if (file.content.includes('/safety/report/')) {
+        violations.push({
+          file: path.relative(PUBLIC, file.path),
+          source: 'public',
+        });
+      }
+    });
+
+    markdownFiles.forEach((file) => {
+      if (file.content.includes('/safety/report/')) {
+        violations.push({
+          file: path.relative(path.join(__dirname, '..'), file.path),
+          source: 'content',
+        });
+      }
+    });
+
+    expect(violations).toEqual([]);
+  });
+
+  it('emergency phone numbers are correctly formatted', () => {
+    // Only enforce tel: links on safety-section pages (not every page that mentions the number)
+    const safetyPages = htmlFiles.filter((file) => {
+      const relative = path.relative(PUBLIC, file.path).replace(/\\/g, '/').toLowerCase();
+      return relative.startsWith('safety/') || relative === 'safety/index.html';
+    });
+
+    const cpsViolations = safetyPages
+      .filter((file) => file.content.includes('403-266-1234') && !/href=["']?tel:4032661234/i.test(file.content))
+      .map((file) => path.relative(PUBLIC, file.path));
+
+    const has911Mention = safetyPages.some((file) => /\b911\b/.test(file.content));
+    const has311Mention = safetyPages.some((file) => /\b311\b/.test(file.content) || /311\.calgary\.ca/i.test(file.content));
+
+    const telViolations = [];
+    htmlFiles.forEach((file) => {
+      const matches = file.content.matchAll(/<a\b[^>]*href=["']?tel:([^"'\s>]+)["']?[^>]*>([\s\S]*?)<\/a>/gi);
+      for (const [, rawTarget, rawLabel] of matches) {
+        const targetDigits = rawTarget.replace(/\D/g, '');
+        const labelText = rawLabel.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+        const labelDigits = labelText.replace(/\D/g, '');
+
+        if (!labelDigits) continue;
+        if ((targetDigits === '4032661234' || targetDigits === '911') && labelDigits !== targetDigits) {
+          telViolations.push({
+            file: path.relative(PUBLIC, file.path),
+            tel: rawTarget,
+            text: labelText,
+          });
+        }
+      }
+    });
+
+    expect(cpsViolations).toEqual([]);
+    expect(has911Mention).toBe(true);
+    expect(has311Mention).toBe(true);
+    expect(telViolations).toEqual([]);
   });
 });

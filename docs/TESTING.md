@@ -141,3 +141,16 @@ After merges, **`.github/workflows/test-coverage.yml`** reviews the commit and o
 - skips commits with `[test-update]` in the message to avoid loops
 
 This workflow is meant to remind volunteers to keep tests in sync, not to add extra process.
+
+## Branch Protection Setup (Required)
+
+To ensure CI gates all merges, enable branch protection on `master`:
+
+1. Go to **Settings → Branches → Add rule**
+2. Branch name pattern: `master`
+3. Check: **Require status checks to pass before merging**
+4. Search and add: `build-and-test`
+5. Check: **Require branches to be up to date before merging**
+6. Save changes
+
+Without this, PRs can be merged before CI finishes.

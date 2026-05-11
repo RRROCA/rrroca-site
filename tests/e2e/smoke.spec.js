@@ -104,3 +104,65 @@ test('cms admin page serves HTML', async ({ page }) => {
   expect(contentType).toContain('text/html');
   await expect(page.locator('html')).toBeVisible();
 });
+
+// --- Negative e2e tests ---
+
+test('404 page renders for a garbage URL', async ({ page }) => {
+  await page.goto('/rrroca-site/this-page-does-not-exist-xyz/');
+
+  const content = await page.textContent('body');
+  expect(content).toBeTruthy();
+  expect(content.toLowerCase()).toMatch(/not found|404|page.*exist/);
+});
+
+test('homepage has no console errors', async ({ page }) => {
+  const errors = [];
+  const benignPatterns = [
+    'favicon',
+    '404 (Not Found)',
+    'net::ERR',
+    'ErrorUtils caught an error',
+    'fburl.com/debugjs',
+    'DataStore.get: namespace is required',
+    'Could not find element',
+  ];
+  page.on('console', (msg) => {
+    if (msg.type() === 'error') errors.push(msg.text());
+  });
+
+  await page.goto('/rrroca-site/');
+  await page.waitForLoadState('networkidle');
+
+  const realErrors = errors.filter(
+    (error) => !benignPatterns.some((pattern) => error.includes(pattern))
+  );
+  expect(realErrors).toHaveLength(0);
+});
+
+test('no mixed content warnings on homepage', async ({ page }) => {
+  const mixedContent = [];
+  page.on('console', (msg) => {
+    if (msg.text().toLowerCase().includes('mixed content')) {
+      mixedContent.push(msg.text());
+    }
+  });
+
+  await page.goto('/rrroca-site/');
+  await page.waitForLoadState('networkidle');
+  expect(mixedContent).toHaveLength(0);
+});
+
+test('critical content is visible without JavaScript', async ({ browser }) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+
+  await page.goto('/rrroca-site/');
+
+  const title = await page.textContent('h1, .hero-title, .site-title');
+  expect(title).toBeTruthy();
+
+  const nav = await page.locator('nav a, .nav-main a').count();
+  expect(nav).toBeGreaterThan(0);
+
+  await context.close();
+});

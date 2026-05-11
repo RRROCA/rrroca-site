@@ -380,3 +380,169 @@ describe('Link guard', () => {
     expect(broken).toEqual([]);
   });
 });
+
+describe('negative cases', () => {
+  const htmlFiles = collectFiles(PUBLIC_DIR, '.html');
+  const placeholderPatterns = [
+    /lorem ipsum/i,
+    /\bTODO\b/i,
+    /\bFIXME\b/i,
+    /\bTBD\b/i,
+    /\bplaceholder\b/i,
+    /coming soon/i
+  ];
+  const SITE_ORIGIN = (() => {
+    const indexPath = path.join(PUBLIC_DIR, 'index.html');
+    if (!fs.existsSync(indexPath)) return '';
+
+    const html = fs.readFileSync(indexPath, 'utf8');
+    const canonicalMatch = html.match(/<link\s+rel=(?:"|')?canonical(?:"|')?\s+href=(?:"|')?([^"'\s>]+)/i);
+    if (!canonicalMatch) return '';
+
+    try {
+      return new URL(canonicalMatch[1]).origin;
+    } catch {
+      return '';
+    }
+  })();
+
+  function resolveLocalImagePath(sourceFile, src) {
+    if (!src || src.startsWith('data:') || src.startsWith('//')) return null;
+
+    const cleanSrc = src.split('#')[0].split('?')[0];
+    if (!cleanSrc) return null;
+
+    if (/^https?:\/\//i.test(cleanSrc)) {
+      try {
+        const url = new URL(cleanSrc);
+        if (!SITE_ORIGIN || url.origin !== SITE_ORIGIN) return null;
+
+        let relativePath = url.pathname;
+        if (BASE_PREFIX && relativePath.startsWith(BASE_PREFIX)) {
+          relativePath = relativePath.slice(BASE_PREFIX.length);
+        }
+
+        return path.join(PUBLIC_DIR, relativePath.replace(/^\/+/, ''));
+      } catch {
+        return null;
+      }
+    }
+
+    let relativePath = cleanSrc;
+    if (BASE_PREFIX && relativePath.startsWith(BASE_PREFIX)) {
+      relativePath = relativePath.slice(BASE_PREFIX.length);
+    }
+
+    if (relativePath.startsWith('/')) {
+      return path.join(PUBLIC_DIR, relativePath.replace(/^\/+/, ''));
+    }
+
+    return path.resolve(path.dirname(sourceFile), relativePath);
+  }
+
+  it('404 page exists and contains helpful content', () => {
+    const notFoundPath = path.join(PUBLIC_DIR, '404.html');
+    expect(fs.existsSync(notFoundPath)).toBe(true);
+
+    const document = loadDocument(path.join('public', '404.html'));
+    const pageText = document.body.textContent.replace(/\s+/g, ' ').trim();
+    const homepageLink = [...document.querySelectorAll('a[href]')].find((link) => {
+      const href = link.getAttribute('href');
+      if (!href) return false;
+
+      if (href === '/' || href === `${BASE_PREFIX || ''}/`) return true;
+
+      try {
+        return SITE_ORIGIN ? new URL(href).href === `${SITE_ORIGIN}${BASE_PREFIX || ''}/` : false;
+      } catch {
+        return false;
+      }
+    });
+
+    expect(pageText).toMatch(/404|not found/i);
+    expect(homepageLink).toBeDefined();
+  });
+
+  it('no HTML file contains an empty <main> or <article> element', () => {
+    const violations = [];
+
+    htmlFiles.forEach((file) => {
+      const html = fs.readFileSync(file, 'utf8');
+      const dom = new JSDOM(html);
+
+      dom.window.document.querySelectorAll('main, article').forEach((element) => {
+        const textContent = (element.textContent || '').replace(/\s+/g, '').trim();
+        const hasNonTextContent = Boolean(
+          element.querySelector('img, svg, video, canvas, iframe, form, input, button, select, textarea')
+        );
+
+        if (!textContent && !hasNonTextContent) {
+          violations.push({
+            file: path.relative(PUBLIC_DIR, file),
+            tag: element.tagName.toLowerCase()
+          });
+        }
+      });
+    });
+
+    expect(violations).toEqual([]);
+  });
+
+  it('no page contains placeholder text', () => {
+    const violations = [];
+
+    htmlFiles.forEach((file) => {
+      const html = fs.readFileSync(file, 'utf8');
+      const dom = new JSDOM(html);
+      const bodyText = (dom.window.document.body?.textContent || '').replace(/\s+/g, ' ').trim();
+
+      placeholderPatterns.forEach((pattern) => {
+        if (pattern.test(bodyText)) {
+          violations.push({
+            file: path.relative(PUBLIC_DIR, file),
+            pattern: pattern.toString()
+          });
+        }
+      });
+    });
+
+    expect(violations).toEqual([]);
+  });
+
+  it('no built page references a non-existent image', () => {
+    const missingImages = [];
+
+    htmlFiles.forEach((file) => {
+      const html = fs.readFileSync(file, 'utf8');
+      const dom = new JSDOM(html);
+
+      dom.window.document.querySelectorAll('img[src]').forEach((image) => {
+        const src = image.getAttribute('src');
+        const diskPath = resolveLocalImagePath(file, src);
+
+        if (diskPath && !fs.existsSync(diskPath)) {
+          missingImages.push({
+            file: path.relative(PUBLIC_DIR, file),
+            src
+          });
+        }
+      });
+    });
+
+    expect(missingImages).toEqual([]);
+  });
+
+  it('no page contains raw Hugo template syntax', () => {
+    const violations = [];
+    const hugoTemplatePattern = /\{\{[^}]+}}|\{\{<[\s\S]*?>}}|\{\{%[\s\S]*?%}}/;
+
+    htmlFiles.forEach((file) => {
+      const html = fs.readFileSync(file, 'utf8');
+      if (hugoTemplatePattern.test(html)) {
+        violations.push(path.relative(PUBLIC_DIR, file));
+      }
+    });
+
+    expect(violations).toEqual([]);
+  });
+});

@@ -252,3 +252,159 @@ describe('Hugo config menu validation', () => {
     expect(broken).toEqual([]);
   });
 });
+
+describe('negative navigation cases', () => {
+  const allHtmlFiles = collectFiles(PUBLIC_DIR, '.html');
+
+  function parseMainMenuItems() {
+    const hugoToml = fs.readFileSync(path.join(REPO_ROOT, 'hugo.toml'), 'utf8');
+    return hugoToml
+      .split('[[menus.main]]')
+      .slice(1)
+      .map((block) => ({
+        name: block.match(/name\s*=\s*"([^"]+)"/)?.[1],
+        url: block.match(/url\s*=\s*"([^"]+)"/)?.[1],
+      }))
+      .filter((item) => item.name && item.url);
+  }
+
+  function resolveMenuContentFile(url) {
+    let relativePath = url.split('#')[0].split('?')[0];
+    if (BASE_PREFIX && relativePath.startsWith(BASE_PREFIX)) {
+      relativePath = relativePath.slice(BASE_PREFIX.length);
+    }
+    relativePath = relativePath.replace(/^\/+|\/+$/g, '');
+
+    const candidates = relativePath
+      ? [
+          path.join(CONTENT_DIR, relativePath, '_index.md'),
+          path.join(CONTENT_DIR, `${relativePath}.md`),
+          path.join(CONTENT_DIR, relativePath, 'index.md'),
+        ]
+      : [path.join(CONTENT_DIR, '_index.md')];
+
+    return candidates.find((candidate) => fs.existsSync(candidate));
+  }
+
+  function hasDraftFrontMatter(filePath) {
+    const content = fs.readFileSync(filePath, 'utf8');
+    const frontMatter = content.startsWith('---')
+      ? content.slice(3).split(/\r?\n---/)[0]
+      : content.startsWith('+++')
+        ? content.slice(3).split(/\r?\n\+\+\+/)[0]
+        : '';
+
+    return /^\s*draft\s*:\s*true\s*$/m.test(frontMatter) || /^\s*draft\s*=\s*true\s*$/m.test(frontMatter);
+  }
+
+  it('no nav link uses an external URL format for internal pages', () => {
+    const indexDoc = loadDom(path.join(PUBLIC_DIR, 'index.html'));
+    const navLinks = Array.from(
+      indexDoc.querySelectorAll('.nav-main a[href], .site-footer a[href], .sidebar-link-list a[href]')
+    );
+
+    const violations = navLinks
+      .map((link) => ({
+        text: link.textContent.trim(),
+        href: link.getAttribute('href') || '',
+      }))
+      .filter((link) => {
+        const normalizedHref = link.href.toLowerCase();
+        return /^https?:\/\/(?:www\.)?(?:canchad\.github\.io|rrroca\.org)\b/.test(normalizedHref);
+      });
+
+    expect(violations).toEqual([]);
+  });
+
+  it('no duplicate entries exist in header nav', () => {
+    const menuItems = parseMainMenuItems();
+    const duplicateUrls = [];
+    const duplicateNames = [];
+    const seenUrls = new Map();
+    const seenNames = new Map();
+
+    menuItems.forEach((item) => {
+      if (seenUrls.has(item.url)) {
+        duplicateUrls.push({ url: item.url, names: [seenUrls.get(item.url), item.name] });
+      } else {
+        seenUrls.set(item.url, item.name);
+      }
+
+      if (seenNames.has(item.name)) {
+        duplicateNames.push({ name: item.name, urls: [seenNames.get(item.name), item.url] });
+      } else {
+        seenNames.set(item.name, item.url);
+      }
+    });
+
+    expect(duplicateUrls).toEqual([]);
+    expect(duplicateNames).toEqual([]);
+  });
+
+  it('no nav item points to a draft page', () => {
+    const menuItems = parseMainMenuItems();
+    const violations = menuItems
+      .map((item) => ({
+        ...item,
+        filePath: resolveMenuContentFile(item.url),
+      }))
+      .filter((item) => !item.filePath || hasDraftFrontMatter(item.filePath))
+      .map((item) => ({
+        name: item.name,
+        url: item.url,
+        file: item.filePath ? path.relative(REPO_ROOT, item.filePath) : null,
+      }));
+
+    expect(violations).toEqual([]);
+  });
+
+  it('no anchor link in content points to a non-existent ID', () => {
+    const violations = [];
+
+    allHtmlFiles.forEach((filePath) => {
+      const doc = loadDom(filePath);
+      const anchors = doc.querySelectorAll('a[href^="#"]');
+
+      anchors.forEach((anchor) => {
+        const href = anchor.getAttribute('href');
+        if (!href || href === '#') return;
+
+        let targetId = href.slice(1).trim();
+        if (!targetId) return;
+
+        try {
+          targetId = decodeURIComponent(targetId);
+        } catch (_error) {
+          // Leave the original fragment in place if it is not URI-encoded.
+        }
+
+        if (!doc.getElementById(targetId)) {
+          violations.push({
+            file: path.relative(PUBLIC_DIR, filePath),
+            href,
+            text: anchor.textContent.trim().substring(0, 50),
+          });
+        }
+      });
+    });
+
+    expect(violations).toEqual([]);
+  });
+
+  it('no page has more than one <h1> element', () => {
+    const violations = allHtmlFiles
+      .map((filePath) => {
+        const doc = loadDom(filePath);
+        const h1Count = doc.querySelectorAll('h1').length;
+        return h1Count > 1
+          ? {
+              file: path.relative(PUBLIC_DIR, filePath),
+              h1Count,
+            }
+          : null;
+      })
+      .filter(Boolean);
+
+    expect(violations).toEqual([]);
+  });
+});

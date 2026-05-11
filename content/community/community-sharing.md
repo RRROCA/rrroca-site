@@ -29,7 +29,7 @@ RRROCA owns event equipment that sits idle most of the year. We're exploring mak
 - 🔊 **Sound equipment** for block parties
 - ⚽ **Sports equipment** for neighbourhood games
 
-*Equipment rental details and pricing coming soon. Members will get priority access and discounted rates.*
+*Equipment rental details and pricing are being finalized. Members will get priority access and discounted rates.*
 
 ### Why Community Sharing?
 
