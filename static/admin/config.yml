@@ -3,217 +3,88 @@ backend:
   repo: CanChad/rrroca-site
   branch: master
 
-media_folder: static/images
-public_folder: /images
+media_folder: "static/images"
+public_folder: "/images"
 
 collections:
   - name: news
     label: News
-    label_singular: News Article
     folder: content/news
     create: true
-    slug: "{{year}}-{{month}}-{{slug}}"
-    sortable_fields:
-      - date
-      - title
-    summary: "{{title}} — {{date}}"
-    sort: date:desc
+    extension: md
+    format: frontmatter
+    frontmatter_delimiter: "---"
     fields:
       - { label: Title, name: title, widget: string }
-      - { label: Published Date, name: date, widget: datetime }
+      - { label: Date, name: date, widget: datetime }
       - { label: Description, name: description, widget: text }
-      - label: Tags
-        name: tags
-        widget: list
-        required: false
-        collapsed: false
-        field: { label: Tag, name: tag, widget: string }
-      - { label: Image, name: image, widget: image, required: false }
-      - label: Category
-        name: categories
-        widget: select
-        default: news
-        options:
-          - { label: News, value: news }
-        multiple: true
-      - { label: Body, name: body, widget: markdown }
-
-  - name: safety
-    label: Safety
-    label_singular: Safety Article
-    folder: content/safety
-    create: true
-    slug: "{{year}}-{{month}}-{{slug}}"
-    sortable_fields:
-      - date
-      - title
-    summary: "{{title}} — {{date}}"
-    fields:
-      - { label: Title, name: title, widget: string }
-      - { label: Published Date, name: date, widget: datetime }
-      - { label: Description, name: description, widget: text }
-      - label: Tags
-        name: tags
-        widget: list
-        required: false
-        collapsed: false
-        field: { label: Tag, name: tag, widget: string }
-      - { label: Image, name: image, widget: image, required: false }
-      - label: Category
-        name: categories
-        widget: select
-        default: safety
-        options:
-          - { label: Safety, value: safety }
-        multiple: true
+      - { label: Categories, name: categories, widget: list, default: ["news"] }
+      - { label: Tags, name: tags, widget: list, required: false }
+      - { label: Draft, name: draft, widget: boolean, default: false }
       - { label: Body, name: body, widget: markdown }
 
   - name: events
     label: Events
-    label_singular: Event
     folder: content/events
     create: true
-    slug: "{{year}}-{{month}}-{{slug}}"
-    sortable_fields:
-      - date
-      - title
-      - event_date
-    summary: "{{title}} — {{event_date}}"
+    extension: md
+    format: frontmatter
+    frontmatter_delimiter: "---"
     fields:
       - { label: Title, name: title, widget: string }
-      - { label: Published Date, name: date, widget: datetime }
-      - { label: Event Date, name: event_date, widget: datetime }
-      - { label: Location, name: location, widget: string, required: false }
+      - { label: Date, name: date, widget: datetime }
       - { label: Description, name: description, widget: text }
-      - { label: Image, name: image, widget: image, required: false }
-      - label: Category
-        name: categories
-        widget: select
-        default: events
-        options:
-          - { label: Events, value: events }
-        multiple: true
+      - { label: Categories, name: categories, widget: list, default: ["events"] }
+      - { label: Tags, name: tags, widget: list, required: false }
+      - { label: Event Date, name: event_date, widget: datetime }
+      - { label: Location, name: location, widget: string }
+      - { label: Draft, name: draft, widget: boolean, default: false }
+      - { label: Body, name: body, widget: markdown }
+
+  - name: board-members
+    label: Board Members
+    folder: content/about/board-members
+    create: true
+    extension: md
+    format: frontmatter
+    frontmatter_delimiter: "---"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime }
+      - { label: Description, name: description, widget: text }
+      - { label: Categories, name: categories, widget: list, default: ["about"] }
+      - { label: Tags, name: tags, widget: list, required: false }
+      - { label: Draft, name: draft, widget: boolean, default: false }
       - { label: Body, name: body, widget: markdown }
 
   - name: community
     label: Community
-    label_singular: Community Page
     folder: content/community
     create: true
-    slug: "{{year}}-{{month}}-{{slug}}"
-    sortable_fields:
-      - title
-      - date
-    summary: "{{title}}"
+    extension: md
+    format: frontmatter
+    frontmatter_delimiter: "---"
     fields:
       - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime }
       - { label: Description, name: description, widget: text }
-      - { label: Image, name: image, widget: image, required: false }
-      - label: Category
-        name: categories
-        widget: select
-        default: community
-        options:
-          - { label: Community, value: community }
-        multiple: true
+      - { label: Categories, name: categories, widget: list, default: ["community"] }
+      - { label: Tags, name: tags, widget: list, required: false }
+      - { label: Draft, name: draft, widget: boolean, default: false }
       - { label: Body, name: body, widget: markdown }
 
-  - name: sports
-    label: Sports
-    label_singular: Sports Page
-    folder: content/sports
+  - name: safety
+    label: Safety
+    folder: content/safety
     create: true
-    slug: "{{year}}-{{month}}-{{slug}}"
-    sortable_fields:
-      - title
-      - date
-    summary: "{{title}}"
+    extension: md
+    format: frontmatter
+    frontmatter_delimiter: "---"
     fields:
       - { label: Title, name: title, widget: string }
+      - { label: Date, name: date, widget: datetime }
       - { label: Description, name: description, widget: text }
-      - { label: Image, name: image, widget: image, required: false }
-      - label: Category
-        name: categories
-        widget: select
-        default: sports
-        options:
-          - { label: Sports, value: sports }
-        multiple: true
+      - { label: Categories, name: categories, widget: list, default: ["safety"] }
+      - { label: Tags, name: tags, widget: list, required: false }
+      - { label: Draft, name: draft, widget: boolean, default: false }
       - { label: Body, name: body, widget: markdown }
-
-  - name: pages
-    label: Pages
-    files:
-      - label: About
-        name: about
-        file: content/about/_index.md
-        fields:
-          - { label: Title, name: title, widget: string }
-          - { label: Description, name: description, widget: text }
-          - { label: Image, name: image, widget: image, required: false }
-          - label: Category
-            name: categories
-            widget: select
-            default: about
-            options:
-              - { label: About, value: about }
-            multiple: true
-          - { label: Body, name: body, widget: markdown }
-      - label: Get Involved
-        name: get_involved
-        file: content/get-involved/_index.md
-        fields:
-          - { label: Title, name: title, widget: string }
-          - { label: Description, name: description, widget: text }
-          - { label: Image, name: image, widget: image, required: false }
-          - label: Category
-            name: categories
-            widget: select
-            default: get-involved
-            options:
-              - { label: Get Involved, value: get-involved }
-            multiple: true
-          - { label: Body, name: body, widget: markdown }
-      - label: Business Directory
-        name: business_directory
-        file: content/business-directory/_index.md
-        fields:
-          - { label: Title, name: title, widget: string }
-          - { label: Description, name: description, widget: text }
-          - { label: Image, name: image, widget: image, required: false }
-          - label: Category
-            name: categories
-            widget: select
-            default: business-directory
-            options:
-              - { label: Business Directory, value: business-directory }
-            multiple: true
-          - { label: Body, name: body, widget: markdown }
-      - label: Terms of Use
-        name: terms_of_use
-        file: content/terms-of-use.md
-        fields:
-          - { label: Title, name: title, widget: string }
-          - { label: Description, name: description, widget: text }
-          - label: Category
-            name: categories
-            widget: select
-            default: terms
-            options:
-              - { label: Terms of Use, value: terms }
-            multiple: true
-          - { label: Body, name: body, widget: markdown }
-      - label: Privacy Statement
-        name: privacy_statement
-        file: content/privacy-statement.md
-        fields:
-          - { label: Title, name: title, widget: string }
-          - { label: Description, name: description, widget: text }
-          - label: Category
-            name: categories
-            widget: select
-            default: privacy
-            options:
-              - { label: Privacy Statement, value: privacy }
-            multiple: true
-          - { label: Body, name: body, widget: markdown }
