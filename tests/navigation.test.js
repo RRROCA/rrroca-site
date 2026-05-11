@@ -73,7 +73,7 @@ describe('Navigation consistency', () => {
     }));
 
     // Must include these sections at minimum
-    const requiredSections = ['About', 'Safety', 'News', 'Events', 'Community', 'Governance', 'Get Involved', 'Directory'];
+    const requiredSections = ['About', 'Safety', 'Events', 'Get Involved', 'Community', 'Governance', 'Resources', 'News'];
     requiredSections.forEach((section) => {
       expect(
         hrefs.some((h) => h.text.toLowerCase().includes(section.toLowerCase()))

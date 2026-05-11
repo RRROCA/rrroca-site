@@ -204,6 +204,7 @@ p { margin-bottom: var(--space-md); }
   font-weight: 500;
   color: var(--color-text-secondary);
   border-radius: var(--radius);
+  white-space: nowrap;
   transition: all var(--transition);
 }
 .nav-main a:hover {
@@ -246,7 +247,7 @@ p { margin-bottom: var(--space-md); }
   box-shadow: var(--shadow-sm);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
   .site-header,
   .site-header.scrolled {
     background: var(--color-surface);
@@ -1044,7 +1045,7 @@ p { margin-bottom: var(--space-md); }
   .feature-row, .feature-row.reverse { grid-template-columns: 1fr; direction: ltr; }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1100px) {
   .menu-toggle {
     display: inline-flex;
     background: linear-gradient(135deg, rgba(44,110,138,0.12) 0%, rgba(232,145,58,0.14) 100%);

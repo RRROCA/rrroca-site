@@ -2,19 +2,20 @@ name: CI
 
 on:
   push:
-    branches:
-      - master
+    branches: [master]
   pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - ready_for_review
-    branches:
-      - master
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches: [master]
+  workflow_dispatch:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   build-and-test:
@@ -23,6 +24,40 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            content:
+              - 'content/**'
+              - 'static/images/**'
+            theme:
+              - 'themes/**'
+              - '!themes/rrroca/static/js/**'
+              - 'hugo.toml'
+              - 'static/css/**'
+            js:
+              - 'themes/rrroca/static/js/**'
+            docs:
+              - 'docs/**'
+              - '.github/**'
+              - 'README.md'
+              - '*.md'
+            other:
+              - '**'
+              - '!content/**'
+              - '!static/images/**'
+              - '!themes/**'
+              - '!hugo.toml'
+              - '!static/css/**'
+              - '!docs/**'
+              - '!.github/**'
+              - '!README.md'
+              - '!*.md'
 
       - name: Setup Hugo Extended
         uses: peaceiris/actions-hugo@v3
@@ -39,7 +74,42 @@ jobs:
         run: npm ci
 
       - name: Build site
-        run: hugo --gc --minify
+        run: hugo --gc --minify --buildFuture --baseURL "https://canchad.github.io/rrroca-site/"
 
-      - name: Run all tests
-        run: npx jest --verbose
+      - name: Run content Jest tests
+        if: github.event_name != 'pull_request' && steps.changes.outputs.content == 'true' && steps.changes.outputs.theme != 'true' && steps.changes.outputs.other != 'true'
+        run: npx jest tests/content-validation.test.js tests/build-validation.test.js tests/navigation.test.js --verbose
+
+      - name: Run full Jest suite
+        if: github.event_name == 'pull_request' || steps.changes.outputs.theme == 'true' || steps.changes.outputs.other == 'true'
+        run: npx jest --verbose --coverage
+
+      - name: Run JS Jest tests
+        if: github.event_name != 'pull_request' && steps.changes.outputs.js == 'true' && steps.changes.outputs.theme != 'true' && steps.changes.outputs.other != 'true'
+        run: npx jest tests/ai-assistant.test.js tests/search.test.js tests/safety-dashboard.test.js tests/safety-dashboard.partial.test.js --verbose
+
+      - name: Install Playwright browsers
+        if: github.event_name == 'pull_request' || steps.changes.outputs.theme == 'true' || steps.changes.outputs.js == 'true' || steps.changes.outputs.other == 'true'
+        run: npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        if: github.event_name == 'pull_request' || steps.changes.outputs.theme == 'true' || steps.changes.outputs.js == 'true' || steps.changes.outputs.other == 'true'
+        run: npx playwright test --project=chromium
+
+      - name: Upload GitHub Pages artifact
+        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
+
+  deploy:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

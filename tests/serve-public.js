@@ -3,7 +3,8 @@ const fs = require('fs');
 const path = require('path');
 
 const ROOT = path.join(process.cwd(), 'public');
-const PORT = 1314;
+const PORT = Number(process.env.PORT || 1314);
+const SITE_PREFIX = (process.env.SITE_PREFIX || '').replace(/\/+$/, '');
 
 const MIME_TYPES = {
   '.css': 'text/css; charset=utf-8',
@@ -21,7 +22,10 @@ const MIME_TYPES = {
 
 function resolvePath(requestPath) {
   const cleanPath = decodeURIComponent(requestPath.split('?')[0]);
-  let candidate = path.join(ROOT, cleanPath);
+  const normalizedPath = SITE_PREFIX && cleanPath.startsWith(SITE_PREFIX)
+    ? cleanPath.slice(SITE_PREFIX.length) || '/'
+    : cleanPath;
+  let candidate = path.join(ROOT, normalizedPath);
 
   if (fs.existsSync(candidate) && fs.statSync(candidate).isDirectory()) {
     candidate = path.join(candidate, 'index.html');

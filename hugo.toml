@@ -35,12 +35,12 @@ buildFuture = true
     url = "/safety/"
     weight = 2
   [[menus.main]]
-    name = "News"
-    url = "/news/"
-    weight = 3
-  [[menus.main]]
     name = "Events"
     url = "/events/"
+    weight = 3
+  [[menus.main]]
+    name = "Get Involved"
+    url = "/get-involved/"
     weight = 4
   [[menus.main]]
     name = "Community"
@@ -51,12 +51,12 @@ buildFuture = true
     url = "/board/"
     weight = 6
   [[menus.main]]
-    name = "Get Involved"
-    url = "/get-involved/"
+    name = "Resources"
+    url = "/resources/"
     weight = 7
   [[menus.main]]
-    name = "Directory"
-    url = "/business-directory/"
+    name = "News"
+    url = "/news/"
     weight = 8
 
 [markup]
