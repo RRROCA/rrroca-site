@@ -2,6 +2,7 @@ backend:
   name: github
   repo: CanChad/rrroca-site
   branch: master
+  base_url: https://sveltia-cms-auth.chad752.workers.dev
 
 media_folder: "static/images"
 public_folder: "/images"
