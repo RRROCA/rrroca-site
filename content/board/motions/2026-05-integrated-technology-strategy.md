@@ -1,7 +1,7 @@
 ---
 title: "Motion 2026-001: Adopt Integrated Technology Strategy"
 date: 2026-05-09
-summary: "Adopt the RRROCA Integrated Technology Strategy (2024–2028) as the governing framework for all technology decisions, platform selections, and digital initiatives."
+summary: "Adopt the RRROCA Integrated Technology Strategy (2025–2028) as the governing framework for all technology decisions, platform selections, and digital initiatives."
 proposed_by: "Chad La Fournie, Safety & Technology Director"
 motion_status: "open"
 votes_for: 0
@@ -16,11 +16,11 @@ draft: false
 
 ## Motion Text
 
-**BE IT RESOLVED THAT** the Board of Directors of the Rocky Ridge Royal Oak Community Association adopt the *Integrated Technology Strategy* (dated May 2026) as the governing framework for technology decisions through the 2024–2028 strategic plan period.
+**BE IT RESOLVED THAT** the Board of Directors of the Rocky Ridge Royal Oak Community Association adopt the *Integrated Technology Strategy* (dated May 2026) as the governing framework for technology decisions through the 2025–2028 strategic plan period.
 
 ## What This Motion Approves
 
-1. **The strategy document itself** — 11 technology domains evaluated against 8 Architecture Principles derived from RRROCA's own Strategic Plan and Business Plan
+1. **The strategy document itself** — 11 technology domains evaluated against 9 Architecture Principles derived from RRROCA's own Strategic Plan and Business Plan
 2. **The "Frontier Community Association" vision** — RRROCA leverages modern, zero-cost technology to operate more effectively than associations ten times its size
 3. **The governance framework** — which decisions require board motions vs. portfolio authority (Safety & Technology Director)
 4. **The 5-phase implementation roadmap** — Foundation → Launch → Meeting Intelligence → Engagement → Hardening
@@ -41,14 +41,15 @@ Every technology decision the board makes — website platform, membership tools
 
 With an adopted strategy:
 
-- The board has already agreed on *what matters* (the 8 principles)
+- The board has already agreed on *what matters* (the 9 principles)
 - Individual decisions are faster because the evaluation criteria are pre-established
 - Operational improvements (newsletter, cybersecurity, social media) can proceed under portfolio authority without consuming board meeting time
 
 ## Supporting Documents
 
-- [Integrated Technology Strategy](https://github.com/CanChad/rrroca-site/blob/master/docs/strategic-evaluation.md) — the full 11-domain evaluation
-- [Architecture Principles](https://github.com/CanChad/rrroca-site/blob/master/docs/architecture-principles.md) — the 8 principles and decision framework
+- [Integrated Technology Strategy (PDF/DOCX)](https://github.com/CanChad/rrroca-site/blob/master/docs/RRROCA%20Integrated%20Technology%20Strategy%202025-2028.docx) — board-ready strategy document
+- [Technology Domain Evaluation](https://github.com/CanChad/rrroca-site/blob/master/docs/strategic-evaluation.md) — the full 11-domain evaluation
+- [Architecture Principles](https://github.com/CanChad/rrroca-site/blob/master/docs/architecture-principles.md) — the 9 principles and decision framework
 
 ## Financial Impact
 
