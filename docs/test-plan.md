@@ -79,22 +79,43 @@ This is non-blocking — runs after merge so it never slows the approval flow. W
 
 | Suite | Tests | Type | When to Run |
 |---|---|---|---|
-| `build-validation` | 12 | Build artifacts | Always (gatekeeper) |
-| `navigation` | 9 | Link integrity | Content + theme changes |
+| `build-validation` | 17 | Build artifacts + negative | Always (gatekeeper) |
+| `navigation` | 14 | Link integrity + negative | Content + theme changes |
 | `content-validation` | 6 | Source quality | Content changes |
 | `homepage-ux` | 10 | UX contract | Theme changes |
-| `qa-comprehensive` | ~8 | Security/QA | Theme + config changes |
+| `qa-comprehensive` | 24 | Security/QA + negative | Theme + config changes |
 | `ai-assistant` | 6 | Unit | JS changes |
 | `search` | 4 | Unit | JS changes |
 | `safety-dashboard` | 5 | Unit + DOM | JS + theme changes |
-| `e2e/smoke` | TBD | Playwright | Theme + config changes |
+| `e2e/smoke` | 10 | Playwright + negative | Theme + config changes |
+
+**Total: 96 tests (86 Jest + 10 Playwright)**
+
+## Negative Test Categories
+
+| Category | Suite | Tests | What It Catches |
+|---|---|---|---|
+| Build | `build-validation` | 5 | Missing 404, empty content, placeholders, broken images, raw templates |
+| Navigation | `navigation` | 5 | External URLs for internal pages, duplicates, draft links, broken anchors, multiple h1 |
+| Security | `qa-comprehensive` | 6 | External forms, inline JS, http:// links, raw emails, removed paths, phone formatting |
+| E2E | `e2e/smoke` | 4 | 404 rendering, console errors, mixed content, JS-disabled fallback |
+
+## Branch Protection (CRITICAL)
+
+Merge workflows (`merge-on-approve.yml`, `auto-merge-content.yml`) use only `enablePullRequestAutoMerge` — never direct merge. This ensures CI must pass before any merge, including approvals from mobile.
+
+**Required manual setup:** Repository Settings → Branches → Add rule for `master`:
+- ✅ Require status checks: `build-and-test`
+- ✅ Require branches to be up to date
 
 ## Implementation Todos
 
-1. **unified-ci-pipeline** — Merge gh-pages.yml + ci.yml into single gated workflow
-2. **targeted-tests** — Add paths-filter for conditional test execution (depends on #1)
-3. **test-gen-workflow** — Create post-merge issue-creation workflow (independent)
-4. **update-testing-docs** — Update docs/TESTING.md with new structure (depends on #1, #3)
+1. ~~**unified-ci-pipeline** — Merge gh-pages.yml + ci.yml into single gated workflow~~ ✅
+2. ~~**targeted-tests** — Add paths-filter for conditional test execution~~ ✅
+3. ~~**test-gen-workflow** — Create post-merge issue-creation workflow~~ ✅
+4. ~~**update-testing-docs** — Update docs/TESTING.md with new structure~~ ✅
+5. ~~**negative-tests** — Add negative test cases across all 4 categories~~ ✅
+6. ~~**branch-protection** — Fix merge workflows to prevent phone-approval bypass~~ ✅
 
 ## L64 ATS Impact Narrative
 
