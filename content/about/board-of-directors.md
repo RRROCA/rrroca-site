@@ -11,7 +11,7 @@ draft: false
 
 RRROCA is led by local volunteers who care deeply about keeping Rocky Ridge and Royal Oak informed, connected, safe, and welcoming. The board works year-round on advocacy, events, planning, communications, and community-building.
 
-Interested in serving? Join us at the [Annual General Meeting](/events/2026-05-agm/) or connect through our [volunteer page](/get-involved/volunteer/).
+Interested in serving? Connect through our [volunteer page](/get-involved/volunteer/) or [contact us](/contact/).
 
 ## Executive
 

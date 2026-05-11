@@ -140,8 +140,11 @@ describe('Hugo build validation', () => {
       '/get-involved/volunteer/',
       '/get-involved/sponsorship/',
       '/about/board-of-directors/',
+      '/about/board-members/',
+      '/community/',
       '/community/parks-pathways/',
-      '/safety/report/',
+      '/sports/',
+      '/board/',
       '/safety/electrical-safety/',
       '/safety/winter-safety/',
       '/safety/wild-animal-safety/'
@@ -196,7 +199,7 @@ describe('Hugo build validation', () => {
     expect(directoryDocument.querySelectorAll('[data-directory-card]').length).toBeGreaterThan(0);
   });
 
-  it('keeps forms available on contact, volunteer, and safety report pages', () => {
+  it('keeps forms available on contact and volunteer pages', () => {
     const formPages = [
       {
         file: path.join('public', 'contact', 'index.html'),
@@ -205,10 +208,6 @@ describe('Hugo build validation', () => {
       {
         file: path.join('public', 'get-involved', 'volunteer', 'index.html'),
         fields: ['#volunteer-name', '#volunteer-email', '#volunteer-availability']
-      },
-      {
-        file: path.join('public', 'safety', 'report', 'index.html'),
-        fields: ['#report-type', '#report-location', '#report-description']
       }
     ];
 

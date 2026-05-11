@@ -23,7 +23,7 @@ Spring and summer also tend to bring a few predictable issues, especially vehicl
 
 ## New online reporting form
 
-RRROCA now has a dedicated [online reporting form](/safety/report/) for non-emergency concerns. It is a quick way to flag recurring issues such as suspicious activity, lighting problems, vandalism, traffic concerns, or park safety issues so we can track patterns and follow up appropriately.
+RRROCA now has a dedicated [Safety Hub](/safety/) with resources for non-emergency concerns. For police matters, contact CPS non-emergency at [403-266-1234](tel:4032661234). For city issues, use [Calgary 311](https://311.calgary.ca). For neighbourhood awareness, join our [Block Watch Facebook group](https://www.facebook.com/groups/raborrroca) to share tips with neighbours.
 
 Please remember: if something is urgent or an emergency, call **911** right away. For Calgary Police Service non-emergency matters, call **403-266-1234**.
 

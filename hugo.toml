@@ -43,17 +43,21 @@ buildFuture = true
     url = "/events/"
     weight = 4
   [[menus.main]]
+    name = "Community"
+    url = "/community/"
+    weight = 5
+  [[menus.main]]
     name = "Governance"
     url = "/board/"
-    weight = 5
+    weight = 6
   [[menus.main]]
     name = "Get Involved"
     url = "/get-involved/"
-    weight = 6
+    weight = 7
   [[menus.main]]
     name = "Directory"
     url = "/business-directory/"
-    weight = 7
+    weight = 8
 
 [markup]
   [markup.goldmark]

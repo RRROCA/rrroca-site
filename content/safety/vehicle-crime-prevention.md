@@ -26,7 +26,7 @@ Calgary Police Service has reported that **more than 60% of vehicle thefts invol
 
 Please report **overnight parking of unfamiliar vehicles** when the behaviour seems unusual or repeated, especially if people appear to be checking doors or moving slowly through the neighbourhood.
 
-Use RRROCA's [online reporting form](/safety/report/) for non-emergency concerns, or contact Calgary Police Service at **403-266-1234**. If a crime is in progress, call **911**.
+Contact Calgary Police Service at **403-266-1234** for non-emergency concerns. If a crime is in progress, call **911**.
 
 ## A strong neighbourhood habit
 

@@ -47,6 +47,6 @@ Seeing wildlife can be a special part of living here, but it also means we need 
 
 - [Alberta BearSmart](https://www.alberta.ca/bearsmart.aspx)
 - [City of Calgary wildlife safety resources](https://www.calgary.ca/parks/wildlife.html)
-- [Report a non-emergency concern to RRROCA](/safety/report/)
+- [Report a non-emergency concern to CPS](tel:4032661234)
 
 Wildlife awareness is part of living in a community that borders open land and natural habitat. A few smart habits help keep people, pets, and wildlife safer all season long.

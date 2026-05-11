@@ -13,7 +13,7 @@ Spring always brings a fresh burst of energy to Rocky Ridge and Royal Oak, and t
 
 ## AGM coming up this May
 
-Our **Annual General Meeting** is just around the corner, and we would love to see a strong turnout from residents across both neighbourhoods. The AGM is where we share updates, elect board members, and hear directly from the community about what matters most. Visit our [AGM event page](/events/2026-05-agm/) for details.
+Our **Annual General Meeting** is just around the corner, and we would love to see a strong turnout from residents across both neighbourhoods. The AGM is where we share updates, elect board members, and hear directly from the community about what matters most. Check our [events page](/events/) for details.
 
 ## Playground conversations are underway
 
@@ -21,7 +21,7 @@ We have started a new round of discussions about future playground equipment imp
 
 ## Safety committee update
 
-The RRROCA Safety Committee continues to meet regularly, and we are pleased to report that community crime is **down 26% year-over-year**. Rocky Ridge and Royal Oak remain among Calgary's safer neighbourhoods, and that progress reflects strong neighbour awareness, good reporting, and close coordination with Calgary Police Service. Residents can now also use our [online reporting form](/safety/report/) to share non-emergency concerns with the association.
+The RRROCA Safety Committee continues to meet regularly, and we are pleased to report that community crime is **down 26% year-over-year**. Rocky Ridge and Royal Oak remain among Calgary's safer neighbourhoods, and that progress reflects strong neighbour awareness, good reporting, and close coordination with Calgary Police Service. Residents can now also visit our [Safety Hub](/safety/) for resources, crime statistics, and links to report non-emergency concerns to CPS and Calgary 311.
 
 ## Stampede Breakfast planning is in full swing
 

@@ -13,13 +13,16 @@ Rocky Ridge and Royal Oak consistently rank among Calgary's safest communities, 
 
 The chart below compares quarterly crime incidents in Rocky Ridge and Royal Oak against the Calgary community average. Our neighbourhoods typically see **2-4 incidents per quarter** versus the city average of **17-25**.
 
-## Report a Concern
+## Report a Safety Concern
 
-Have a non-emergency safety concern? We want to hear about it.
+For safety concerns, always use the appropriate official channel:
 
-<a href="/safety/report/" class="btn btn-primary" style="margin-bottom: 1rem;">Report a Safety Concern</a>
+- **Emergency**: Call **[911](tel:911)** immediately
+- **CPS Non-Emergency**: Call **[403-266-1234](tel:4032661234)** for non-urgent police matters
+- **City of Calgary (311)**: Report city-managed issues at **[311.calgary.ca](https://311.calgary.ca)** — road damage, streetlights, bylaw enforcement, noise, snow removal
+- **CPS Online Reporting**: File non-emergency reports at [calgarypolice.ca](https://www.calgarypolice.ca/our-services/online-services/)
 
-> **In an emergency, always call 911.** The form above is for non-urgent matters like suspicious activity patterns, lighting issues, or traffic concerns.
+> RRROCA is a volunteer-run community association. For safety concerns, please contact the trained professionals above. For neighbourhood patterns or community-specific concerns, share them in our [Block Watch Facebook group](https://www.facebook.com/groups/raborrroca) so neighbours can stay aware.
 
 ## Community Liaison Officer
 
@@ -49,7 +52,7 @@ Stay connected with your neighbours on safety matters. Our **Block Watch Faceboo
 - **Join the Safety Committee** — email [safety@rrroca.org](mailto:safety@rrroca.org)
 - **Snow Angels** — help elderly or mobility-challenged neighbours with snow removal
 - **Block Connectors** — become a point of contact for your block
-- **Report concerns** — use our [concern form](/safety/report/) or contact CPS directly
+- **Report concerns** — contact [CPS non-emergency (403-266-1234)](tel:4032661234) or [Calgary 311](https://311.calgary.ca)
 
 ## Road Safety Reminders
 
