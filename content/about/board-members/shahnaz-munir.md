@@ -7,6 +7,8 @@ tags: ["board", "secretary", "events"]
 draft: false
 ---
 
+![Shahnaz Munir](/images/board/shahnaz-munir.jpg)
+
 ## Board role
 
 - **Roles:** Secretary (Acting); Events Director
