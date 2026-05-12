@@ -107,7 +107,7 @@ describeIfBuild('BaseURL Consistency', () => {
   test('base-url metadata and base config script are injected in HTML pages', () => {
     const homepage = htmlFiles.find(f => f.path.endsWith(path.join('public', 'index.html')));
     if (homepage) {
-      expect(homepage.content).toContain('meta name="base-url"');
+      expect(homepage.content).toMatch(/meta\s+name=["']?base-url["']?/);
       expect(homepage.content).toContain('/js/base-config.js');
     }
   });

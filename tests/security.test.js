@@ -70,6 +70,11 @@ function isInternalHref(href) {
   const hostname = url.hostname.toLowerCase();
   if (hostname === 'rrroca.org' || hostname.endsWith('.rrroca.org')) return true;
 
+  // GitHub Pages staging site is internal
+  if (hostname === 'canchad.github.io' && /^\/rrroca-site(?:\/|$)/.test(url.pathname)) {
+    return true;
+  }
+
   if (hostname === 'github.com' && /^\/CanChad(?:\/|$)/.test(url.pathname)) {
     return true;
   }

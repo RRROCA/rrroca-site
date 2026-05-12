@@ -356,7 +356,12 @@ describe('Link guard', () => {
       assets.forEach((src) => {
         if (!src || src.startsWith('http') || src.includes('livereload') || checked.has(src)) return;
         checked.add(src);
-        const cleanSrc = src.split('?')[0].replace(/^\/+/, '');
+        // Strip baseURL prefix (e.g. /rrroca-site/) so path resolves on disk
+        let cleanSrc = src.split('?')[0];
+        if (BASE_PREFIX && cleanSrc.startsWith(BASE_PREFIX + '/')) {
+          cleanSrc = cleanSrc.slice(BASE_PREFIX.length);
+        }
+        cleanSrc = cleanSrc.replace(/^\/+/, '');
         const diskPath = path.join(PUBLIC_DIR, cleanSrc);
         if (!fs.existsSync(diskPath)) {
           missing.push({ file: path.relative(PUBLIC_DIR, file), src });
