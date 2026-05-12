@@ -3,8 +3,6 @@ title: "NW Plumbing & Heating"
 date: 2026-01-01
 description: "Trusted local plumbers for repairs, hot water tanks, and seasonal maintenance."
 categories: ["Home Services"]
-phone: "403-555-3344"
-website: "https://nwplumbing.example.com"
 address: "18 Royal Birch Hill NW, Calgary, AB"
 hours: "Mon-Sat 8am-6pm"
 featured: false

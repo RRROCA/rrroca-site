@@ -1,0 +1,206 @@
+const fs = require('fs');
+const path = require('path');
+const { JSDOM } = require('jsdom');
+
+const PUBLIC = path.join(__dirname, '..', 'public');
+const SITE_ORIGIN = 'https://rrroca.org';
+
+function readBuiltFiles(extensions) {
+  const files = [];
+
+  function walk(dir) {
+    if (!fs.existsSync(dir)) return;
+
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const fullPath = path.join(dir, entry.name);
+
+      if (entry.isDirectory()) {
+        walk(fullPath);
+        continue;
+      }
+
+      if (!extensions.includes(path.extname(entry.name).toLowerCase())) continue;
+
+      try {
+        files.push({
+          path: fullPath,
+          relativePath: path.relative(PUBLIC, fullPath),
+          content: fs.readFileSync(fullPath, 'utf-8')
+        });
+      } catch (error) {
+        // Skip unreadable files so one bad file does not break the suite.
+      }
+    }
+  }
+
+  walk(PUBLIC);
+  return files;
+}
+
+function getUrlDetails(href) {
+  if (!href) return null;
+
+  const trimmed = href.trim();
+  if (!trimmed || trimmed.startsWith('#')) return null;
+  if (/^(mailto:|tel:|data:)/i.test(trimmed)) return null;
+
+  try {
+    return new URL(trimmed, SITE_ORIGIN);
+  } catch (error) {
+    return null;
+  }
+}
+
+function isInternalHref(href) {
+  const url = getUrlDetails(href);
+  if (!url) return true;
+
+  if (!/^https?:$/i.test(url.protocol)) return true;
+
+  const hostname = url.hostname.toLowerCase();
+  if (hostname === 'rrroca.org' || hostname.endsWith('.rrroca.org')) return true;
+
+  if (hostname === 'github.com' && /^\/CanChad(?:\/|$)/.test(url.pathname)) {
+    return true;
+  }
+
+  return false;
+}
+
+function isMixedContentUrl(value) {
+  if (!value) return false;
+
+  const trimmed = value.trim();
+  if (!/^http:\/\//i.test(trimmed)) return false;
+  if (/^http:\/\/(localhost|127\.0\.0\.1)/i.test(trimmed)) return false;
+  return true;
+}
+
+const SECRET_PATTERNS = [
+  { label: 'api key assignment', regex: /\bapi[_-]?key\s*[:=]\s*['\"]?[A-Za-z0-9_\-+=/]{8,}/gi },
+  { label: 'api key query parameter', regex: /(?:\?|&|\b)api[_-]?key=([^&\s'\"<>]{6,})/gi },
+  { label: 'secret assignment', regex: /\bsecret(?:[_-]?key)?\s*[:=]\s*['\"]?[A-Za-z0-9_\-+=/]{8,}/gi },
+  { label: 'password assignment', regex: /\bpassword\s*[:=]\s*['\"]?[^\s'\"<>]{6,}/gi },
+  { label: 'token assignment', regex: /\b(?:token|access[_-]?token|auth[_-]?token)\s*[:=]\s*['\"]?[A-Za-z0-9._\-+=/]{8,}/gi },
+  { label: 'token query parameter', regex: /(?:\?|&|\b)(?:token|access_token|auth_token|secret|password)=([^&\s'\"<>]{6,})/gi },
+  { label: 'aws access key', regex: /\bA(?:KIA|SIA)[0-9A-Z]{16}\b/g },
+  { label: 'github token', regex: /\bgh[pousr]_[A-Za-z0-9]{20,}\b/g }
+];
+
+function isIgnoredSecretMatch(matchText) {
+  return /\{\{.*\}\}|var\(--/i.test(matchText);
+}
+
+let htmlFiles = [];
+let builtFiles = [];
+
+beforeAll(() => {
+  htmlFiles = readBuiltFiles(['.html']);
+  builtFiles = readBuiltFiles(['.html', '.js']);
+});
+
+describe('built site security checks', () => {
+  test('external links using _blank or external domains include noopener', () => {
+    if (!fs.existsSync(PUBLIC) || htmlFiles.length === 0) {
+      console.warn('Skipping external link security check: public output is unavailable.');
+      return;
+    }
+
+    const violations = [];
+
+    htmlFiles.forEach((file) => {
+      const dom = new JSDOM(file.content);
+      const anchors = dom.window.document.querySelectorAll('a[href]');
+
+      anchors.forEach((anchor) => {
+        const href = anchor.getAttribute('href') || '';
+        const rel = (anchor.getAttribute('rel') || '').trim();
+        const target = (anchor.getAttribute('target') || '').toLowerCase();
+        const reasons = [];
+
+        if (target === '_blank' && !/\bnoopener\b/i.test(rel)) {
+          reasons.push('target="_blank" missing noopener');
+        }
+
+        if (!isInternalHref(href) && !/\bnoopener\b/i.test(rel)) {
+          reasons.push('external link missing noopener');
+        }
+
+        if (reasons.length > 0) {
+          violations.push({
+            file: file.relativePath,
+            href,
+            rel: rel || '(missing)',
+            issue: reasons.join('; ')
+          });
+        }
+      });
+    });
+
+    expect(violations).toEqual([]);
+  });
+
+  test('built HTML and JS do not contain hardcoded secrets', () => {
+    if (!fs.existsSync(PUBLIC) || builtFiles.length === 0) {
+      console.warn('Skipping secret scan: public output is unavailable.');
+      return;
+    }
+
+    const violations = [];
+
+    builtFiles.forEach((file) => {
+      SECRET_PATTERNS.forEach(({ label, regex }) => {
+        regex.lastIndex = 0;
+
+        for (const match of file.content.matchAll(regex)) {
+          const snippet = match[0];
+          if (isIgnoredSecretMatch(snippet)) continue;
+
+          violations.push({
+            file: file.relativePath,
+            pattern: label,
+            snippet: snippet.slice(0, 120)
+          });
+        }
+      });
+    });
+
+    expect(violations).toEqual([]);
+  });
+
+  test('built assets do not reference insecure mixed-content URLs', () => {
+    if (!fs.existsSync(PUBLIC) || htmlFiles.length === 0) {
+      console.warn('Skipping mixed content check: public output is unavailable.');
+      return;
+    }
+
+    const violations = [];
+
+    htmlFiles.forEach((file) => {
+      const dom = new JSDOM(file.content);
+      const document = dom.window.document;
+      const selectors = [
+        ['img[src]', 'src'],
+        ['script[src]', 'src'],
+        ['link[href]', 'href'],
+        ['iframe[src]', 'src']
+      ];
+
+      selectors.forEach(([selector, attribute]) => {
+        document.querySelectorAll(selector).forEach((element) => {
+          const value = element.getAttribute(attribute) || '';
+          if (!isMixedContentUrl(value)) return;
+
+          violations.push({
+            file: file.relativePath,
+            tag: element.tagName.toLowerCase(),
+            attribute,
+            value
+          });
+        });
+      });
+    });
+
+    expect(violations).toEqual([]);
+  });
+});

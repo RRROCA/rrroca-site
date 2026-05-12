@@ -2,6 +2,7 @@ baseURL = "https://rrroca.org/"
 locale = "en-US"
 title= "Rocky Ridge Royal Oak Community Association"
 theme = "rrroca"
+enableRobotsTXT = true
 buildFuture = true
 
 [pagination]

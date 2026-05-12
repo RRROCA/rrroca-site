@@ -63,6 +63,10 @@ document.addEventListener('DOMContentLoaded', function () {
     button.addEventListener('click', function () {
       activeCategory = button.dataset.categoryFilter || 'all';
 
+      if (activeCategory === 'all' && searchInput) {
+        searchInput.value = '';
+      }
+
       filterButtons.forEach(function (item) {
         item.classList.toggle('is-active', item === button);
       });
