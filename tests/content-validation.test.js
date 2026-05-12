@@ -1,9 +1,8 @@
 const fs = require('fs');
 const path = require('path');
+const { CONTENT_DIR, PUBLIC_DIR, SITE_ORIGINS, resolveRoute } = require('./helpers/site-config');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
-const CONTENT_DIR = path.join(REPO_ROOT, 'content');
-const PUBLIC_DIR = path.join(REPO_ROOT, 'public');
 const THEMES_DIR = path.join(REPO_ROOT, 'themes', 'rrroca');
 
 function walkFiles(dir, extensions, results = []) {
@@ -42,21 +41,7 @@ function getFrontmatterValue(frontmatter, key) {
   return match[1].trim().replace(/^['"]|['"]$/g, '');
 }
 
-function routeExists(href) {
-  const cleanHref = href.split('#')[0].split('?')[0];
-  if (!cleanHref || cleanHref === '/') {
-    return fs.existsSync(path.join(PUBLIC_DIR, 'index.html'));
-  }
-
-  const relativePath = cleanHref.replace(/^\/+/, '');
-  const directPath = path.join(PUBLIC_DIR, relativePath);
-
-  return (
-    fs.existsSync(directPath) ||
-    fs.existsSync(`${directPath}.html`) ||
-    fs.existsSync(path.join(directPath, 'index.html'))
-  );
-}
+const routeExists = (href) => Boolean(resolveRoute(href));
 
 describe('Content and source validation', () => {
   it('requires title and date frontmatter on all content markdown files', () => {
@@ -115,7 +100,7 @@ describe('Content and source validation', () => {
     });
   });
 
-  it('contains no absolute rrroca.org links in markdown or source html', () => {
+  it('contains no absolute production-domain links in markdown or source html', () => {
     const sourceFiles = [
       ...walkFiles(CONTENT_DIR, ['.md']),
       ...walkFiles(path.join(REPO_ROOT, 'themes'), ['.html']),
@@ -123,7 +108,8 @@ describe('Content and source validation', () => {
     ];
 
     const matches = [];
-    const pattern = /https?:\/\/(www\.)?rrroca\.org\b/i;
+    const primaryHostname = new URL(SITE_ORIGINS[0]).hostname.replace('.', '\\.');
+    const pattern = new RegExp(`https?:\\/\\/(?:www\\.)?${primaryHostname}\\b`, 'i');
 
     sourceFiles.forEach((filePath) => {
       const source = fs.readFileSync(filePath, 'utf8');

@@ -3,8 +3,6 @@ title: "Oak Tree Daycare"
 date: 2026-01-01
 description: "Warm, play-based childcare with early learning programs for young families."
 categories: ["Kids & Family"]
-phone: "403-555-4477"
-website: "https://oaktreedaycare.example.com"
 address: "210 Royal Oak Centre NW, Calgary, AB"
 hours: "Mon-Fri 7am-6pm"
 featured: false

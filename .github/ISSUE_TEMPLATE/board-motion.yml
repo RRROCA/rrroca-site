@@ -20,26 +20,65 @@ body:
   - type: textarea
     id: motion-text
     attributes:
-      label: "Motion text"
-      description: "The formal text of the motion. Start with 'BE IT RESOLVED THAT...'"
+      label: "What are you proposing?"
+      description: "Describe the motion clearly. Start with 'BE IT RESOLVED THAT...' if appropriate."
     validations:
       required: true
 
   - type: textarea
     id: rationale
     attributes:
-      label: "Rationale"
-      description: "Why is this motion needed? What problem does it solve?"
+      label: "Why is this needed?"
+      description: "Explain the background, problem, or rationale for this motion."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: decision-type
+    attributes:
+      label: "What type of decision is this?"
+      options:
+        - Budget
+        - Policy
+        - Operations
+        - Partnership
+        - Other
     validations:
       required: true
 
   - type: input
-    id: financial-impact
+    id: amount
     attributes:
-      label: "Financial impact"
-      placeholder: "$0 or describe costs"
+      label: "How much money?"
+      placeholder: "$0 if none"
     validations:
       required: true
+
+  - type: input
+    id: portfolio
+    attributes:
+      label: "Which portfolio does this fall under?"
+      placeholder: "e.g., Parks, Safety, Events, Communications"
+    validations:
+      required: true
+
+  - type: input
+    id: decision-by
+    attributes:
+      label: "When do you need a decision by?"
+      description: "Use YYYY-MM-DD format."
+      placeholder: "YYYY-MM-DD"
+    validations:
+      required: true
+
+  - type: textarea
+    id: supporting-docs
+    attributes:
+      label: "Any supporting documents or links?"
+      description: "Optional: include links, references, or supporting details."
+      placeholder: "Add URLs, document references, or extra context"
+    validations:
+      required: false
 
   - type: markdown
     attributes:

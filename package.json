@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "hugo --gc --minify",
+    "dev": "hugo server -D",
+    "clean": "node -e \"require('fs').rmSync('public',{recursive:true,force:true})\"",
     "test": "jest --verbose",
     "test:e2e": "npx playwright test"
   },
@@ -26,6 +29,7 @@
     "jsdom": "^22.1.0"
   },
   "dependencies": {
-    "docx": "^9.6.1"
+    "docx": "^9.6.1",
+    "fuse.js": "^7.0.0"
   }
 }

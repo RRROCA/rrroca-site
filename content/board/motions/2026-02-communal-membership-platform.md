@@ -1,6 +1,7 @@
 ---
 title: "Motion 2026-002: Adopt Communal as Membership Platform"
 date: 2026-02-15
+description: "Formalizes Communal as RRROCA's membership, event registration, and payment platform."
 summary: "Replace SportSoft with Communal for membership management, event registration, and payment processing."
 proposed_by: "Board of Directors"
 motion_status: "passed"

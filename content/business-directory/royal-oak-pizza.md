@@ -3,8 +3,6 @@ title: "Royal Oak Pizza Co."
 date: 2026-01-01
 description: "Neighbourhood pizza shop serving handcrafted pies, wings, and takeout specials."
 categories: ["Restaurants"]
-phone: "403-555-2088"
-website: "https://royaloakpizza.example.com"
 address: "45 Royal Oak Plaza NW, Calgary, AB"
 hours: "Daily 11am-10pm"
 featured: false

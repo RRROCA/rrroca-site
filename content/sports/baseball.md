@@ -13,8 +13,8 @@ draft: false
 
 No baseball planned for spring 2022 due to lack of volunteers to run the program. Check back here for updates.
 
-[![](/images/uploads/become-a-rrroca-member.jpg)](https://rrroca.getcommunal.com/memberships)
+[![Become a RRROCA member](/images/uploads/become-a-rrroca-member.jpg)](https://rrroca.getcommunal.com/memberships)
 
-[![](/images/uploads/RRROCA-Member-Portal-Button.jpg)](https://admin.sportzsoft.com/apps/regWeb.dll/Login?OrgId=1901)
+[![Open the RRROCA member portal](/images/uploads/RRROCA-Member-Portal-Button.jpg)](https://admin.sportzsoft.com/apps/regWeb.dll/Login?OrgId=1901)
 
-[![](/images/uploads/Timbits-Color.jpg)](https://admin.sportzsoft.com/apps/regWeb.dll/Login?OrgId=1901)
+[![Register for Timbits baseball](/images/uploads/Timbits-Color.jpg)](https://admin.sportzsoft.com/apps/regWeb.dll/Login?OrgId=1901)

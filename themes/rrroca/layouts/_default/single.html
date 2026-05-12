@@ -1,3 +1,4 @@
+{{/* Root-level standalone pages such as privacy-statement and terms-of-use intentionally use the default single template to preserve their long-lived URLs. */}}
 {{ define "main" }}
 {{ $sectionKey := lower (default "general" (or .Section .Type)) }}
 {{ $iconMap := dict "about" "⛰️" "community" "🏘️" "events" "🎉" "news" "📰" "safety" "🛡️" "get-involved" "🤝" "business-directory" "💼" "general" "✦" }}
@@ -77,6 +78,7 @@
 <section class="section inner-page-shell">
   <div class="container content-layout content-layout--immersive">
     <article class="content-main article-content inner-content">
+      <h2 class="sr-only">Article details</h2>
       <div class="inner-content-body reveal-on-scroll">
         {{ .Content }}
       </div>

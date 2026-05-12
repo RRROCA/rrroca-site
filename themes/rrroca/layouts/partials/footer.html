@@ -2,12 +2,12 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-col">
-        <h3>RRROCA</h3>
+        <p class="footer-heading">RRROCA</p>
         <p>{{ .Site.Params.description }}</p>
         <p class="footer-address">{{ .Site.Params.address }}</p>
       </div>
       <div class="footer-col">
-        <h3>Quick Links</h3>
+        <p class="footer-heading">Quick Links</p>
         <ul>
           <li><a href="{{ "about/" | relURL }}">About Us</a></li>
           <li><a href="{{ "about/board-of-directors/" | relURL }}">Board of Directors</a></li>
@@ -19,7 +19,7 @@
         </ul>
       </div>
       <div class="footer-col">
-        <h3>Get Involved</h3>
+        <p class="footer-heading">Get Involved</p>
         <ul>
           <li><a href="{{ "get-involved/" | relURL }}">Get Involved</a></li>
           <li><a href="{{ "board/" | relURL }}">Governance</a></li>
@@ -28,7 +28,7 @@
         </ul>
       </div>
       <div class="footer-col">
-        <h3>Emergency Contacts</h3>
+        <p class="footer-heading">Emergency Contacts</p>
         <ul>
           <li>🚨 Emergency: <strong>911</strong></li>
           <li>📞 CPS Non-Emergency: <strong>{{ .Site.Params.cpsNonEmergency }}</strong></li>
@@ -36,7 +36,7 @@
         </ul>
       </div>
       <div class="footer-col">
-        <h3>Connect With Us</h3>
+        <p class="footer-heading">Connect With Us</p>
         <div class="social-links">
           {{ with .Site.Params.facebookPage }}
             <a href="{{ . }}" target="_blank" rel="noopener" aria-label="Facebook Page">📘 Facebook Page</a>

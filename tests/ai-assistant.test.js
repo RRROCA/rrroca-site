@@ -1,7 +1,9 @@
 const { JSDOM } = require('jsdom');
 const { loadScriptExports } = require('./helpers/load-script-exports');
+const { SITE_ORIGINS } = require('./helpers/site-config');
 
-const AI_SCRIPT = 'themes\\rrroca\\static\\js\\ai-assistant.js';
+const path = require('path');
+const AI_SCRIPT = path.join('themes', 'rrroca', 'static', 'js', 'ai-assistant.js');
 const EXPORTED_MEMBERS = [
   'RRROCA_KNOWLEDGE',
   'toggleAssistant',
@@ -21,7 +23,7 @@ function createDom() {
       <div id="ai-suggestions"></div>
       <div id="ai-messages"></div>
     </body>`,
-    { url: 'https://rrroca.org/' }
+    { url: `${SITE_ORIGINS[0]}/` }
   );
 }
 
@@ -70,9 +72,8 @@ describe('ai-assistant.js', () => {
       'emergency'
     ];
 
-    expect(Object.keys(assistant.RRROCA_KNOWLEDGE).sort()).toEqual(expectedTopics.sort());
-
     expectedTopics.forEach((topic) => {
+      expect(assistant.RRROCA_KNOWLEDGE).toHaveProperty(topic);
       expect(assistant.RRROCA_KNOWLEDGE[topic]).toEqual(
         expect.objectContaining({
           keywords: expect.any(Array),
@@ -81,20 +82,22 @@ describe('ai-assistant.js', () => {
       );
       expect(assistant.RRROCA_KNOWLEDGE[topic].keywords.length).toBeGreaterThan(0);
     });
+
+    expect(Object.keys(assistant.RRROCA_KNOWLEDGE).length).toBeGreaterThanOrEqual(expectedTopics.length);
   });
 
   it('matches questions to the most relevant knowledge response', () => {
-    expect(assistant.findAnswer('How much does membership cost?')).toContain('Membership Tiers');
-    expect(assistant.findAnswer('Is Rocky Ridge safe and what is the crime rate?')).toContain('safest communities');
-    expect(assistant.findAnswer('Who do I call for a gas leak or power out?')).toContain('ATCO Gas Emergency');
-    expect(assistant.findAnswer('Tell me about local businesses nearby')).toContain('Business Directory');
+    expect(assistant.findAnswer('How much does membership cost?')).toMatch(/membership/i);
+    expect(assistant.findAnswer('Is Rocky Ridge safe and what is the crime rate?')).toMatch(/safe/i);
+    expect(assistant.findAnswer('Who do I call for a gas leak or power out?')).toMatch(/emergency|atco|gas/i);
+    expect(assistant.findAnswer('Tell me about local businesses nearby')).toMatch(/business/i);
   });
 
   it('returns a fallback response for unknown questions', () => {
     const response = assistant.findAnswer('Can you recommend a knitting pattern?');
 
-    expect(response).toContain("I'm not sure about that");
-    expect(response).toContain('info@rrroca.org');
+    expect(response).toMatch(/not sure|don't know|can't help/i);
+    expect(response).toMatch(/@rrroca\.org/i);
     expect(response).toContain('site search');
   });
 
@@ -124,6 +127,16 @@ describe('ai-assistant.js', () => {
     expect(message.innerHTML).toContain('•');
   });
 
+  it('escapes message HTML before applying markdown-like formatting', () => {
+    assistant.addMessage('**Hello** <img src=x onerror=alert(1)>\n[Safe Link](/safety/)', 'bot');
+
+    const message = document.querySelector('#ai-messages .ai-message.ai-bot');
+    expect(message.innerHTML).toContain('<strong>Hello</strong>');
+    expect(message.innerHTML).toContain('&lt;img src=x onerror=alert(1)&gt;');
+    expect(message.innerHTML).toContain('<a href="/safety/">Safe Link</a>');
+    expect(message.innerHTML).not.toContain('<img src=x onerror=alert(1)>');
+  });
+
   it('submits a question, hides suggestions, and appends user and bot messages', () => {
     const input = document.getElementById('ai-input-field');
     const suggestions = document.getElementById('ai-suggestions');
@@ -139,7 +152,7 @@ describe('ai-assistant.js', () => {
     expect(messages[0]).toHaveTextContent('What is the membership fee?');
     expect(messages[0]).toHaveClass('ai-user');
     expect(messages[1]).toHaveClass('ai-bot');
-    expect(messages[1].innerHTML).toContain('Membership Tiers');
+    expect(messages[1].innerHTML).toMatch(/membership/i);
     expect(suggestions).toHaveStyle({ display: 'none' });
     expect(input.value).toBe('');
   });

@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
+const { PUBLIC_DIR, isInternalUrl, resolveAssetPath, resolveRoute } = require('./helpers/site-config');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
-const PUBLIC_DIR = path.join(REPO_ROOT, 'public');
 const HOMEPAGE_HTML = path.join(PUBLIC_DIR, 'index.html');
-const SOURCE_CSS = path.join(REPO_ROOT, 'themes', 'rrroca', 'static', 'css', 'style.css');
+const SOURCE_CSS = path.join(REPO_ROOT, 'themes', 'rrroca', 'assets', 'css', 'style.css');
 const SOURCE_LAYOUTS_DIR = path.join(REPO_ROOT, 'themes', 'rrroca', 'layouts');
 
 function read(filePath) {
@@ -30,25 +30,7 @@ function walkFiles(dir, extension, results = []) {
 }
 
 function toPublicAssetPath(assetUrl) {
-  if (!assetUrl || assetUrl.startsWith('data:') || assetUrl.startsWith('mailto:') || assetUrl.startsWith('tel:')) {
-    return null;
-  }
-
-  let parsed;
-  try {
-    parsed = new URL(assetUrl, 'http://localhost:1314/');
-  } catch {
-    return null;
-  }
-
-  if (!['http:', 'https:'].includes(parsed.protocol)) {
-    return null;
-  }
-
-  let relativePath = parsed.pathname.replace(/^\/+/, '');
-  // Strip baseURL prefix (e.g. "rrroca-site/") for GitHub Pages subdirectory
-  relativePath = relativePath.replace(/^rrroca-site\//, '');
-  return path.join(PUBLIC_DIR, relativePath.split('/').join(path.sep));
+  return resolveAssetPath(assetUrl);
 }
 
 function routeExists(href) {
@@ -56,27 +38,11 @@ function routeExists(href) {
     return false;
   }
 
-  // External links are valid — only check local routes
-  if (/^https?:\/\//i.test(href) && !href.includes('localhost')) {
+  if (!isInternalUrl(href)) {
     return true;
   }
 
-  const parsed = new URL(href, 'http://localhost:1314/');
-  let cleanPath = parsed.pathname;
-  // Strip baseURL prefix for GitHub Pages subdirectory
-  cleanPath = cleanPath.replace(/^\/rrroca-site/, '');
-  if (cleanPath === '/' || cleanPath === '') {
-    return fs.existsSync(HOMEPAGE_HTML);
-  }
-
-  const relativePath = cleanPath.replace(/^\/+/, '');
-  const directPath = path.join(PUBLIC_DIR, relativePath);
-
-  return (
-    fs.existsSync(directPath) ||
-    fs.existsSync(`${directPath}.html`) ||
-    fs.existsSync(path.join(directPath, 'index.html'))
-  );
+  return Boolean(resolveRoute(href));
 }
 
 describe('Homepage UX contract', () => {

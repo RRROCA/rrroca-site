@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { JSDOM } = require('jsdom');
+const { SITE_ORIGINS } = require('./helpers/site-config');
 
 const SCRIPT_PATH = path.join(__dirname, '..', 'themes', 'rrroca', 'static', 'js', 'search.js');
 const SOURCE = fs.readFileSync(SCRIPT_PATH, 'utf8');
@@ -53,7 +54,7 @@ describe('search.js', () => {
           </div>
         </body>
       </html>`,
-      { url: 'https://rrroca.org/' }
+      { url: `${SITE_ORIGINS[0]}/` }
     );
 
     window = dom.window;
@@ -155,6 +156,35 @@ describe('search.js', () => {
     input.value = 'gardening';
     input.dispatchEvent(new window.Event('input', { bubbles: true }));
     expect(results.innerHTML).toContain('No results for "<strong>gardening</strong>"');
+  });
+
+  it('escapes result content and blocks unsafe permalinks', async () => {
+    const input = document.getElementById('search-input');
+    const results = document.getElementById('search-results');
+
+    window.openSearch();
+    await window.__searchTestHooks.loadIndex();
+
+    window.__searchTestHooks.getFuse().search.mockReturnValue([
+      {
+        item: {
+          title: '<img src=x onerror=alert(1)>',
+          content: 'Unsafe <script>alert(1)</script> preview',
+          section: 'news & updates',
+          permalink: 'javascript:alert(1)'
+        }
+      }
+    ]);
+
+    input.value = '<svg onload=alert(1)>';
+    input.dispatchEvent(new window.Event('input', { bubbles: true }));
+
+    expect(results.innerHTML).toContain('&lt;img src=x onerror=alert(1)&gt;');
+    expect(results.innerHTML).toContain('Unsafe &lt;script&gt;alert(1)&lt;/script&gt; preview');
+    expect(results.innerHTML).toContain('news &amp; updates');
+    expect(results.innerHTML).toContain('href="#"');
+    expect(results.innerHTML).not.toContain('<script>alert(1)</script>');
+    expect(results.innerHTML).not.toContain('javascript:alert(1)');
   });
 
   it('closes the search overlay and restores page scrolling', () => {

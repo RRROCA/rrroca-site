@@ -1,6 +1,7 @@
 ---
 title: "Community Block Party"
 date: 2026-09-12T16:00:00-06:00
+description: "Wrap up summer with food trucks, games, and family fun at the RRROCA community block party."
 endDate: 2026-09-12T20:00:00-06:00
 location: "Royal Oak Community Park"
 address: "8888 Country Hills Blvd NW, Calgary, AB"

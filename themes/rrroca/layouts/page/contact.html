@@ -1,3 +1,4 @@
+{{/* Keep content/contact.md at the root so the site preserves the stable /contact/ URL while using this custom page layout. */}}
 {{ define "main" }}
 <section class="page-header">
   <div class="container">
@@ -10,6 +11,7 @@
 <section class="section">
   <div class="container contact-layout">
     <article class="contact-content article-content">
+      <h2 class="sr-only">Contact information</h2>
       {{ .Content }}
     </article>
 

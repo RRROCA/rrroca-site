@@ -1,6 +1,7 @@
 ---
 title: "Spring Park Cleanup Day"
 date: 2026-06-06T10:00:00-06:00
+description: "Help tidy Rocky Ridge Community Park with neighbours during this volunteer spring cleanup event."
 endDate: 2026-06-06T13:00:00-06:00
 location: "Rocky Ridge Community Park"
 address: "111 Rocky Ridge Green NW, Calgary, AB"

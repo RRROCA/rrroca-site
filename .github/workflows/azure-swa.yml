@@ -1,3 +1,4 @@
+# Production deployment to rrroca.org via Azure Static Web Apps
 name: Azure Static Web Apps CI/CD
 
 on:

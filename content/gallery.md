@@ -3,6 +3,7 @@ title: "Community Gallery"
 date: 2026-05-09T00:00:00-06:00
 layout: "gallery"
 description: "Photos from our vibrant Rocky Ridge & Royal Oak community"
+categories: ["community"]
 photos:
   - src: "/images/community-aerial.jpg"
     caption: "Aerial view of Rocky Ridge & Royal Oak"

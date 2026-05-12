@@ -3,8 +3,6 @@ title: "Rocky Ridge Pet Grooming"
 date: 2026-01-01
 description: "Full-service grooming for dogs and cats with gentle care and flexible bookings."
 categories: ["Other"]
-phone: "403-555-6640"
-website: "https://rockyridgepetgrooming.example.com"
 address: "67 Tuscany Springs Blvd NW, Calgary, AB"
 hours: "Tue-Sat 9am-5:30pm"
 featured: false

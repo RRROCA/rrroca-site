@@ -36,11 +36,11 @@ Programs will start on Saturday, April 27th, 2019 and end on Monday, June 24th, 
 
 Fees for each program include the costs of a Team Jersey, Team Photo and Soccer Ball! A $50 Volunteer opt-out fee will be applied to each household at the time of registration if a volunteer position is not filled. The cost of registration will be waived for those with a valid Calgary Recreation Fee Assistance Card. Please contact the Programs Co-Chair for registration assistance.
 
-[![](/images/uploads/become-a-rrroca-member.jpg)](https://rrroca.getcommunal.com/memberships)
+[![Become a RRROCA member](/images/uploads/become-a-rrroca-member.jpg)](https://rrroca.getcommunal.com/memberships)
 
-[![](/images/uploads/RRROCA-Member-Portal-Button.jpg)](https://admin.sportzsoft.com/apps/regWeb.dll/Login?OrgId=1901)
+[![Open the RRROCA member portal](/images/uploads/RRROCA-Member-Portal-Button.jpg)](https://admin.sportzsoft.com/apps/regWeb.dll/Login?OrgId=1901)
 
-[![](/images/uploads/Timbits-Color.jpg)](https://admin.sportzsoft.com/apps/regWeb.dll/Login?OrgId=1901)
+[![Register for Timbits baseball](/images/uploads/Timbits-Color.jpg)](https://admin.sportzsoft.com/apps/regWeb.dll/Login?OrgId=1901)
 
 ## **Soccer**
 

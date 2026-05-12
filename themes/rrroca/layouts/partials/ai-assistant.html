@@ -1,6 +1,6 @@
 <!-- RRROCA AI Assistant — client-side community concierge -->
 <div class="ai-assistant" id="ai-assistant" aria-label="RRROCA AI Community Assistant">
-  <button class="ai-fab" id="ai-fab" onclick="toggleAssistant()" aria-label="Open AI assistant">
+  <button type="button" class="ai-fab" id="ai-fab" data-toggle-assistant aria-label="Open AI assistant">
     <span class="ai-fab-icon">🤖</span>
     <span class="ai-fab-pulse"></span>
   </button>
@@ -13,7 +13,7 @@
           <small>Your community AI helper</small>
         </div>
       </div>
-      <button class="ai-close" onclick="toggleAssistant()" aria-label="Close assistant">✕</button>
+      <button type="button" class="ai-close" data-toggle-assistant aria-label="Close assistant">✕</button>
     </div>
     <div class="ai-messages" id="ai-messages">
       <div class="ai-message ai-bot">
@@ -29,13 +29,13 @@
       </div>
     </div>
     <div class="ai-suggestions" id="ai-suggestions">
-      <button onclick="askAI('Is Rocky Ridge safe?')">Is it safe here?</button>
-      <button onclick="askAI('How do I join RRROCA?')">Join RRROCA</button>
-      <button onclick="askAI('What events are coming up?')">Upcoming events</button>
-      <button onclick="askAI('Where are the nearest parks?')">Nearby parks</button>
+      <button type="button" data-ai-question="Is Rocky Ridge safe?">Is it safe here?</button>
+      <button type="button" data-ai-question="How do I join RRROCA?">Join RRROCA</button>
+      <button type="button" data-ai-question="What events are coming up?">Upcoming events</button>
+      <button type="button" data-ai-question="Where are the nearest parks?">Nearby parks</button>
     </div>
-    <form class="ai-input" onsubmit="handleAISubmit(event)">
-      <input type="text" id="ai-input-field" placeholder="Ask about your community..." autocomplete="off">
+    <form class="ai-input">
+      <input type="text" id="ai-input-field" placeholder="Ask about your community..." autocomplete="off" aria-label="Ask the RRROCA AI assistant">
       <button type="submit" aria-label="Send">→</button>
     </form>
   </div>

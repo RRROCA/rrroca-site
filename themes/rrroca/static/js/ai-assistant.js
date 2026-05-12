@@ -217,14 +217,33 @@ function findAnswer(question) {
 Or try asking about: safety, events, membership, parks, sports, volunteering, or local businesses!`;
 }
 
+function escapeHTML(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function getBaseUrl() {
+  if (window.RRROCA && typeof window.RRROCA.getBaseUrl === 'function') {
+    return window.RRROCA.getBaseUrl();
+  }
+
+  const meta = document.querySelector('meta[name="base-url"]');
+  const content = meta && meta.content ? meta.content.trim() : '';
+  return content ? content.replace(/\/$/, '') : '';
+}
+
 function addMessage(text, type) {
   const messages = document.getElementById('ai-messages');
   const div = document.createElement('div');
   div.className = `ai-message ai-${type}`;
 
   // Simple markdown-like rendering
-  const base = (window.RRROCA_BASE_URL || '/').replace(/\/$/, '');
-  const html = text
+  const base = getBaseUrl();
+  const html = escapeHTML(text)
     .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/\[(.*?)\]\((.*?)\)/g, (_, label, href) => {
@@ -237,6 +256,29 @@ function addMessage(text, type) {
   div.innerHTML = `<p>${html}</p>`;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
+}
+
+function bindAssistantControls() {
+  document.querySelectorAll('[data-toggle-assistant]').forEach((button) => {
+    button.addEventListener('click', toggleAssistant);
+  });
+
+  document.querySelectorAll('[data-ai-question]').forEach((button) => {
+    button.addEventListener('click', () => {
+      askAI(button.dataset.aiQuestion || '');
+    });
+  });
+
+  const form = document.querySelector('.ai-input');
+  if (form) {
+    form.addEventListener('submit', handleAISubmit);
+  }
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', bindAssistantControls);
+} else {
+  bindAssistantControls();
 }
 
 // Keyboard shortcut: Escape to close

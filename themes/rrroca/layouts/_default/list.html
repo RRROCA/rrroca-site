@@ -74,7 +74,7 @@
               <time class="news-date">{{ .Date.Format "January 2, 2006" }}</time>
               {{ end }}
             </div>
-            <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+            <h2><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
             <p>{{ .Summary | plainify | truncate 160 }}</p>
             <div class="news-card-footer">
               <span class="news-card-stat">{{ cond (gt .ReadingTime 0) (printf "%d min read" .ReadingTime) "Quick read" }}</span>

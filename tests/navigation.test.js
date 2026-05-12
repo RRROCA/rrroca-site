@@ -9,10 +9,9 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
+const { BASE_PREFIX, CONTENT_DIR, PUBLIC_DIR, SITE_ORIGINS, isInternalUrl, resolveRoute } = require('./helpers/site-config');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
-const PUBLIC_DIR = path.join(REPO_ROOT, 'public');
-const CONTENT_DIR = path.join(REPO_ROOT, 'content');
 
 function collectFiles(dir, extension, results = []) {
   if (!fs.existsSync(dir)) return results;
@@ -27,32 +26,7 @@ function collectFiles(dir, extension, results = []) {
   return results;
 }
 
-// Detect baseURL path prefix from the build output
-const BASE_PREFIX = (() => {
-  const indexPath = path.join(PUBLIC_DIR, 'index.html');
-  if (!fs.existsSync(indexPath)) return '';
-  const html = fs.readFileSync(indexPath, 'utf8');
-  const match = html.match(/href=["']?(\/[^"'\s>]+?)\/about\/["'\s>]/);
-  return match ? match[1] : '';
-})();
-
-function routeExists(href) {
-  const cleanHref = href.split('#')[0].split('?')[0];
-  if (!cleanHref || cleanHref === '/' || cleanHref === `${BASE_PREFIX}/`) {
-    return fs.existsSync(path.join(PUBLIC_DIR, 'index.html'));
-  }
-  let relativePath = cleanHref;
-  if (BASE_PREFIX && relativePath.startsWith(BASE_PREFIX)) {
-    relativePath = relativePath.slice(BASE_PREFIX.length);
-  }
-  relativePath = relativePath.replace(/^\/+/, '');
-  const directPath = path.join(PUBLIC_DIR, relativePath);
-  return (
-    fs.existsSync(directPath) ||
-    fs.existsSync(`${directPath}.html`) ||
-    fs.existsSync(path.join(directPath, 'index.html'))
-  );
-}
+const routeExists = (href) => Boolean(resolveRoute(href));
 
 function loadDom(filePath) {
   const html = fs.readFileSync(filePath, 'utf8');
@@ -82,7 +56,7 @@ describe('Navigation consistency', () => {
 
     // All links must resolve
     const broken = hrefs.filter((h) => {
-      if (!h.href || h.href.startsWith('http') || h.href.startsWith('#')) return false;
+      if (!h.href || h.href.startsWith('#') || !isInternalUrl(h.href)) return false;
       return !routeExists(h.href);
     });
     expect(broken).toEqual([]);
@@ -93,7 +67,7 @@ describe('Navigation consistency', () => {
     const broken = [];
     footerLinks.forEach((a) => {
       const href = a.getAttribute('href');
-      if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#')) return;
+      if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#') || !isInternalUrl(href)) return;
       if (!routeExists(href)) {
         broken.push({ href, text: a.textContent.trim().substring(0, 40) });
       }
@@ -120,7 +94,7 @@ describe('Navigation consistency', () => {
     const broken = [];
     sidebarLinks.forEach((a) => {
       const href = a.getAttribute('href');
-      if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#')) return;
+      if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#') || !isInternalUrl(href)) return;
       if (!routeExists(href)) {
         broken.push({ href, text: a.textContent.trim().substring(0, 40) });
       }
@@ -135,7 +109,7 @@ describe('Navigation consistency', () => {
     const broken = [];
     cards.forEach((card) => {
       const href = card.getAttribute('href');
-      if (!href || href.startsWith('http')) return;
+      if (!href || !isInternalUrl(href)) return;
       if (!routeExists(href)) {
         broken.push({ href, text: card.textContent.trim().substring(0, 40) });
       }
@@ -161,8 +135,8 @@ describe('Markdown internal link validation', () => {
       while ((match = linkPattern.exec(content)) !== null) {
         const href = match[1];
         // Skip external, mailto, tel, relative image paths
-        if (href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('tel:') ||
-            href.startsWith('//') || href.match(/\.(jpg|jpeg|png|gif|svg|pdf|docx|xlsx)$/i)) {
+        if (href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('//') ||
+            href.match(/\.(jpg|jpeg|png|gif|svg|pdf|docx|xlsx)$/i) || !isInternalUrl(href)) {
           continue;
         }
         // Only check absolute internal links (starting with /)
@@ -197,9 +171,9 @@ describe('Built HTML internal link integrity', () => {
 
       anchors.forEach((a) => {
         const href = a.getAttribute('href');
-        if (!href || href.startsWith('http') || href.startsWith('mailto:') ||
-            href.startsWith('tel:') || href.startsWith('#') || href.startsWith('javascript:') ||
-            href.startsWith('data:')) {
+        if (!href || href.startsWith('mailto:') || href.startsWith('tel:') ||
+            href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('data:') ||
+            !isInternalUrl(href)) {
           return;
         }
         const cleanHref = href.split('#')[0].split('?')[0];
@@ -310,7 +284,7 @@ describe('negative navigation cases', () => {
       }))
       .filter((link) => {
         const normalizedHref = link.href.toLowerCase();
-        return /^https?:\/\/(?:www\.)?(?:canchad\.github\.io|rrroca\.org)\b/.test(normalizedHref);
+        return SITE_ORIGINS.some((origin) => normalizedHref.startsWith(origin.toLowerCase()));
       });
 
     expect(violations).toEqual([]);
