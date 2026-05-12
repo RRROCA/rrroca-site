@@ -1,10 +1,12 @@
 ---
 title: "Motion 2026-003: Tiny Forest Perimeter Fencing"
 date: 2026-05-09
+description: "Requests approval for permanent fencing to protect the tiny forest planting bed after storm damage."
 summary: "Approve $1,200 unplanned expenditure for permanent perimeter fencing at the tiny forest planting bed."
 proposed_by: "Jason Kellock, President"
 motion_status: "open"
 category: "Unplanned Expense"
+categories: ["operations", "parks"]
 seconder: ""
 amount: 1200.00
 vendor: "Windscape"

@@ -2,10 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
 
-const PUBLIC = path.join(__dirname, '..', 'public');
+const REPO_ROOT = path.join(__dirname, '..');
+const PUBLIC = path.join(REPO_ROOT, 'public');
+const CONTENT = path.join(REPO_ROOT, 'content');
 const SITE_ORIGIN = 'https://rrroca.org';
 
-function readBuiltFiles(extensions) {
+function readFiles(rootDir, extensions, relativeTo = rootDir) {
   const files = [];
 
   function walk(dir) {
@@ -24,7 +26,7 @@ function readBuiltFiles(extensions) {
       try {
         files.push({
           path: fullPath,
-          relativePath: path.relative(PUBLIC, fullPath),
+          relativePath: path.relative(relativeTo, fullPath),
           content: fs.readFileSync(fullPath, 'utf-8')
         });
       } catch (error) {
@@ -33,8 +35,16 @@ function readBuiltFiles(extensions) {
     }
   }
 
-  walk(PUBLIC);
+  walk(rootDir);
   return files;
+}
+
+function readBuiltFiles(extensions) {
+  return readFiles(PUBLIC, extensions);
+}
+
+function readContentMarkdownFiles() {
+  return readFiles(CONTENT, ['.md'], REPO_ROOT);
 }
 
 function getUrlDetails(href) {
@@ -87,8 +97,27 @@ const SECRET_PATTERNS = [
   { label: 'github token', regex: /\bgh[pousr]_[A-Za-z0-9]{20,}\b/g }
 ];
 
+const DANGEROUS_PATTERNS = [
+  { pattern: /<script[\s>]/i, name: 'script tags' },
+  { pattern: /<iframe[\s>]/i, name: 'iframe tags', exemption: 'iframe' },
+  { pattern: /on(click|load|error|mouseover|focus|blur)\s*=/i, name: 'inline event handlers' },
+  { pattern: /javascript:/i, name: 'javascript: URLs' },
+  { pattern: /<object[\s>]/i, name: 'object tags' },
+  { pattern: /<embed[\s>]/i, name: 'embed tags' },
+  { pattern: /<form[\s>]/i, name: 'form tags in content' }
+];
+
+const SANITIZATION_EXEMPTION_PATTERNS = {
+  iframe: /<!--\s*sanitization-exempt:\s*iframe\s*-->/i
+};
+
 function isIgnoredSecretMatch(matchText) {
   return /\{\{.*\}\}|var\(--/i.test(matchText);
+}
+
+function hasSanitizationExemption(fileContent, exemption) {
+  if (!exemption) return false;
+  return SANITIZATION_EXEMPTION_PATTERNS[exemption]?.test(fileContent) || false;
 }
 
 let htmlFiles = [];
@@ -202,5 +231,75 @@ describe('built site security checks', () => {
     });
 
     expect(violations).toEqual([]);
+  });
+
+  test('self-hosts Fuse.js and applies integrity or crossorigin where appropriate', () => {
+    if (!fs.existsSync(PUBLIC) || htmlFiles.length === 0) {
+      console.warn('Skipping CDN hardening check: public output is unavailable.');
+      return;
+    }
+
+    const searchScriptPath = path.join(PUBLIC, 'js', 'search.js');
+    expect(fs.existsSync(searchScriptPath)).toBe(true);
+    const searchScript = fs.readFileSync(searchScriptPath, 'utf8');
+    expect(searchScript).toContain("script.src = '/js/vendor/fuse.min.js'");
+    expect(searchScript).not.toContain('cdn.jsdelivr.net');
+
+    const adminPath = path.join(PUBLIC, 'admin', 'index.html');
+    expect(fs.existsSync(adminPath)).toBe(true);
+    const adminDocument = new JSDOM(fs.readFileSync(adminPath, 'utf8')).window.document;
+    const cmsScript = adminDocument.querySelector('script[src*="unpkg.com/@sveltia/cms"]');
+    expect(cmsScript).not.toBeNull();
+    expect(cmsScript?.getAttribute('integrity')).toMatch(/^sha384-/);
+    expect(cmsScript?.getAttribute('crossorigin')).toBe('anonymous');
+
+    const homepagePath = path.join(PUBLIC, 'index.html');
+    expect(fs.existsSync(homepagePath)).toBe(true);
+    const homepageDocument = new JSDOM(fs.readFileSync(homepagePath, 'utf8')).window.document;
+    const fontPreconnects = [
+      'https://fonts.googleapis.com',
+      'https://fonts.gstatic.com'
+    ];
+
+    fontPreconnects.forEach((href) => {
+      const link = homepageDocument.querySelector(`link[rel="preconnect"][href="${href}"]`);
+      expect(link).not.toBeNull();
+      expect(link?.getAttribute('crossorigin')).toBe('anonymous');
+    });
+  });
+
+  test('no dangerous HTML in markdown content files', () => {
+    if (!fs.existsSync(CONTENT)) {
+      console.warn('Skipping markdown sanitization check: content directory is unavailable.');
+      return;
+    }
+
+    const markdownFiles = readContentMarkdownFiles();
+    expect(markdownFiles.length).toBeGreaterThan(0);
+
+    const violations = [];
+
+    markdownFiles.forEach((file) => {
+      DANGEROUS_PATTERNS.forEach(({ pattern, name, exemption }) => {
+        if (hasSanitizationExemption(file.content, exemption)) return;
+
+        const match = file.content.match(pattern);
+        if (!match) return;
+
+        violations.push({
+          file: file.relativePath,
+          pattern: name,
+          match: match[0]
+        });
+      });
+    });
+
+    if (violations.length > 0) {
+      const details = violations
+        .map(({ file, pattern, match }) => `- ${file}: ${pattern} (${match})`)
+        .join('\n');
+
+      throw new Error(`Dangerous HTML found in markdown content files:\n${details}`);
+    }
   });
 });

@@ -333,7 +333,7 @@
         <div class="newsletter-card">
           <h3>📧 Monthly Newsletter</h3>
           <p>Community updates, event reminders, and safety alerts — straight to your inbox.</p>
-          <form class="newsletter-form" onsubmit="return handleNewsletter(event)">
+          <form class="newsletter-form">
             <input type="email" placeholder="your@email.com" required aria-label="Email address">
             <button type="submit" class="btn btn-primary">Subscribe</button>
           </form>
@@ -407,13 +407,4 @@
 <script src="{{ "js/ai-assistant.js" | absURL }}" defer></script>
 <script src="{{ "js/safety-dashboard.js" | absURL }}" defer></script>
 <script src="{{ "js/search.js" | absURL }}" defer></script>
-<script>
-function handleNewsletter(e) {
-  e.preventDefault();
-  const email = e.target.querySelector('input[type="email"]').value;
-  alert('Thanks for subscribing! We will send newsletter updates to ' + email);
-  e.target.reset();
-  return false;
-}
-</script>
 {{ end }}

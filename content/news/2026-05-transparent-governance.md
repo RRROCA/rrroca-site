@@ -2,6 +2,7 @@
 title: "RRROCA Launches Open Governance — Every Board Decision Now Public"
 date: 2026-05-09
 description: "For the first time in our community association's history, every board motion, every vote, and every outcome is published online in real time."
+categories: ["news"]
 tags: ["governance", "transparency", "board"]
 ---
 

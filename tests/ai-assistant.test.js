@@ -126,6 +126,16 @@ describe('ai-assistant.js', () => {
     expect(message.innerHTML).toContain('•');
   });
 
+  it('escapes message HTML before applying markdown-like formatting', () => {
+    assistant.addMessage('**Hello** <img src=x onerror=alert(1)>\n[Safe Link](/safety/)', 'bot');
+
+    const message = document.querySelector('#ai-messages .ai-message.ai-bot');
+    expect(message.innerHTML).toContain('<strong>Hello</strong>');
+    expect(message.innerHTML).toContain('&lt;img src=x onerror=alert(1)&gt;');
+    expect(message.innerHTML).toContain('<a href="/safety/">Safe Link</a>');
+    expect(message.innerHTML).not.toContain('<img src=x onerror=alert(1)>');
+  });
+
   it('submits a question, hides suggestions, and appends user and bot messages', () => {
     const input = document.getElementById('ai-input-field');
     const suggestions = document.getElementById('ai-suggestions');

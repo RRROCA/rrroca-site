@@ -1,6 +1,7 @@
 ---
 title: "Motion 2026-001: Adopt Integrated Technology Strategy"
 date: 2026-05-09
+description: "Adopts RRROCA's integrated technology strategy as the framework for future digital decisions and governance."
 summary: "Adopt the RRROCA Integrated Technology Strategy (2025–2028) as the governing framework for all technology decisions, platform selections, and digital initiatives."
 proposed_by: "Chad La Fournie, Safety & Technology Director"
 motion_status: "open"

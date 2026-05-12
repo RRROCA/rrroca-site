@@ -1,3 +1,4 @@
+{{/* Root-level standalone pages such as privacy-statement and terms-of-use intentionally use the default single template to preserve their long-lived URLs. */}}
 {{ define "main" }}
 {{ $sectionKey := lower (default "general" (or .Section .Type)) }}
 {{ $iconMap := dict "about" "⛰️" "community" "🏘️" "events" "🎉" "news" "📰" "safety" "🛡️" "get-involved" "🤝" "business-directory" "💼" "general" "✦" }}

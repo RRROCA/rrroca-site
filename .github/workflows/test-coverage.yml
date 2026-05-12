@@ -47,12 +47,45 @@ jobs:
             }
 
             const testMap = {
-              'content/': ['content-validation.test.js', 'build-validation.test.js', 'navigation.test.js'],
-              'themes/rrroca/layouts/': ['build-validation.test.js', 'homepage-ux.test.js', 'navigation.test.js'],
-              'themes/rrroca/static/js/': ['ai-assistant.test.js', 'search.test.js', 'safety-dashboard.test.js'],
-              'themes/rrroca/static/css/': ['homepage-ux.test.js'],
-              'hugo.toml': ['build-validation.test.js', 'navigation.test.js', 'content-validation.test.js'],
-              'static/admin/': [],
+              'content/': [
+                'content-validation.test.js',
+                'build-validation.test.js',
+                'navigation.test.js',
+                'content-freshness.test.js',
+                'seo.test.js',
+                'feed.test.js',
+                'accessibility.test.js',
+              ],
+              'themes/rrroca/layouts/': [
+                'build-validation.test.js',
+                'homepage-ux.test.js',
+                'navigation.test.js',
+                'accessibility.test.js',
+                'seo.test.js',
+                'security.test.js',
+              ],
+              'themes/rrroca/static/js/': [
+                'ai-assistant.test.js',
+                'search.test.js',
+                'safety-dashboard.test.js',
+                'safety-dashboard.partial.test.js',
+                'forms.test.js',
+                'inner-page.test.js',
+                'directory-search.test.js',
+              ],
+              'themes/rrroca/static/css/': [
+                'homepage-ux.test.js',
+                'accessibility.test.js',
+              ],
+              'hugo.toml': [
+                'build-validation.test.js',
+                'navigation.test.js',
+                'content-validation.test.js',
+                'seo.test.js',
+                'feed.test.js',
+              ],
+              'tests/': ['cross-platform.test.js'],
+              'static/admin/': ['security.test.js'],
             };
 
             const affectedTests = new Set();

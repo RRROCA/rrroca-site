@@ -5,7 +5,7 @@ const { JSDOM } = require('jsdom');
 const REPO_ROOT = path.resolve(__dirname, '..');
 const PUBLIC_DIR = path.join(REPO_ROOT, 'public');
 const HOMEPAGE_HTML = path.join(PUBLIC_DIR, 'index.html');
-const SOURCE_CSS = path.join(REPO_ROOT, 'themes', 'rrroca', 'static', 'css', 'style.css');
+const SOURCE_CSS = path.join(REPO_ROOT, 'themes', 'rrroca', 'assets', 'css', 'style.css');
 const SOURCE_LAYOUTS_DIR = path.join(REPO_ROOT, 'themes', 'rrroca', 'layouts');
 
 function read(filePath) {

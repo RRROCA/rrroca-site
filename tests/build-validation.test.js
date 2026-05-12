@@ -63,12 +63,18 @@ describe('Hugo build validation', () => {
     expect(fs.existsSync(path.join(PUBLIC_DIR, 'index.json'))).toBe(true);
     expect(fs.existsSync(path.join(PUBLIC_DIR, 'safety', 'index.html'))).toBe(true);
     expect(fs.existsSync(path.join(PUBLIC_DIR, '404.html'))).toBe(true);
-    expect(fs.existsSync(path.join(PUBLIC_DIR, 'css', 'style.css'))).toBe(true);
     expect(fs.existsSync(path.join(PUBLIC_DIR, 'js', 'ai-assistant.js'))).toBe(true);
     expect(fs.existsSync(path.join(PUBLIC_DIR, 'js', 'forms.js'))).toBe(true);
     expect(fs.existsSync(path.join(PUBLIC_DIR, 'js', 'directory-search.js'))).toBe(true);
     expect(fs.existsSync(path.join(PUBLIC_DIR, 'js', 'safety-dashboard.js'))).toBe(true);
     expect(fs.existsSync(path.join(PUBLIC_DIR, 'js', 'search.js'))).toBe(true);
+
+    const indexDocument = loadDocument(path.join('public', 'index.html'));
+    const stylesheet = indexDocument.querySelector('link[rel="stylesheet"][href*="/css/style."]');
+    expect(stylesheet).not.toBeNull();
+    expect(stylesheet.getAttribute('href')).toMatch(/\/css\/style\.[a-f0-9]{16,}\.css$/i);
+    expect(stylesheet.getAttribute('integrity')).toMatch(/^sha(256|384|512)-/);
+    expect(stylesheet.getAttribute('crossorigin')).toBe('anonymous');
   });
 
   it('renders the redesigned homepage with current navigation and community sections', () => {

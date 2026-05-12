@@ -95,18 +95,20 @@ describeIfBuild('BaseURL Consistency', () => {
     expect(broken.map(f => path.basename(f.path))).toEqual([]);
   });
 
-  test('search.js uses RRROCA_BASE_URL for index fetch', () => {
+  test('search.js resolves index fetch from base-url metadata', () => {
     const searchFile = path.join(PUBLIC, 'js', 'search.js');
     if (fs.existsSync(searchFile)) {
       const content = fs.readFileSync(searchFile, 'utf-8');
-      expect(content).toContain('RRROCA_BASE_URL');
+      expect(content).toContain('meta[name="base-url"]');
+      expect(content).toContain('getBaseUrl');
     }
   });
 
-  test('RRROCA_BASE_URL is injected in HTML pages', () => {
+  test('base-url metadata and base config script are injected in HTML pages', () => {
     const homepage = htmlFiles.find(f => f.path.endsWith(path.join('public', 'index.html')));
     if (homepage) {
-      expect(homepage.content).toContain('RRROCA_BASE_URL');
+      expect(homepage.content).toContain('meta name="base-url"');
+      expect(homepage.content).toContain('/js/base-config.js');
     }
   });
 

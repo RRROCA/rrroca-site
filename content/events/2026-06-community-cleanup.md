@@ -1,6 +1,7 @@
 ---
 title: "RRROCA Community Clean Up"
 date: 2026-06-20T09:00:00-06:00
+description: "Join neighbours for RRROCA's annual community clean up with disposal support, volunteers, and local sponsors."
 endDate: 2026-06-20T14:00:00-06:00
 location: "8888 Country Hills Blvd NW"
 address: "8888 Country Hills Blvd NW, Calgary, AB T3G 5T4"

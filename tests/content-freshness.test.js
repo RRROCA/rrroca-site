@@ -52,17 +52,85 @@ function parseFrontmatter(source) {
   return match ? match[1] : '';
 }
 
-function getFrontmatterValue(frontmatter, key) {
-  const match = frontmatter.match(new RegExp(`^${key}\\s*:\\s*(.+)$`, 'm'));
-  if (!match) {
+function getFrontmatterField(frontmatter, key) {
+  const lines = frontmatter.split('\n');
+  const fieldStart = new RegExp(`^${key}\\s*:\\s*(.*)$`);
+
+  for (let index = 0; index < lines.length; index += 1) {
+    const match = lines[index].match(fieldStart);
+    if (!match) {
+      continue;
+    }
+
+    const inlineValue = match[1].trim();
+    const blockLines = [];
+    let cursor = index + 1;
+
+    while (cursor < lines.length) {
+      const line = lines[cursor];
+      if (!line.trim()) {
+        if (blockLines.length > 0) {
+          break;
+        }
+        cursor += 1;
+        continue;
+      }
+
+      if (/^[^\s][^:]*:\s*/.test(line)) {
+        break;
+      }
+
+      if (/^\s+/.test(line)) {
+        blockLines.push(line.trim());
+        cursor += 1;
+        continue;
+      }
+
+      break;
+    }
+
+    return {
+      raw: inlineValue || blockLines.join('\n') || null,
+      inlineValue,
+      blockLines,
+    };
+  }
+
+  return null;
+}
+
+function normalizeScalar(value) {
+  return value ? value.trim().replace(/^['\"]|['\"]$/g, '') : '';
+}
+
+function getScalarFrontmatterValue(frontmatter, key) {
+  const field = getFrontmatterField(frontmatter, key);
+  if (!field?.raw) {
     return null;
   }
 
-  return match[1].trim().replace(/^['\"]|['\"]$/g, '');
+  return normalizeScalar(field.raw);
 }
 
 function isIsoLikeDate(value) {
   return /^\d{4}-\d{2}-\d{2}(?:[Tt ][^\n]+)?$/.test(value) && !Number.isNaN(Date.parse(value));
+}
+
+function isValidCategoriesField(field) {
+  if (!field?.raw) {
+    return false;
+  }
+
+  if (field.blockLines.length > 0) {
+    return field.blockLines.every((line) => /^-\s+.+$/.test(line));
+  }
+
+  const value = field.inlineValue;
+  return /^\[.*\]$/.test(value) || normalizeScalar(value).length > 0;
+}
+
+function formatIssueList(items, formatter) {
+  return items.map(formatter).join('\n');
 }
 
 function escapeRegExp(value) {
@@ -77,8 +145,8 @@ describeSuite('Content freshness and front matter quality', () => {
 
     markdownFiles.forEach((filePath) => {
       const frontmatter = parseFrontmatter(readSource(filePath));
-      const title = getFrontmatterValue(frontmatter, 'title');
-      const date = getFrontmatterValue(frontmatter, 'date');
+      const title = getScalarFrontmatterValue(frontmatter, 'title');
+      const date = getScalarFrontmatterValue(frontmatter, 'date');
 
       if (!title || !date) {
         missingFields.push({
@@ -97,7 +165,7 @@ describeSuite('Content freshness and front matter quality', () => {
 
     markdownFiles.forEach((filePath) => {
       const frontmatter = parseFrontmatter(readSource(filePath));
-      const title = getFrontmatterValue(frontmatter, 'title');
+      const title = getScalarFrontmatterValue(frontmatter, 'title');
 
       if (title && PLACEHOLDER_TITLE_PATTERNS.some((pattern) => pattern.test(title))) {
         placeholderTitles.push({
@@ -110,12 +178,12 @@ describeSuite('Content freshness and front matter quality', () => {
     expect(placeholderTitles).toEqual([]);
   });
 
-  it('every content page uses a valid ISO-like date value', () => {
+  it('every content page uses a parseable ISO 8601 date value', () => {
     const invalidDates = [];
 
     markdownFiles.forEach((filePath) => {
       const frontmatter = parseFrontmatter(readSource(filePath));
-      const date = getFrontmatterValue(frontmatter, 'date');
+      const date = getScalarFrontmatterValue(frontmatter, 'date');
 
       if (date && !isIsoLikeDate(date)) {
         invalidDates.push({
@@ -128,13 +196,65 @@ describeSuite('Content freshness and front matter quality', () => {
     expect(invalidDates).toEqual([]);
   });
 
+  it('warns when content front matter is missing categories', () => {
+    const missingCategories = [];
+
+    markdownFiles.forEach((filePath) => {
+      const frontmatter = parseFrontmatter(readSource(filePath));
+      const categories = getFrontmatterField(frontmatter, 'categories');
+
+      if (!categories?.raw) {
+        missingCategories.push(path.relative(REPO_ROOT, filePath));
+      }
+    });
+
+    if (missingCategories.length > 0) {
+      console.warn(`Content missing categories:\n${formatIssueList(missingCategories, (file) => `- ${file}`)}`);
+    }
+
+    expect(Array.isArray(missingCategories)).toBe(true);
+  });
+
+  it('fails when categories front matter is present but malformed', () => {
+    const invalidCategories = [];
+
+    markdownFiles.forEach((filePath) => {
+      const frontmatter = parseFrontmatter(readSource(filePath));
+      const categories = getFrontmatterField(frontmatter, 'categories');
+
+      if (categories?.raw && !isValidCategoriesField(categories)) {
+        invalidCategories.push({
+          file: path.relative(REPO_ROOT, filePath),
+          categories: categories.raw,
+        });
+      }
+    });
+
+    expect(invalidCategories).toEqual([]);
+  });
+
+  it('every content page has a non-empty description front matter value', () => {
+    const missingDescriptions = [];
+
+    markdownFiles.forEach((filePath) => {
+      const frontmatter = parseFrontmatter(readSource(filePath));
+      const description = getScalarFrontmatterValue(frontmatter, 'description');
+
+      if (!description) {
+        missingDescriptions.push(path.relative(REPO_ROOT, filePath));
+      }
+    });
+
+    expect(missingDescriptions).toEqual([]);
+  });
+
   it('warns about published content dated before 2023 without draft: true', () => {
     const staleContent = [];
 
     markdownFiles.forEach((filePath) => {
       const frontmatter = parseFrontmatter(readSource(filePath));
-      const date = getFrontmatterValue(frontmatter, 'date');
-      const draft = getFrontmatterValue(frontmatter, 'draft');
+      const date = getScalarFrontmatterValue(frontmatter, 'date');
+      const draft = getScalarFrontmatterValue(frontmatter, 'draft');
 
       if (!date || !isIsoLikeDate(date) || /^true$/i.test(draft || '')) {
         return;
@@ -150,9 +270,10 @@ describeSuite('Content freshness and front matter quality', () => {
 
     if (staleContent.length > 0) {
       console.warn(
-        `Published content older than 2023 detected:\n${staleContent
-          .map(({ file, date }) => `- ${file} (${date})`)
-          .join('\n')}`
+        `Published content older than 2023 detected:\n${formatIssueList(
+          staleContent,
+          ({ file, date }) => `- ${file} (${date})`
+        )}`
       );
     }
 

@@ -4,7 +4,7 @@
 This is a Hugo static site for the Rocky Ridge Royal Oak Community Association (RRROCA) in Calgary, AB.
 - **Hugo theme**: `themes/rrroca/`
 - **Content**: `content/` directory with markdown files
-- **Styles**: `themes/rrroca/static/css/style.css`
+- **Styles**: `themes/rrroca/assets/css/style.css`
 - **JavaScript**: `themes/rrroca/static/js/`
 - **Templates**: `themes/rrroca/layouts/`
 - **Config**: `hugo.toml`

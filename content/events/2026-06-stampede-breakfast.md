@@ -1,6 +1,7 @@
 ---
 title: "Annual Stampede Breakfast"
 date: 2026-06-20T09:00:00-06:00
+description: "Enjoy pancakes, music, and family fun at RRROCA's annual community Stampede Breakfast."
 endDate: 2026-06-20T12:00:00-06:00
 location: "Royal Oak Community Park"
 address: "8888 Country Hills Blvd NW, Calgary, AB"
