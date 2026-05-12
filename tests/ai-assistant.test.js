@@ -1,7 +1,8 @@
 const { JSDOM } = require('jsdom');
 const { loadScriptExports } = require('./helpers/load-script-exports');
 
-const AI_SCRIPT = 'themes\\rrroca\\static\\js\\ai-assistant.js';
+const path = require('path');
+const AI_SCRIPT = path.join('themes', 'rrroca', 'static', 'js', 'ai-assistant.js');
 const EXPORTED_MEMBERS = [
   'RRROCA_KNOWLEDGE',
   'toggleAssistant',
