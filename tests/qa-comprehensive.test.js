@@ -6,8 +6,10 @@
 
 const fs = require('fs');
 const path = require('path');
-const PUBLIC = path.join(__dirname, '..', 'public');
-const CONTENT = path.join(__dirname, '..', 'content');
+const { CONTENT_DIR, PUBLIC_DIR, SITE_ORIGINS } = require('./helpers/site-config');
+const PUBLIC = PUBLIC_DIR;
+const CONTENT = CONTENT_DIR;
+const RRROCA_EMAIL_SUFFIX = `@${new URL(SITE_ORIGINS[0]).hostname}`;
 const HAS_BUILD = fs.existsSync(PUBLIC);
 const describeIfBuild = HAS_BUILD ? describe : describe.skip;
 
@@ -356,8 +358,8 @@ describeIfBuild('negative security cases', () => {
 
       const matches = [...sanitized.matchAll(emailPattern)]
         .map((match) => match[0])
-        // @rrroca.org emails are intentional public contact addresses
-        .filter((email) => !email.endsWith('@rrroca.org'));
+        // Role-based site emails are intentional public contact addresses.
+        .filter((email) => !email.endsWith(RRROCA_EMAIL_SUFFIX));
       if (matches.length > 0) {
         violations.push({
           file: path.relative(PUBLIC, file.path),

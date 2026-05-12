@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
+const { PUBLIC_DIR, resolveAssetPath, isInternalUrl, resolveRoute } = require('./helpers/site-config');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
-const PUBLIC_DIR = path.join(REPO_ROOT, 'public');
 
 function readFile(relativePath) {
   return fs.readFileSync(path.join(REPO_ROOT, relativePath), 'utf8');
@@ -27,35 +27,7 @@ function loadDocument(relativePath) {
   return dom.window.document;
 }
 
-// Detect baseURL path prefix from the build output (e.g. /rrroca-site/)
-const BASE_PREFIX = (() => {
-  const indexPath = path.join(PUBLIC_DIR, 'index.html');
-  if (!fs.existsSync(indexPath)) return '';
-  const html = fs.readFileSync(indexPath, 'utf8');
-  const match = html.match(/href=["']?(\/[^"'\s>]+?)\/about\/["'\s>]/);
-  return match ? match[1] : '';
-})();
-
-function routeExists(href) {
-  const cleanHref = href.split('#')[0].split('?')[0];
-  if (!cleanHref || cleanHref === '/' || cleanHref === `${BASE_PREFIX}/`) {
-    return fs.existsSync(path.join(PUBLIC_DIR, 'index.html'));
-  }
-
-  // Strip the baseURL path prefix if present (e.g. /rrroca-site/about/ → /about/)
-  let relativePath = cleanHref;
-  if (BASE_PREFIX && relativePath.startsWith(BASE_PREFIX)) {
-    relativePath = relativePath.slice(BASE_PREFIX.length);
-  }
-  relativePath = relativePath.replace(/^\/+/, '');
-  const directPath = path.join(PUBLIC_DIR, relativePath);
-
-  return (
-    fs.existsSync(directPath) ||
-    fs.existsSync(`${directPath}.html`) ||
-    fs.existsSync(path.join(directPath, 'index.html'))
-  );
-}
+const routeExists = (href) => Boolean(resolveRoute(href));
 
 describe('Hugo build validation', () => {
   it('generates the expected core build artifacts', () => {
@@ -319,8 +291,11 @@ describe('Link guard', () => {
 
       anchors.forEach((a) => {
         const href = a.getAttribute('href');
-        if (!href || href.startsWith('http') || href.startsWith('mailto:') ||
-            href.startsWith('tel:') || href.startsWith('#') || href.startsWith('javascript:')) {
+        if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#') || href.startsWith('javascript:')) {
+          return;
+        }
+
+        if (!isInternalUrl(href)) {
           return;
         }
         const cleanHref = href.split('#')[0].split('?')[0];
@@ -354,15 +329,10 @@ describe('Link guard', () => {
       ];
 
       assets.forEach((src) => {
-        if (!src || src.startsWith('http') || src.includes('livereload') || checked.has(src)) return;
-        checked.add(src);
-        // Strip baseURL prefix (e.g. /rrroca-site/) so path resolves on disk
-        let cleanSrc = src.split('?')[0];
-        if (BASE_PREFIX && cleanSrc.startsWith(BASE_PREFIX + '/')) {
-          cleanSrc = cleanSrc.slice(BASE_PREFIX.length);
-        }
-        cleanSrc = cleanSrc.replace(/^\/+/, '');
-        const diskPath = path.join(PUBLIC_DIR, cleanSrc);
+        if (!src || src.includes('livereload')) return;
+        const diskPath = resolveAssetPath(src);
+        if (!diskPath || checked.has(diskPath)) return;
+        checked.add(diskPath);
         if (!fs.existsSync(diskPath)) {
           missing.push({ file: path.relative(PUBLIC_DIR, file), src });
         }
@@ -382,7 +352,7 @@ describe('Link guard', () => {
     const broken = [];
     navLinks.forEach((a) => {
       const href = a.getAttribute('href');
-      if (!href || href.startsWith('http') || href.startsWith('#') || href.startsWith('javascript:')) return;
+      if (!href || href.startsWith('#') || href.startsWith('javascript:') || !isInternalUrl(href)) return;
       if (!routeExists(href)) {
         broken.push({ href, text: a.textContent.trim() });
       }
@@ -402,53 +372,18 @@ describe('negative cases', () => {
     /\bplaceholder\b/i,
     /coming soon/i
   ];
-  const SITE_ORIGIN = (() => {
-    const indexPath = path.join(PUBLIC_DIR, 'index.html');
-    if (!fs.existsSync(indexPath)) return '';
-
-    const html = fs.readFileSync(indexPath, 'utf8');
-    const canonicalMatch = html.match(/<link\s+rel=(?:"|')?canonical(?:"|')?\s+href=(?:"|')?([^"'\s>]+)/i);
-    if (!canonicalMatch) return '';
-
-    try {
-      return new URL(canonicalMatch[1]).origin;
-    } catch {
-      return '';
-    }
-  })();
-
   function resolveLocalImagePath(sourceFile, src) {
     if (!src || src.startsWith('data:') || src.startsWith('//')) return null;
 
     const cleanSrc = src.split('#')[0].split('?')[0];
     if (!cleanSrc) return null;
 
-    if (/^https?:\/\//i.test(cleanSrc)) {
-      try {
-        const url = new URL(cleanSrc);
-        if (!SITE_ORIGIN || url.origin !== SITE_ORIGIN) return null;
-
-        let relativePath = url.pathname;
-        if (BASE_PREFIX && relativePath.startsWith(BASE_PREFIX)) {
-          relativePath = relativePath.slice(BASE_PREFIX.length);
-        }
-
-        return path.join(PUBLIC_DIR, relativePath.replace(/^\/+/, ''));
-      } catch {
-        return null;
-      }
+    const rootAssetPath = resolveAssetPath(cleanSrc);
+    if (rootAssetPath) {
+      return rootAssetPath;
     }
 
-    let relativePath = cleanSrc;
-    if (BASE_PREFIX && relativePath.startsWith(BASE_PREFIX)) {
-      relativePath = relativePath.slice(BASE_PREFIX.length);
-    }
-
-    if (relativePath.startsWith('/')) {
-      return path.join(PUBLIC_DIR, relativePath.replace(/^\/+/, ''));
-    }
-
-    return path.resolve(path.dirname(sourceFile), relativePath);
+    return path.resolve(path.dirname(sourceFile), cleanSrc);
   }
 
   it('404 page exists and contains helpful content', () => {
@@ -459,15 +394,7 @@ describe('negative cases', () => {
     const pageText = document.body.textContent.replace(/\s+/g, ' ').trim();
     const homepageLink = [...document.querySelectorAll('a[href]')].find((link) => {
       const href = link.getAttribute('href');
-      if (!href) return false;
-
-      if (href === '/' || href === `${BASE_PREFIX || ''}/`) return true;
-
-      try {
-        return SITE_ORIGIN ? new URL(href).href === `${SITE_ORIGIN}${BASE_PREFIX || ''}/` : false;
-      } catch {
-        return false;
-      }
+      return Boolean(href) && resolveRoute(href) === path.join(PUBLIC_DIR, 'index.html');
     });
 
     expect(pageText).toMatch(/404|not found/i);

@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { JSDOM } = require('jsdom');
+const { SITE_ORIGINS } = require('./helpers/site-config');
 
 const SCRIPT_PATH = path.join(__dirname, '..', 'themes', 'rrroca', 'static', 'js', 'search.js');
 const SOURCE = fs.readFileSync(SCRIPT_PATH, 'utf8');
@@ -53,7 +54,7 @@ describe('search.js', () => {
           </div>
         </body>
       </html>`,
-      { url: 'https://rrroca.org/' }
+      { url: `${SITE_ORIGINS[0]}/` }
     );
 
     window = dom.window;

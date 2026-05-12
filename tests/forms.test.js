@@ -2,8 +2,10 @@ const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
 const { JSDOM } = require('jsdom');
+const { SITE_ORIGINS } = require('./helpers/site-config');
 
 const SCRIPT_PATH = path.join(__dirname, '..', 'themes', 'rrroca', 'static', 'js', 'forms.js');
+const INFO_EMAIL = `info@${new URL(SITE_ORIGINS[0]).hostname}`;
 const SCRIPT_EXISTS = fs.existsSync(SCRIPT_PATH);
 const SOURCE = SCRIPT_EXISTS ? fs.readFileSync(SCRIPT_PATH, 'utf8') : '';
 const describeIfScriptExists = SCRIPT_EXISTS ? describe : describe.skip;
@@ -16,7 +18,7 @@ function createDom(formMarkup) {
         ${formMarkup}
       </body>
     </html>`,
-    { url: 'https://rrroca.org/contact/' }
+    { url: new URL('/contact/', SITE_ORIGINS[0]).href }
   );
 }
 
@@ -145,7 +147,7 @@ describeIfScriptExists('forms.js', () => {
     expect(nameField.closest('.rr-field').querySelector('.field-error').textContent).toContain('required');
     expect(emailField.closest('.rr-field').querySelector('.field-error').textContent).toContain('required');
     expect(messageField.closest('.rr-field').querySelector('.field-error').textContent).toContain('required');
-    expect(windowProxy.location.href).toBe('https://rrroca.org/contact/');
+    expect(windowProxy.location.href).toBe(new URL('/contact/', SITE_ORIGINS[0]).href);
   });
 
   it('shows an email-format validation message for invalid addresses', async () => {
@@ -189,7 +191,7 @@ describeIfScriptExists('forms.js', () => {
   });
 
   it('builds a mailto URL with encoded field values and reply-to information', async () => {
-    const dom = createDom(baseFormMarkup('data-mailto="info@rrroca.org"'));
+    const dom = createDom(baseFormMarkup(`data-mailto="${INFO_EMAIL}"`));
     window = dom.window;
     document = window.document;
     ({ windowProxy } = loadFormsScript(window, document, { fetch: fetchMock }));
@@ -200,7 +202,7 @@ describeIfScriptExists('forms.js', () => {
     await submitForm(fields.form, window);
 
     expect(fetchMock).not.toHaveBeenCalled();
-    expect(windowProxy.location.href).toContain('mailto:info%40rrroca.org');
+    expect(windowProxy.location.href).toContain(`mailto:${encodeURIComponent(INFO_EMAIL)}`);
     expect(windowProxy.location.href).toContain('subject=RRROCA%20Website%20Inquiry');
     expect(windowProxy.location.href).toContain('name%3A%20Jane%20Resident');
     expect(windowProxy.location.href).toContain('message%3A%20Need%20picnic%20table%20access.');
@@ -211,7 +213,8 @@ describeIfScriptExists('forms.js', () => {
 
   it('prefers a custom mailto subject and otherwise derives it from the subject field', async () => {
     const customDom = createDom(baseFormMarkup(
-      'data-mailto="info@rrroca.org" data-mailto-subject="Board Inquiry"',
+      `data-mailto="${INFO_EMAIL}" data-mailto-subject="Board Inquiry"`,
+
       `
         <div class="rr-field">
           <label for="subject">Subject</label>
@@ -234,7 +237,7 @@ describeIfScriptExists('forms.js', () => {
     window.close();
 
     const derivedDom = createDom(baseFormMarkup(
-      'data-mailto="info@rrroca.org"',
+      `data-mailto="${INFO_EMAIL}"`,
       `
         <div class="rr-field">
           <label for="subject">Subject</label>
@@ -325,7 +328,7 @@ describeIfScriptExists('forms.js', () => {
 
   it('accepts a checked required checkbox group and continues submission', async () => {
     const dom = createDom(baseFormMarkup(
-      'data-mailto="info@rrroca.org"',
+      `data-mailto="${INFO_EMAIL}"`,
       `
         <div class="rr-form-group" data-checkbox-group data-required="true">
           <label><input type="checkbox" name="topics[]" value="events" /> Events</label>

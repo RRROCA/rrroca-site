@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
+const { CONTENT_DIR, PUBLIC_DIR, SITE_ORIGINS, isInternalUrl } = require('./helpers/site-config');
 
 const REPO_ROOT = path.join(__dirname, '..');
-const PUBLIC = path.join(REPO_ROOT, 'public');
-const CONTENT = path.join(REPO_ROOT, 'content');
-const SITE_ORIGIN = 'https://rrroca.org';
+const PUBLIC = PUBLIC_DIR;
+const CONTENT = CONTENT_DIR;
 
 function readFiles(rootDir, extensions, relativeTo = rootDir) {
   const files = [];
@@ -47,40 +47,6 @@ function readContentMarkdownFiles() {
   return readFiles(CONTENT, ['.md'], REPO_ROOT);
 }
 
-function getUrlDetails(href) {
-  if (!href) return null;
-
-  const trimmed = href.trim();
-  if (!trimmed || trimmed.startsWith('#')) return null;
-  if (/^(mailto:|tel:|data:)/i.test(trimmed)) return null;
-
-  try {
-    return new URL(trimmed, SITE_ORIGIN);
-  } catch (error) {
-    return null;
-  }
-}
-
-function isInternalHref(href) {
-  const url = getUrlDetails(href);
-  if (!url) return true;
-
-  if (!/^https?:$/i.test(url.protocol)) return true;
-
-  const hostname = url.hostname.toLowerCase();
-  if (hostname === 'rrroca.org' || hostname.endsWith('.rrroca.org')) return true;
-
-  // GitHub Pages staging site is internal
-  if (hostname === 'canchad.github.io' && /^\/rrroca-site(?:\/|$)/.test(url.pathname)) {
-    return true;
-  }
-
-  if (hostname === 'github.com' && /^\/CanChad(?:\/|$)/.test(url.pathname)) {
-    return true;
-  }
-
-  return false;
-}
 
 function isMixedContentUrl(value) {
   if (!value) return false;
@@ -156,7 +122,7 @@ describe('built site security checks', () => {
           reasons.push('target="_blank" missing noopener');
         }
 
-        if (!isInternalHref(href) && !/\bnoopener\b/i.test(rel)) {
+        if (!isInternalUrl(href) && !/\bnoopener\b/i.test(rel)) {
           reasons.push('external link missing noopener');
         }
 

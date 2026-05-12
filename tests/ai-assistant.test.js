@@ -1,5 +1,6 @@
 const { JSDOM } = require('jsdom');
 const { loadScriptExports } = require('./helpers/load-script-exports');
+const { SITE_ORIGINS } = require('./helpers/site-config');
 
 const path = require('path');
 const AI_SCRIPT = path.join('themes', 'rrroca', 'static', 'js', 'ai-assistant.js');
@@ -22,7 +23,7 @@ function createDom() {
       <div id="ai-suggestions"></div>
       <div id="ai-messages"></div>
     </body>`,
-    { url: 'https://rrroca.org/' }
+    { url: `${SITE_ORIGINS[0]}/` }
   );
 }
 
