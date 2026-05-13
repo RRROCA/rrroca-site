@@ -6,7 +6,7 @@
 3. Choose the **Free** plan.
 4. Pick your subscription, resource group, region, and a name.
 5. Under **Deployment details**, choose **GitHub** and authorize GitHub if prompted.
-6. Select the `CanChad/rrroca-site` repository and the `master` branch.
+6. Select the `RRROCA/rrroca-site` repository and the `master` branch.
 7. For the build preset, choose **Custom** and use:
    - **App location**: `/`
    - **Api location**: _(leave blank)_

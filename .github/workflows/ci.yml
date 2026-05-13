@@ -75,7 +75,7 @@ jobs:
 
       - name: Build site
         # GitHub Pages staging — production is Azure SWA at rrroca.org
-        run: hugo --gc --minify --buildFuture --baseURL "https://canchad.github.io/rrroca-site/"
+        run: hugo --gc --minify --buildFuture --baseURL "https://rrroca.github.io/rrroca-site/"
 
       - name: Run full Jest suite
         run: npx jest --verbose --coverage
@@ -102,7 +102,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # Staging deployment to GitHub Pages (canchad.github.io/rrroca-site)
+      # Staging deployment to GitHub Pages (rrroca.github.io/rrroca-site)
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

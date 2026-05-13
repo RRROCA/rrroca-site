@@ -19,7 +19,7 @@
                        │ Hugo build
 ┌──────────────────────┴──────────────────────────────┐
 │              GitHub Repository                      │
-│         github.com/CanChad/rrroca-site              │
+│         github.com/RRROCA/rrroca-site              │
 │                                                     │
 │  ┌─────────────┐  ┌──────────────┐  ┌───────────┐  │
 │  │ content/    │  │ themes/      │  │ static/   │  │
@@ -48,7 +48,7 @@
 
 | Service | Purpose | URL / Location | Owner |
 |---------|---------|---------------|-------|
-| **GitHub repo** | Source code & CI/CD | github.com/CanChad/rrroca-site | CanChad org |
+| **GitHub repo** | Source code & CI/CD | github.com/RRROCA/rrroca-site | RRROCA org |
 | **Azure Static Web Apps** | Production hosting | rrroca.org | RRROCA Azure subscription |
 | **Domain registrar** | rrroca.org domain | _See credentials vault_ | RRROCA board |
 | **Cloudflare Worker** | CMS authentication (OAuth) | sveltia-cms-auth.chad752.workers.dev | _See credentials vault_ |
@@ -79,8 +79,8 @@ Access to the credentials vault is granted to: **President + VP (minimum two peo
 
 ### GitHub repository access
 
-The repo lives under the **CanChad** GitHub organization. To add a new maintainer:
-1. Invite them to the CanChad org
+The repo lives under the **RRROCA** GitHub organization. To add a new maintainer:
+1. Invite them to the RRROCA org
 2. Grant them **Write** or **Admin** access to `rrroca-site`
 3. They'll need a GitHub account (free tier is fine)
 
@@ -182,7 +182,7 @@ The repo lives under the **CanChad** GitHub organization. To add a new maintaine
 ```bash
 # Prerequisites: Git, Hugo (v0.161.1 extended), Node.js (v20+)
 
-git clone https://github.com/CanChad/rrroca-site.git
+git clone https://github.com/RRROCA/rrroca-site.git
 cd rrroca-site
 npm ci                    # Install test dependencies
 hugo server               # Local dev server at localhost:1313

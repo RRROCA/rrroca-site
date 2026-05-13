@@ -29,7 +29,7 @@ describe('cross-platform compatibility', () => {
   });
 
   it('no test file hardcodes site origin URLs', () => {
-    const originLiteralPattern = /['"`]https?:\/\/(?:www\.)?(?:rrroca\.org|canchad\.github\.io)(?:\/[^'"`]*)?['"`]/g;
+    const originLiteralPattern = /['"`]https?:\/\/(?:www\.)?(?:rrroca\.org|rrroca\.github\.io)(?:\/[^'"`]*)?['"`]/g;
     const violations = testFiles
       .map((file) => ({
         file,
