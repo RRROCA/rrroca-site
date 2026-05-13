@@ -48,9 +48,9 @@ With an adopted strategy:
 
 ## Supporting Documents
 
-- [Integrated Technology Strategy (PDF/DOCX)](https://github.com/CanChad/rrroca-site/blob/master/docs/RRROCA%20Integrated%20Technology%20Strategy%202025-2028.docx) — board-ready strategy document
-- [Technology Domain Evaluation](https://github.com/CanChad/rrroca-site/blob/master/docs/strategic-evaluation.md) — the full 11-domain evaluation
-- [Architecture Principles](https://github.com/CanChad/rrroca-site/blob/master/docs/architecture-principles.md) — the 9 principles and decision framework
+- [Integrated Technology Strategy (PDF/DOCX)](https://github.com/RRROCA/rrroca-site/blob/master/docs/RRROCA%20Integrated%20Technology%20Strategy%202025-2028.docx) — board-ready strategy document
+- [Technology Domain Evaluation](https://github.com/RRROCA/rrroca-site/blob/master/docs/strategic-evaluation.md) — the full 11-domain evaluation
+- [Architecture Principles](https://github.com/RRROCA/rrroca-site/blob/master/docs/architecture-principles.md) — the 9 principles and decision framework
 
 ## Financial Impact
 

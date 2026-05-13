@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: CanChad/rrroca-site
+  repo: RRROCA/rrroca-site
   branch: master
   base_url: https://sveltia-cms-auth.chad752.workers.dev
 

@@ -3,7 +3,7 @@ const path = require('path');
 
 const PUBLIC_DIR = path.join(__dirname, '..', '..', 'public');
 const CONTENT_DIR = path.join(__dirname, '..', '..', 'content');
-const SITE_ORIGINS = ['https://rrroca.org', 'https://canchad.github.io'];
+const SITE_ORIGINS = ['https://rrroca.org', 'https://rrroca.github.io'];
 
 function detectBasePrefix() {
   const indexPath = path.join(PUBLIC_DIR, 'index.html');

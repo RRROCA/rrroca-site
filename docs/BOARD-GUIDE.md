@@ -8,8 +8,8 @@
 
 | Tool | What it's for | How to access |
 |------|---------------|---------------|
-| **CMS** (Content Management System) | Edit website content — news, events, board bios, safety pages | [canchad.github.io/rrroca-site/admin/](https://canchad.github.io/rrroca-site/admin/) |
-| **GitHub Issues** | Report bugs, propose & vote on board motions | [github.com/CanChad/rrroca-site/issues](https://github.com/CanChad/rrroca-site/issues) |
+| **CMS** (Content Management System) | Edit website content — news, events, board bios, safety pages | [rrroca.github.io/rrroca-site/admin/](https://rrroca.github.io/rrroca-site/admin/) |
+| **GitHub Issues** | Report bugs, propose & vote on board motions | [github.com/RRROCA/rrroca-site/issues](https://github.com/RRROCA/rrroca-site/issues) |
 
 **Simple rule:** If you're *editing content*, use the CMS. If you're *reporting a problem* or *proposing a motion*, use GitHub Issues.
 
@@ -31,7 +31,7 @@ That's it. This one account works for both the CMS and GitHub Issues.
 
 ### Signing In
 
-1. Go to **[canchad.github.io/rrroca-site/admin/](https://canchad.github.io/rrroca-site/admin/)**
+1. Go to **[rrroca.github.io/rrroca-site/admin/](https://rrroca.github.io/rrroca-site/admin/)**
 2. Click **"Sign in with GitHub"**
 3. Authorize the app if prompted
 4. You're in!
@@ -75,7 +75,7 @@ That's it. This one account works for both the CMS and GitHub Issues.
 
 ### Reporting a Bug
 
-1. Go to [New Bug Report](https://github.com/CanChad/rrroca-site/issues/new?template=bug-report.yml)
+1. Go to [New Bug Report](https://github.com/RRROCA/rrroca-site/issues/new?template=bug-report.yml)
 2. Fill in:
    - **What happened?** — describe the problem
    - **What page were you on?** — the URL or page name
@@ -85,7 +85,7 @@ That's it. This one account works for both the CMS and GitHub Issues.
 
 ### Proposing a Board Motion
 
-1. Go to [New Board Motion](https://github.com/CanChad/rrroca-site/issues/new?template=board-motion.yml)
+1. Go to [New Board Motion](https://github.com/RRROCA/rrroca-site/issues/new?template=board-motion.yml)
 2. Fill in:
    - **Motion title** — e.g., "Motion 2026-003: Approve Park Upgrades"
    - **Proposed by** — your name and role
@@ -122,6 +122,6 @@ These things are handled automatically — you never need to touch them:
 
 ## Need Help?
 
-- **Website issues:** [File a bug report](https://github.com/CanChad/rrroca-site/issues/new?template=bug-report.yml)
+- **Website issues:** [File a bug report](https://github.com/RRROCA/rrroca-site/issues/new?template=bug-report.yml)
 - **CMS questions:** Contact the Safety & Technology Director
 - **Can't sign in:** Make sure you've been added as a collaborator — contact the Safety & Technology Director with your GitHub username

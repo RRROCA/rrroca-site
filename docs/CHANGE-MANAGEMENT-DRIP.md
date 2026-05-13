@@ -23,7 +23,7 @@ All drips go to the existing board WhatsApp group. Short, casual, one thing at a
 
 > Hey board! 🎉 I've been working on something — check out the new RRROCA website prototype:
 >
-> 👉 https://canchad.github.io/rrroca-site/
+> 👉 https://rrroca.github.io/rrroca-site/
 >
 > Still a work in progress but it's live and functional. Built on zero-cost infrastructure — no hosting fees, no WordPress renewal. Take a look and let me know what you think!
 
@@ -34,7 +34,7 @@ All drips go to the existing board WhatsApp group. Short, casual, one thing at a
 
 > Quick update on the new site — your board bios are already live! Check yours out:
 >
-> 👉 https://canchad.github.io/rrroca-site/about/board-of-directors/
+> 👉 https://rrroca.github.io/rrroca-site/about/board-of-directors/
 >
 > If anything needs updating (photo, bio text, title), just let me know. Or once we're ready, you'll be able to edit it yourself through the CMS! 📝
 
@@ -45,7 +45,7 @@ All drips go to the existing board WhatsApp group. Short, casual, one thing at a
 
 > Found something that looks off on the new site? You can report it here:
 >
-> 👉 https://github.com/CanChad/rrroca-site/issues/new?template=bug-report.yml
+> 👉 https://github.com/RRROCA/rrroca-site/issues/new?template=bug-report.yml
 >
 > It's a simple form — just describe what happened and which page. You'll need a free GitHub account (takes 30 seconds to create). This is the same account you'll use for the CMS later.
 
@@ -56,8 +56,8 @@ All drips go to the existing board WhatsApp group. Short, casual, one thing at a
 
 > Two features I'm really excited about on the new site:
 >
-> 📅 Events calendar: https://canchad.github.io/rrroca-site/events/
-> 🚨 Safety alerts: https://canchad.github.io/rrroca-site/safety/
+> 📅 Events calendar: https://rrroca.github.io/rrroca-site/events/
+> 🚨 Safety alerts: https://rrroca.github.io/rrroca-site/safety/
 >
 > Imagine posting a safety alert from your phone and it's live on the site in 2 minutes. That's what the CMS will let us do. No coding needed.
 
@@ -68,7 +68,7 @@ All drips go to the existing board WhatsApp group. Short, casual, one thing at a
 
 > Want to see how easy it is to edit the website? Check out the CMS:
 >
-> 👉 https://canchad.github.io/rrroca-site/admin/
+> 👉 https://rrroca.github.io/rrroca-site/admin/
 >
 > Sign in with your GitHub account and you can create news articles, events, and update board bios — all through a simple editor. No code, no technical skills needed.
 >
@@ -81,7 +81,7 @@ All drips go to the existing board WhatsApp group. Short, casual, one thing at a
 
 > One more thing — we now have a way to propose and vote on board motions between meetings:
 >
-> 👉 https://github.com/CanChad/rrroca-site/issues/new?template=board-motion.yml
+> 👉 https://github.com/RRROCA/rrroca-site/issues/new?template=board-motion.yml
 >
 > Fill out the form, board members vote with 👍 or 👎 reactions, and discuss in comments. The Technology Strategy motion will be our first one to try it with.
 

@@ -168,7 +168,7 @@ jobs:
           script: |
             const motionNumber = '${{ steps.parse.outputs.motion-number }}';
             const slug = '${{ steps.parse.outputs.slug }}';
-            // Production URL from hugo.toml baseURL; GitHub Pages staging uses canchad.github.io/rrroca-site.
+            // Production URL from hugo.toml baseURL; GitHub Pages staging uses rrroca.github.io/rrroca-site.
             const siteUrl = `https://rrroca.org/board/motions/${slug}/`;
 
             await github.rest.issues.createComment({

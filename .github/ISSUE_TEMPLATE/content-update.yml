@@ -44,7 +44,7 @@ body:
     attributes:
       label: "Which page needs updating?"
       description: "Paste the URL or describe the page."
-      placeholder: "https://canchad.github.io/rrroca-site/events/ or 'the events page'"
+      placeholder: "https://rrroca.github.io/rrroca-site/events/ or 'the events page'"
     validations:
       required: true
 
