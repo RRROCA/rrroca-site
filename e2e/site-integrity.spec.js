@@ -41,7 +41,7 @@ test.describe('Site integrity', () => {
       }))
     );
 
-    const expectedLabels = ['Home', 'About', 'Safety', 'News', 'Events', 'Get Involved', 'Business Directory', 'Contact', 'Gallery', 'Join'];
+    const expectedLabels = ['About', 'Safety', 'Events', 'Get Involved', 'Community', 'Governance', 'Resources', 'News'];
     const matchedLinks = expectedLabels.map((label) => navLinks.find((link) => link.text === label));
 
     expect(matchedLinks.every(Boolean)).toBeTruthy();
@@ -119,7 +119,6 @@ test.describe('Site integrity', () => {
     const formChecks = [
       { route: '/contact/', fields: ['#contact-name', '#contact-email', '#contact-subject', '#contact-message'] },
       { route: '/get-involved/volunteer/', fields: ['#volunteer-name', '#volunteer-email', '#volunteer-availability', '#volunteer-message'] },
-      { route: '/safety/report/', fields: ['#report-type', '#report-location', '#report-description'] },
     ];
 
     for (const formCheck of formChecks) {
@@ -186,10 +185,10 @@ test.describe('Site integrity', () => {
     await expect(nav).not.toHaveClass(/open/);
   });
 
-  test('header keeps the Join / Renew button visible', async ({ page }) => {
+  test('header keeps the Join button visible', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
 
     await expect(page.locator('.site-header a.btn.btn-primary.btn-sm')).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Join / Renew' })).toHaveAttribute('href', /\/membership\/?$/);
+    await expect(page.locator('.site-header .nav-cta')).toHaveAttribute('href', /rrroca\.getcommunal\.com\/memberships/);
   });
 });

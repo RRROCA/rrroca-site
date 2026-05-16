@@ -51,7 +51,7 @@ test.describe('Accessibility basics', () => {
     expect(snapshot).toBeTruthy();
 
     const checks = await contrastAudit(page, [
-      { selector: '.logo-text strong', backgroundSelector: '.site-header' },
+      { selector: '.logo-wordmark', backgroundSelector: '.site-header' },
     ]);
 
     for (const check of checks) {
@@ -74,9 +74,9 @@ test.describe('Accessibility basics', () => {
     }
 
     const focusTrail = focusedLabels.join(' ');
-    expect(focusTrail).toContain('Home');
     expect(focusTrail).toContain('About');
     expect(focusTrail).toContain('Safety');
+    expect(focusTrail).toContain('Events');
   });
 
   test('skip-to-content link works when present', async ({ page }) => {

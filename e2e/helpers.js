@@ -1,28 +1,42 @@
 async function stubFuse(page) {
+  const fuseBody = `
+    class Fuse {
+      constructor(items) {
+        this.items = Array.isArray(items) ? items : [];
+      }
+      search(query) {
+        const q = String(query || '').toLowerCase();
+        return this.items
+          .filter(item => [item.title, item.content, item.section, item.tags]
+            .filter(Boolean)
+            .join(' ')
+            .toLowerCase()
+            .includes(q))
+          .slice(0, 10)
+          .map(item => ({ item, score: 0 }));
+      }
+    }
+    window.Fuse = Fuse;
+  `;
+
+  // Intercept both CDN and self-hosted Fuse.js paths
   await page.route('https://cdn.jsdelivr.net/npm/fuse.js@7.0.0/dist/fuse.min.js', async route => {
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/javascript',
-      body: `
-        class Fuse {
-          constructor(items) {
-            this.items = Array.isArray(items) ? items : [];
-          }
-          search(query) {
-            const q = String(query || '').toLowerCase();
-            return this.items
-              .filter(item => [item.title, item.content, item.section, item.tags]
-                .filter(Boolean)
-                .join(' ')
-                .toLowerCase()
-                .includes(q))
-              .slice(0, 10)
-              .map(item => ({ item, score: 0 }));
-          }
-        }
-        window.Fuse = Fuse;
-      `,
-    });
+    await route.fulfill({ status: 200, contentType: 'application/javascript', body: fuseBody });
+  });
+  await page.route('**/js/vendor/fuse.min.js', async route => {
+    await route.fulfill({ status: 200, contentType: 'application/javascript', body: fuseBody });
+  });
+
+  // Intercept index.json so search works without hitting the production baseURL
+  const stubIndex = JSON.stringify([
+    { title: 'Community Safety Hub', content: 'Report safety concerns in your neighbourhood.', permalink: '/rrroca-site/safety/', section: 'Safety', tags: 'safety, report' },
+    { title: 'Winter Safety', content: 'Stay safe during winter months.', permalink: '/rrroca-site/safety/winter-safety/', section: 'Safety', tags: 'safety, winter' },
+    { title: 'About RRROCA', content: 'Rocky Ridge Royal Oak Community Association.', permalink: '/rrroca-site/about/', section: 'About', tags: 'about, community' },
+    { title: 'Events', content: 'Upcoming community events and activities.', permalink: '/rrroca-site/events/', section: 'Events', tags: 'events' },
+  ]);
+
+  await page.route('**/index.json', async route => {
+    await route.fulfill({ status: 200, contentType: 'application/json', body: stubIndex });
   });
 }
 
