@@ -1,0 +1,42 @@
+name: "✏️ Content Fix"
+description: "Request a correction to website content — typos, names, dates, or factual errors. Board members' requests are auto-applied."
+title: ""
+labels: ["content-fix"]
+body:
+  - type: dropdown
+    id: update-type
+    attributes:
+      label: What kind of update?
+      options:
+        - "✏️ Fix a typo or incorrect information"
+        - "📝 Update outdated content"
+        - "🖼️ Replace or add an image"
+        - "🔗 Fix a broken link"
+    validations:
+      required: true
+
+  - type: input
+    id: page-url
+    attributes:
+      label: Which page needs updating?
+      description: Paste the URL or describe the page location
+      placeholder: "https://rrroca.org/about/board-members/..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: change-description
+    attributes:
+      label: What should change?
+      description: Be specific — what's wrong and what should it say instead?
+      placeholder: "Change 'Oluwaseun' to 'Seun' everywhere on this page"
+    validations:
+      required: true
+
+  - type: textarea
+    id: attachments
+    attributes:
+      label: Any images or documents? (optional)
+      description: Drag and drop files here if needed
+    validations:
+      required: false
