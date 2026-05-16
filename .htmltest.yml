@@ -1,0 +1,12 @@
+DirectoryPath: "public"
+CheckExternal: false
+CheckInternal: true
+CheckMailto: false
+CheckTel: false
+IgnoreURLs:
+  - "https://fonts.googleapis.com"
+  - "https://fonts.gstatic.com"
+  - "http://localhost"
+IgnoreDirs:
+  - "admin"
+LogLevel: 1
