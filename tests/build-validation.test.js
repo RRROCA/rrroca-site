@@ -291,7 +291,7 @@ describe('Link guard', () => {
 
       anchors.forEach((a) => {
         const href = a.getAttribute('href');
-        if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#') || href.startsWith('javascript:')) {
+        if (!href || /^(mailto:|tel:|#|javascript:)/i.test(href)) {
           return;
         }
 
@@ -352,7 +352,7 @@ describe('Link guard', () => {
     const broken = [];
     navLinks.forEach((a) => {
       const href = a.getAttribute('href');
-      if (!href || href.startsWith('#') || href.startsWith('javascript:') || !isInternalUrl(href)) return;
+      if (!href || /^(#|javascript:)/i.test(href) || !isInternalUrl(href)) return;
       if (!routeExists(href)) {
         broken.push({ href, text: a.textContent.trim() });
       }

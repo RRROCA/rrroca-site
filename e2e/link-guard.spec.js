@@ -9,14 +9,14 @@ test.describe('Link guard', () => {
     await page.goto('/', { waitUntil: 'load' });
 
     const navHrefs = await page.locator('.nav-main a[href]').evaluateAll((els) =>
-      els.map((a) => a.getAttribute('href')).filter((h) => h && !h.startsWith('javascript:'))
+      els.map((a) => a.getAttribute('href')).filter((h) => h && !/^javascript:/i.test(h))
     );
 
     expect(navHrefs.length).toBeGreaterThanOrEqual(8);
 
     const broken = [];
     for (const href of navHrefs) {
-      const url = href.startsWith('http') ? href : new URL(href, page.url()).href;
+      const url = /^https?:\/\//i.test(href) ? href : new URL(href, page.url()).href;
       const response = await page.request.head(url);
       if (!response.ok()) {
         broken.push({ href, status: response.status() });
@@ -52,8 +52,8 @@ test.describe('Link guard', () => {
 
       const hrefs = await page.locator('a[href]').evaluateAll((els) =>
         els.map((a) => a.getAttribute('href'))
-          .filter((h) => h && !h.startsWith('http') && !h.startsWith('mailto:') &&
-            !h.startsWith('tel:') && !h.startsWith('#') && !h.startsWith('javascript:'))
+          .filter((h) => h && !h.startsWith('http://') && !h.startsWith('https://') &&
+            !/^mailto:/i.test(h) && !/^tel:/i.test(h) && !h.startsWith('#') && !/^javascript:/i.test(h))
       );
 
       for (const href of hrefs) {
