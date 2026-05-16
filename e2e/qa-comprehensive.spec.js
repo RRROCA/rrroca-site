@@ -51,12 +51,12 @@ test.describe('QA Comprehensive — Live Site Tests', () => {
   test.describe('AI Assistant', () => {
     test('AI assistant opens and responds', async ({ page }) => {
       await page.goto('/');
-      const trigger = page.locator('.ai-assistant-trigger, .ai-fab, [onclick*="assistant"]').first();
-      const triggerCount = await trigger.count();
-      if (triggerCount === 0) {
+      const triggers = page.locator('.ai-assistant-trigger, .ai-fab, [onclick*="assistant"]');
+      if (await triggers.count() === 0) {
         test.skip();
         return;
       }
+      const trigger = triggers.first();
       if (await trigger.isVisible()) {
         await trigger.click();
         await page.waitForTimeout(500);
