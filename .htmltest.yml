@@ -3,6 +3,8 @@ CheckExternal: false
 CheckInternal: true
 CheckMailto: false
 CheckTel: false
+CheckImages: true
+CheckImgAlt: false          # TODO: fix alt text across content, then enable
 IgnoreURLs:
   - "https://fonts.googleapis.com"
   - "https://fonts.gstatic.com"
