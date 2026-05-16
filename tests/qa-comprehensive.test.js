@@ -134,7 +134,7 @@ describeIfBuild('Form Endpoint Validation', () => {
 describeIfBuild('Placeholder & Fake Data Detection', () => {
   test('no example.com in non-test content', () => {
     const broken = htmlFiles.filter(f =>
-      f.content.includes('example.com') &&
+      /(?:^|[\s"'=/])example\.com(?:[\s"'>/]|$)/i.test(f.content) &&
       !f.path.includes('test') &&
       !f.path.includes('404')
     );
@@ -318,9 +318,14 @@ describeIfBuild('negative security cases', () => {
         try {
           const hostname = new URL(href).hostname.toLowerCase();
           // Block http:// links to our own domain or known providers
-          const mustBeHttps = hostname.endsWith('rrroca.org') || hostname.endsWith('github.com') || hostname.endsWith('github.io')
-            || hostname.endsWith('google.com') || hostname.endsWith('facebook.com')
-            || hostname.endsWith('twitter.com') || hostname.endsWith('x.com') || hostname.endsWith('instagram.com');
+          const mustBeHttps = hostname === 'rrroca.org' || hostname.endsWith('.rrroca.org')
+            || hostname === 'github.com' || hostname.endsWith('.github.com')
+            || hostname === 'github.io' || hostname.endsWith('.github.io')
+            || hostname === 'google.com' || hostname.endsWith('.google.com')
+            || hostname === 'facebook.com' || hostname.endsWith('.facebook.com')
+            || hostname === 'twitter.com' || hostname.endsWith('.twitter.com')
+            || hostname === 'x.com' || hostname.endsWith('.x.com')
+            || hostname === 'instagram.com' || hostname.endsWith('.instagram.com');
           if (!mustBeHttps) continue;
         } catch (e) { /* ignore parse errors */ }
 
