@@ -10,6 +10,8 @@ IgnoreURLs:
   - "https://fonts.googleapis.com"
   - "https://fonts.gstatic.com"
   - "http://localhost"
+  - "^/rrroca-site/"          # Hugo baseURL path prefix — valid on deployed site
+  - "^https://rrroca.github.io/rrroca-site/"
 IgnoreDirs:
   - "admin"
 LogLevel: 1

@@ -63,10 +63,7 @@ jobs:
         run: npm ci
 
       - name: Build site
-        # Use production URL (no path prefix) for testing — htmltest validates
-        # links on disk, and SEO/feed tests need absolute URLs.
-        # deploy-staging rebuilds with the GitHub Pages URL.
-        run: hugo --gc --minify --buildFuture --baseURL "https://rrroca.org/"
+        run: hugo --gc --minify --buildFuture --baseURL "https://rrroca.github.io/rrroca-site/"
 
       - name: Run Jest unit tests
         run: npx jest --verbose --coverage
