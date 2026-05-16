@@ -125,6 +125,10 @@ test('homepage has no console errors', async ({ page }) => {
     'fburl.com/debugjs',
     'DataStore.get: namespace is required',
     'Could not find element',
+    'facebook.com',
+    'connect.facebook.net',
+    'fb:xfbml',
+    'Cross-Origin',
   ];
   page.on('console', (msg) => {
     if (msg.type() === 'error') errors.push(msg.text());

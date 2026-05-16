@@ -51,7 +51,7 @@ test.describe('Accessibility basics', () => {
     expect(snapshot).toBeTruthy();
 
     const checks = await contrastAudit(page, [
-      { selector: '.logo-text strong', backgroundSelector: '.site-header' },
+      { selector: '.logo-wordmark', backgroundSelector: '.site-header' },
     ]);
 
     for (const check of checks) {

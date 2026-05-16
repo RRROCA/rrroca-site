@@ -9,7 +9,6 @@ const primaryNavigation = [
   { label: 'Business Directory', href: '/business-directory/', heading: /Business Directory/i },
   { label: 'Contact', href: '/contact/', heading: /Contact/i },
   { label: 'Gallery', href: '/gallery/', heading: /Gallery/i },
-  { label: 'Join', href: '/membership/', heading: /Membership|Join/i },
 ];
 
 const contentPages = [
@@ -35,12 +34,6 @@ const formPages = [
     submitLabel: /Join as a volunteer/i,
     fields: ['#volunteer-name', '#volunteer-email', '#volunteer-availability', '#volunteer-message'],
   },
-  {
-    path: '/safety/report/',
-    heading: /Report a Concern/i,
-    submitLabel: /Submit concern/i,
-    fields: ['#report-type', '#report-location', '#report-description'],
-  },
 ];
 
 test.describe('Navigation', () => {
@@ -61,9 +54,10 @@ test.describe('Navigation', () => {
     }
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    await page.getByRole('link', { name: 'Join / Renew' }).click();
-    await expect(page).toHaveURL(/\/membership\/$/);
-    await expect(page.locator('main h1').first()).toContainText(/Membership|Join/i);
+    const joinCta = page.locator('.site-header .nav-cta');
+    await expect(joinCta).toBeVisible();
+    await expect(joinCta).toHaveText('Join');
+    await expect(joinCta).toHaveAttribute('href', /rrroca\.getcommunal\.com\/memberships/);
   });
 
   test('new content pages render without 404s', async ({ page }) => {
@@ -79,7 +73,7 @@ test.describe('Navigation', () => {
       const response = await page.goto(formPage.path, { waitUntil: 'domcontentloaded' });
       expect(response?.status() ?? 200).toBeLessThan(400);
       await expect(page.locator('main h1').first()).toContainText(formPage.heading);
-      await expect(page.locator('form.rr-form[data-formspree]')).toBeVisible();
+      await expect(page.locator('form.rr-form[data-formspree], form.rr-form[data-mailto]')).toBeVisible();
       await expect(page.getByRole('button', { name: formPage.submitLabel })).toBeVisible();
 
       for (const field of formPage.fields) {

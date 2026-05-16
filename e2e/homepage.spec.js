@@ -13,7 +13,7 @@ test.describe('Homepage', () => {
       await expect(page.locator('.nav-main')).toContainText(label);
     }
     await expect(page.getByRole('button', { name: /search/i })).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Join / Renew' })).toBeVisible();
+    await expect(page.locator('.nav-cta')).toBeVisible();
     await expect(page.locator('.hero')).toBeVisible();
     await expect(page.locator('.hero-photo')).toBeVisible();
     await expect(page.locator('.hero-logo')).toBeVisible();
@@ -75,7 +75,7 @@ test.describe('Homepage', () => {
   });
 
   test('renders a four-column footer with links', async ({ page }) => {
-    await expect(page.locator('.footer-grid .footer-col')).toHaveCount(4);
+    await expect(page.locator('.footer-grid .footer-col')).toHaveCount(5);
 
     const footerLinkCount = await page.locator('.site-footer a').count();
     expect(footerLinkCount).toBeGreaterThan(5);

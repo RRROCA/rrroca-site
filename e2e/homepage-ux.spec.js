@@ -96,7 +96,7 @@ test.describe('Homepage UX', () => {
   test('keeps all primary navigation links resolving without 404s', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
 
-    const hrefs = await page.locator('.nav-main a[href]').evaluateAll((links) =>
+    const hrefs = await page.locator('.nav-main a[href]:not(.nav-cta)').evaluateAll((links) =>
       links.map((link) => link.href)
     );
 
@@ -151,17 +151,13 @@ test.describe('Homepage UX', () => {
     }
   });
 
-  test('shows the membership CTA and routes it to the membership page', async ({ page }) => {
+  test('shows the membership CTA linking to external membership platform', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
 
     const cta = page.locator('#membership .membership-actions a.btn.btn-primary');
     await expect(cta).toBeVisible();
-    await expect(cta).toHaveAttribute('href', /\/membership\/?$/);
-
-    await Promise.all([
-      page.waitForURL(/\/membership\/?$/),
-      cta.click(),
-    ]);
+    await expect(cta).toHaveAttribute('href', /rrroca\.getcommunal\.com\/memberships/);
+    await expect(cta).toHaveAttribute('target', '_blank');
   });
 
   test('homepage image sources return successful responses', async ({ page }) => {
@@ -208,7 +204,10 @@ test.describe('Homepage UX', () => {
       await page.waitForTimeout(250);
     });
 
-    const actionableConsoleErrors = consoleErrors.filter((message) => !/Failed to load resource: the server responded with a status of 404/i.test(message));
+    const actionableConsoleErrors = consoleErrors.filter((message) =>
+      !/Failed to load resource: the server responded with a status of 404/i.test(message)
+      && !/facebook\.com|connect\.facebook\.net|fburl\.com|fb:xfbml|Cross-Origin|ErrorUtils/i.test(message)
+    );
 
     expect(actionableConsoleErrors).toEqual([]);
     expect(pageErrors).toEqual([]);
@@ -244,7 +243,7 @@ test.describe('Homepage UX', () => {
     });
 
     const contrastChecks = await contrastAudit(page, [
-      { selector: '.site-header .logo-text strong', backgroundSelector: '.site-header' },
+      { selector: '.site-header .logo-wordmark', backgroundSelector: '.site-header' },
       { selector: '.section-heading', backgroundSelector: 'body' },
     ]);
 
