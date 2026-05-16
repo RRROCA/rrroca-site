@@ -17,7 +17,7 @@ Interested in serving? Connect through our [volunteer page](/get-involved/volunt
 
 - **President:** [Jason Kellock](/about/board-members/jason-kellock/)
 - **Vice President:** *Vacant*
-- **Treasurer:** [Oluwaseun Ogunsola](/about/board-members/oluwaseun-ogunsola/)
+- **Treasurer:** [Seun Ogunsola](/about/board-members/oluwaseun-ogunsola/)
 - **Secretary (Acting):** [Shahnaz Munir](/about/board-members/shahnaz-munir/)
 
 ## Portfolio Directors

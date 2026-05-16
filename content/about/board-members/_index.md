@@ -14,7 +14,7 @@ This directory captures board member profiles and roster details migrated from t
 ## Executive
 
 - [Jason Kellock](/about/board-members/jason-kellock/) — President
-- [Oluwaseun Ogunsola](/about/board-members/oluwaseun-ogunsola/) — Treasurer
+- [Seun Ogunsola](/about/board-members/oluwaseun-ogunsola/) — Treasurer
 - [Shahnaz Munir](/about/board-members/shahnaz-munir/) — Secretary (Acting) & Events Director
 
 ## Portfolio Directors
