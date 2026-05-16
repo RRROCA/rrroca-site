@@ -9,7 +9,7 @@ test.describe('Homepage', () => {
     await expect(page).toHaveTitle(/RRROCA|Rocky Ridge/i);
     await expect(page.locator('.site-header .logo-img')).toBeVisible();
     await expect(page.locator('.site-header .logo-img')).toHaveAttribute('src', /rrroca-logo\.png$/);
-    for (const label of ['Home', 'About', 'Safety', 'News', 'Events', 'Get Involved', 'Business Directory', 'Contact', 'Gallery', 'Join']) {
+    for (const label of ['About', 'Safety', 'Events', 'Get Involved', 'Community', 'Governance', 'Resources', 'News', 'Join']) {
       await expect(page.locator('.nav-main')).toContainText(label);
     }
     await expect(page.getByRole('button', { name: /search/i })).toBeVisible();

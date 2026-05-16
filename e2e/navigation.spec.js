@@ -3,12 +3,12 @@ const { test, expect } = require('@playwright/test');
 const primaryNavigation = [
   { label: 'About', href: '/about/', heading: /About/i },
   { label: 'Safety', href: '/safety/', heading: /Safety|Community Safety Hub/i },
-  { label: 'News', href: '/news/', heading: /News/i },
   { label: 'Events', href: '/events/', heading: /Events/i },
   { label: 'Get Involved', href: '/get-involved/', heading: /Join us|Get Involved/i },
-  { label: 'Business Directory', href: '/business-directory/', heading: /Business Directory/i },
-  { label: 'Contact', href: '/contact/', heading: /Contact/i },
-  { label: 'Gallery', href: '/gallery/', heading: /Gallery/i },
+  { label: 'Community', href: '/community/', heading: /Community/i },
+  { label: 'Governance', href: '/board/', heading: /Governance|Board/i },
+  { label: 'Resources', href: '/resources/', heading: /Resources/i },
+  { label: 'News', href: '/news/', heading: /News/i },
 ];
 
 const contentPages = [

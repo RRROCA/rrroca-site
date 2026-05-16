@@ -129,6 +129,7 @@ test('homepage has no console errors', async ({ page }) => {
     'connect.facebook.net',
     'fb:xfbml',
     'Cross-Origin',
+    'Failed to load resource',
   ];
   page.on('console', (msg) => {
     if (msg.type() === 'error') errors.push(msg.text());

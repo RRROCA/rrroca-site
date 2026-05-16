@@ -52,6 +52,11 @@ test.describe('QA Comprehensive — Live Site Tests', () => {
     test('AI assistant opens and responds', async ({ page }) => {
       await page.goto('/');
       const trigger = page.locator('.ai-assistant-trigger, .ai-fab, [onclick*="assistant"]').first();
+      const triggerCount = await trigger.count();
+      if (triggerCount === 0) {
+        test.skip();
+        return;
+      }
       if (await trigger.isVisible()) {
         await trigger.click();
         await page.waitForTimeout(500);

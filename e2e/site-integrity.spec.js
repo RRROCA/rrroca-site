@@ -41,7 +41,7 @@ test.describe('Site integrity', () => {
       }))
     );
 
-    const expectedLabels = ['Home', 'About', 'Safety', 'News', 'Events', 'Get Involved', 'Business Directory', 'Contact', 'Gallery'];
+    const expectedLabels = ['About', 'Safety', 'Events', 'Get Involved', 'Community', 'Governance', 'Resources', 'News'];
     const matchedLinks = expectedLabels.map((label) => navLinks.find((link) => link.text === label));
 
     expect(matchedLinks.every(Boolean)).toBeTruthy();
