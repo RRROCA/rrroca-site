@@ -14,8 +14,8 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  group: ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build-and-test:
@@ -47,17 +47,6 @@ jobs:
               - '.github/**'
               - 'README.md'
               - '*.md'
-            other:
-              - '**'
-              - '!content/**'
-              - '!static/images/**'
-              - '!themes/**'
-              - '!hugo.toml'
-              - '!static/css/**'
-              - '!docs/**'
-              - '!.github/**'
-              - '!README.md'
-              - '!*.md'
 
       - name: Setup Hugo Extended
         uses: peaceiris/actions-hugo@v3
@@ -74,35 +63,55 @@ jobs:
         run: npm ci
 
       - name: Build site
-        # GitHub Pages staging — production is Azure SWA at rrroca.org
         run: hugo --gc --minify --buildFuture --baseURL "https://rrroca.github.io/rrroca-site/"
 
-      - name: Run full Jest suite
+      - name: Run Jest unit tests
         run: npx jest --verbose --coverage
 
+      - name: Validate HTML (htmltest)
+        run: |
+          curl -sSL https://github.com/wjdp/htmltest/releases/download/v0.17.0/htmltest_0.17.0_linux_amd64.tar.gz | tar -xz
+          ./htmltest
+
       - name: Install Playwright browsers
-        if: false  # Playwright e2e disabled until config is fixed (serve-public.js path, testMatch pattern)
+        if: steps.changes.outputs.content == 'true' || steps.changes.outputs.theme == 'true' || steps.changes.outputs.js == 'true' || github.event_name == 'push'
         run: npx playwright install --with-deps chromium
 
-      - name: Run Playwright tests
-        if: false  # Playwright e2e disabled until config is fixed
+      - name: Run Playwright e2e smoke tests
+        if: steps.changes.outputs.content == 'true' || steps.changes.outputs.theme == 'true' || steps.changes.outputs.js == 'true' || github.event_name == 'push'
+        continue-on-error: true  # advisory until pre-existing a11y/UX issues are fixed
         run: npx playwright test --project=chromium
 
-      - name: Upload GitHub Pages artifact
-        if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-        uses: actions/upload-pages-artifact@v3
+      - name: Upload test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
         with:
-          path: ./public
+          name: playwright-report
+          path: test-results/
+          retention-days: 7
 
-  deploy:
+  # Staging deployment to GitHub Pages (rrroca.github.io/rrroca-site)
+  deploy-staging:
     if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     needs: build-and-test
     runs-on: ubuntu-latest
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      # Staging deployment to GitHub Pages (rrroca.github.io/rrroca-site)
+      - uses: actions/checkout@v4
+      - uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '0.161.1'
+          extended: true
+      - name: Build for GitHub Pages
+        run: hugo --gc --minify --buildFuture --baseURL "https://rrroca.github.io/rrroca-site/"
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

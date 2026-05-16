@@ -2,20 +2,25 @@ name: Auto-merge content fixes
 
 on:
   pull_request:
-    types: [opened, ready_for_review]
+    types: [opened, ready_for_review, synchronize]
     branches: [master]
+  pull_request_review:
+    types: [submitted]
 
 permissions:
   contents: write
   pull-requests: write
 
 jobs:
+  # Auto-merge content-only PRs from trusted authors (no review needed)
   auto-merge-content:
-    runs-on: ubuntu-latest
     if: >-
-      github.event.pull_request.user.login == 'copilot[bot]'
-      || github.event.pull_request.user.login == 'CanChad'
-      || github.event.pull_request.user.login == 'SeunOgunsola'
+      github.event_name == 'pull_request' && (
+        github.event.pull_request.user.login == 'copilot[bot]'
+        || github.event.pull_request.user.login == 'CanChad'
+        || github.event.pull_request.user.login == 'SeunOgunsola'
+      )
+    runs-on: ubuntu-latest
 
     steps:
       - name: Check files are content-only
@@ -53,3 +58,47 @@ jobs:
             --repo ${{ github.repository }} \
             --squash \
             --auto
+
+      - name: Disable auto-merge if no longer content-only
+        if: steps.check-files.outputs.content-only != 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr merge ${{ github.event.pull_request.number }} \
+            --repo ${{ github.repository }} \
+            --disable-auto || true
+
+  # Auto-merge any PR once approved (waits for CI)
+  merge-on-approve:
+    if: >-
+      github.event_name == 'pull_request_review'
+      && github.event.review.state == 'approved'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Enable auto-merge after approval
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            console.log(`PR #${pr.number} approved by ${context.payload.review.user.login}`);
+
+            try {
+              await github.graphql(`
+                mutation($pullRequestId: ID!) {
+                  enablePullRequestAutoMerge(input: {
+                    pullRequestId: $pullRequestId
+                    mergeMethod: SQUASH
+                  }) { clientMutationId }
+                }
+              `, { pullRequestId: pr.node_id });
+              console.log('Auto-merge enabled — PR will merge when all checks pass');
+            } catch (err) {
+              console.log(`Auto-merge failed: ${err.message}`);
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: '✅ Approved! Merge manually once CI passes.',
+              });
+            }
