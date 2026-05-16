@@ -171,8 +171,7 @@ describe('Built HTML internal link integrity', () => {
 
       anchors.forEach((a) => {
         const href = a.getAttribute('href');
-        if (!href || href.startsWith('mailto:') || href.startsWith('tel:') ||
-            href.startsWith('#') || href.startsWith('javascript:') || href.startsWith('data:') ||
+        if (!href || /^(mailto:|tel:|#|javascript:|data:)/i.test(href) ||
             !isInternalUrl(href)) {
           return;
         }

@@ -318,9 +318,9 @@ describeIfBuild('negative security cases', () => {
         try {
           const hostname = new URL(href).hostname.toLowerCase();
           // Block http:// links to our own domain or known providers
-          const mustBeHttps = hostname.includes('rrroca') || hostname.includes('github')
-            || hostname.includes('google.com') || hostname.includes('facebook')
-            || hostname.includes('twitter') || hostname.includes('instagram');
+          const mustBeHttps = hostname.endsWith('rrroca.org') || hostname.endsWith('github.com') || hostname.endsWith('github.io')
+            || hostname.endsWith('google.com') || hostname.endsWith('facebook.com')
+            || hostname.endsWith('twitter.com') || hostname.endsWith('x.com') || hostname.endsWith('instagram.com');
           if (!mustBeHttps) continue;
         } catch (e) { /* ignore parse errors */ }
 
