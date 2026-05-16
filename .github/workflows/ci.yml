@@ -63,7 +63,7 @@ jobs:
         run: npm ci
 
       - name: Build site
-        run: hugo --gc --minify --buildFuture --baseURL "http://localhost:1313/rrroca-site/"
+        run: hugo --gc --minify --buildFuture --baseURL "https://rrroca.github.io/rrroca-site/"
 
       - name: Run Jest unit tests
         run: npx jest --verbose --coverage
