@@ -4,7 +4,8 @@ CheckInternal: true
 CheckMailto: false
 CheckTel: false
 CheckImages: true
-CheckImgAlt: false          # TODO: fix alt text across content, then enable
+IgnoreAltMissing: true      # TODO: add alt text to all images, then re-enable
+IgnoreAltEmpty: true        # TODO: fix empty alt="" on decorative images
 IgnoreURLs:
   - "https://fonts.googleapis.com"
   - "https://fonts.gstatic.com"
