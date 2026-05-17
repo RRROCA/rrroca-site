@@ -13,13 +13,13 @@
   <link rel="canonical" href="{{ .Permalink }}">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="anonymous">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
-  <link rel="preload" href="{{ "fonts/inter-400.woff2" | absURL }}" as="font" type="font/woff2" crossorigin="anonymous">
-  <link rel="preload" href="{{ "fonts/merriweather-700.woff2" | absURL }}" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="{{ "fonts/inter-400.woff2" | relURL }}" as="font" type="font/woff2" crossorigin="anonymous">
+  <link rel="preload" href="{{ "fonts/merriweather-700.woff2" | relURL }}" as="font" type="font/woff2" crossorigin="anonymous">
   {{ $css := resources.Get "css/style.css" | fingerprint }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}" crossorigin="anonymous">
   <meta name="base-url" content="{{ "" | absURL }}">
-  <script src="{{ "js/base-config.js" | absURL }}" defer></script>
-  <script src="{{ "js/newsletter.js" | absURL }}" defer></script>
+  <script src="{{ "js/base-config.js" | relURL }}" defer></script>
+  <script src="{{ "js/newsletter.js" | relURL }}" defer></script>
   {{ hugo.Generator }}
 </head>
 <body>
@@ -30,6 +30,6 @@
   {{ partial "footer.html" . }}
   {{ partial "facebook-sdk.html" . }}
   {{ partial "ai-assistant.html" . }}
-  <script src="{{ "js/ai-assistant.js" | absURL }}" defer></script>
+  <script src="{{ "js/ai-assistant.js" | relURL }}" defer></script>
 </body>
 </html>
