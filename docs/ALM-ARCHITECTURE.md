@@ -84,8 +84,10 @@ Enforced via GitHub repository ruleset on `master`:
 
 ### `content-fix-assign.yml` — Issue Triage
 - **Trigger:** Issue labeled `content-fix`
-- **Trusted authors** (CanChad, SeunOgunsola): Assign to Copilot
+- **Trusted authors** (CanChad, SeunOgunsola): Assign to Copilot coding agent
 - **Others:** Add `needs-review` label
+- **Auth:** Uses `COPILOT_PAT` secret (fine-grained PAT) — `GITHUB_TOKEN` cannot trigger the agent
+- **Bot identity:** `copilot-swe-agent[bot]` with `agent_assignment` payload
 
 ### `motion-publish.yml` — Governance Motions
 - **Trigger:** Issue with `motion` label
@@ -119,3 +121,26 @@ To add a new trusted author, update:
 - **If moving away from Microsoft employee benefits:** Add Copilot Business subscription to RRROCA org ($19/user/month) to retain Copilot coding agent capability.
 - **Azure SWA free tier** covers the production site (100GB bandwidth, custom domain, SSL).
 - **GitHub Pages** provides a free staging fallback if Azure SWA is unavailable.
+- **COPILOT_PAT expiry:** Fine-grained PAT expires periodically (check Settings → Developer Settings → Fine-grained tokens). Regenerate and update the repo secret before expiry or the content-fix auto-assign will fail silently.
+
+## Security Posture
+
+All security features are enabled on this repository:
+
+| Feature | Status | Notes |
+|---------|--------|-------|
+| **Secret scanning** | ✅ Enabled | Push protection blocks commits with secrets |
+| **Dependabot** | ✅ Enabled | Auto-opens PRs for vulnerable dependencies |
+| **CodeQL** | ✅ Enabled | Scans JS/TS on push and PR for vulnerabilities |
+| **Branch protection** | ✅ Enforced | `build-and-test` required, no direct push to master |
+
+## Secrets & Tokens
+
+| Secret | Purpose | Rotation |
+|--------|---------|----------|
+| `AZURE_STATIC_WEB_APPS_API_TOKEN` | Production deploy to Azure SWA | Azure portal → Static Web Apps → Manage deployment token |
+| `COPILOT_PAT` | Triggers Copilot coding agent on content-fix issues | GitHub Settings → Developer Settings → Fine-grained PATs |
+
+## Architecture Diagram
+
+See [`docs/alm-architecture.excalidraw`](./alm-architecture.excalidraw) for a visual diagram (open at https://aka.ms/excalidraw).

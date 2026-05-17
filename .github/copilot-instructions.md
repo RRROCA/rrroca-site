@@ -82,3 +82,6 @@ Page content in markdown...
 6. For content updates, create/edit files in `content/` — Hugo handles the rest
 7. For visual/layout changes, edit templates in `themes/rrroca/layouts/` and CSS in `style.css`
 8. **Never launch a browser** to test — use Hugo build + Jest only (see Sandbox rules above)
+9. **Always include `Fixes #N` or `Closes #N`** in your PR description (where N is the issue number you're addressing) so the issue auto-closes on merge
+10. **Keep PR titles clean** — no `[WIP]` prefix; mark as draft only if genuinely incomplete
+11. **Update `docs/ALM-ARCHITECTURE.md`** if your changes affect CI/CD workflows, deployment, or testing strategy
