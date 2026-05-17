@@ -35,9 +35,9 @@
             <span class="motion-status motion-status--approved">✅ Approved</span>
             <span class="decision-date">{{ .Date.Format "January 2, 2006" }}</span>
           </div>
-          <h3 class="decision-card-title">
+          <h2 class="decision-card-title">
             <a href="{{ .RelPermalink }}">{{ .Title }}</a>
-          </h3>
+          </h2>
           <p class="decision-card-summary">{{ with .Params.summary }}{{ . }}{{ else }}{{ .Summary | plainify | truncate 200 }}{{ end }}</p>
           <div class="decision-card-meta">
             <span class="motion-meta-item">👤 {{ .Params.proposed_by | default "Unknown" }}</span>
@@ -61,7 +61,7 @@
       {{ else }}
       <div class="motion-empty">
         <div class="empty-state-icon">📋</div>
-        <h3>No Decisions Yet</h3>
+        <h2>No Decisions Yet</h2>
         <p>Once the board approves motions, they will appear here as part of the permanent public record.</p>
         <a href="{{ "board/motions/" | absURL }}" class="btn btn-primary">View Active Motions →</a>
       </div>

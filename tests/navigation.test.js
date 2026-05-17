@@ -177,6 +177,8 @@ describe('Built HTML internal link integrity', () => {
         }
         const cleanHref = href.split('#')[0].split('?')[0];
         if (!cleanHref || checked.has(cleanHref)) return;
+        // Skip Azure SWA runtime routes (auth endpoints handled by platform)
+        if (cleanHref.startsWith('/.auth/')) return;
         checked.add(cleanHref);
 
         if (!routeExists(cleanHref)) {
