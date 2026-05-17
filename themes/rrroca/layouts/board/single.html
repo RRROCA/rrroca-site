@@ -6,6 +6,7 @@
 {{ $total := add (add $for $against) $abstain }}
 {{ $quorum := .Params.quorum_required | default 5 }}
 {{ $isOpen := eq (lower $status) "open" }}
+{{ $isAwaiting := eq (lower $status) "awaiting_second" }}
 {{ $pctFor := 0 }}
 {{ $pctAgainst := 0 }}
 {{ $pctAbstain := 0 }}
@@ -24,7 +25,9 @@
     </div>
     <h1>{{ .Title }}</h1>
     <div class="motion-header-meta">
-      {{ if $isOpen }}
+      {{ if eq (lower $status) "awaiting_second" }}
+        <span class="motion-status motion-status--pending">✋ Awaiting Second</span>
+      {{ else if $isOpen }}
         <span class="motion-status motion-status--open">🗳️ Open for Voting</span>
       {{ else if or (eq (lower $status) "approved") (eq (lower $status) "passed") }}
         <span class="motion-status motion-status--approved">✅ Approved</span>
@@ -132,6 +135,17 @@
           {{ end }}
         </div>
 
+        {{ if $isAwaiting }}
+        <div class="motion-vote-cta">
+          {{ $voteUrl2 := .Params.github_issue_url | default .Params.github_pr }}
+          {{ if $voteUrl2 }}
+          <a href="{{ $voteUrl2 }}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
+            ✋ Second This Motion
+          </a>
+          <p class="motion-vote-note">Board members: react with 🎉 to second this motion. Voting opens once seconded.</p>
+          {{ end }}
+        </div>
+        {{ end }}
         {{ $voteUrl := .Params.github_issue_url | default .Params.github_pr }}
         {{ if and $isOpen $voteUrl }}
         <div class="motion-vote-cta">
