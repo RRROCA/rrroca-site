@@ -89,6 +89,7 @@ jobs:
             let frontMatter = `---
             title: "Motion ${motionNumber}: ${issue.title.replace(/^Motion:\s*/i, '').replace(/"/g, '\\"')}"
             date: ${created}
+            description: "${motionText.split('\\n')[0].substring(0, 200).replace(/"/g, '\\\\\"')}"
             summary: "${motionText.split('\n')[0].substring(0, 200).replace(/"/g, '\\"')}"
             proposed_by: "${author}"
             motion_status: "${motionStatus}"
@@ -165,6 +166,8 @@ jobs:
           gh pr create --title "motion: publish #${{ github.event.issue.number }} — ${{ steps.parse.outputs.motion-number }}" \
             --body "Auto-generated from issue #${{ github.event.issue.number }}. Motion ${{ steps.parse.outputs.motion-number }}." \
             --base master --head "$BRANCH" --label "content-fix"
+          # Trigger CI for this branch (GITHUB_TOKEN PRs don't trigger other workflows)
+          gh workflow run ci.yml --ref "$BRANCH" || true
           gh pr merge "$BRANCH" --squash --auto --delete-branch
 
       - name: Comment on issue with website link
