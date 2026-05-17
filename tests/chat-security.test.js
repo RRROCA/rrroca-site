@@ -166,7 +166,7 @@ describe('Rate Limiting', () => {
   });
 
   test('blocks after exceeding per-IP limit', async () => {
-    const fixedIp = '10.0.0.60';
+    const fixedIp = '10.0.0.50';
     // Send 10 requests (the limit)
     for (let i = 0; i < 10; i++) {
       const ctx = createContext();
