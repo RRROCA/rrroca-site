@@ -27,6 +27,9 @@ playwright-report/
 .env
 .env.local
 
+# Generated at build time
+api/chat/knowledge-base.json
+
 # Migration scripts (not needed in prod)
 scripts/__pycache__/
 scripts/*.pyc

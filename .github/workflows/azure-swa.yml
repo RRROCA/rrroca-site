@@ -42,6 +42,9 @@ jobs:
       - name: Build site
         run: hugo --gc --minify
 
+      - name: Build AI knowledge base
+        run: node scripts/build-knowledge-base.js
+
       - name: Include Azure Static Web Apps config
         run: cp staticwebapp.config.json public/staticwebapp.config.json
 
@@ -53,8 +56,13 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: upload
           app_location: "public"
+          api_location: "api"
           output_location: ""
           skip_app_build: true
+        env:
+          AZURE_OPENAI_ENDPOINT: ${{ secrets.AZURE_OPENAI_ENDPOINT }}
+          AZURE_OPENAI_KEY: ${{ secrets.AZURE_OPENAI_KEY }}
+          AZURE_OPENAI_DEPLOYMENT: ${{ secrets.AZURE_OPENAI_DEPLOYMENT }}
 
   close_pull_request:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

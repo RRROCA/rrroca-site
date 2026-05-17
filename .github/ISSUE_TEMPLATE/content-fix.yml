@@ -40,3 +40,9 @@ body:
       description: Drag and drop files here if needed
     validations:
       required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ✅ **What happens next:** Our AI assistant will automatically make this change and deploy it. You'll get a notification when it's live (usually within minutes).

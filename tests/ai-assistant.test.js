@@ -137,7 +137,10 @@ describe('ai-assistant.js', () => {
     expect(message.innerHTML).not.toContain('<img src=x onerror=alert(1)>');
   });
 
-  it('submits a question, hides suggestions, and appends user and bot messages', () => {
+  it('submits a question, hides suggestions, and appends user and bot messages', async () => {
+    // Mock fetch to simulate API unavailable (triggers keyword fallback)
+    global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
+
     const input = document.getElementById('ai-input-field');
     const suggestions = document.getElementById('ai-suggestions');
 
@@ -147,13 +150,18 @@ describe('ai-assistant.js', () => {
       preventDefault: jest.fn()
     });
 
-    const messages = document.querySelectorAll('#ai-messages .ai-message');
-    expect(messages).toHaveLength(2);
-    expect(messages[0]).toHaveTextContent('What is the membership fee?');
-    expect(messages[0]).toHaveClass('ai-user');
-    expect(messages[1]).toHaveClass('ai-bot');
-    expect(messages[1].innerHTML).toMatch(/membership/i);
+    // User message appears immediately
+    const userMsg = document.querySelectorAll('#ai-messages .ai-message.ai-user');
+    expect(userMsg).toHaveLength(1);
+    expect(userMsg[0]).toHaveTextContent('What is the membership fee?');
     expect(suggestions).toHaveStyle({ display: 'none' });
     expect(input.value).toBe('');
+
+    // Wait for async fallback to resolve
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    const botMsgs = document.querySelectorAll('#ai-messages .ai-message.ai-bot');
+    expect(botMsgs.length).toBeGreaterThanOrEqual(1);
+    expect(botMsgs[botMsgs.length - 1].innerHTML).toMatch(/membership/i);
   });
 });
