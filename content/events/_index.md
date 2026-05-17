@@ -7,4 +7,4 @@ draft: false
 
 Whether you are new to the neighbourhood or a longtime resident, RRROCA events are a great way to connect, volunteer, and celebrate together.
 
-<p><a class="btn btn-primary" href="https://rrroca.getcommunal.com/events" target="_blank" rel="noopener noreferrer">Register on GetCommunal</a></p>
+[Register for events on GetCommunal](https://rrroca.getcommunal.com/events)

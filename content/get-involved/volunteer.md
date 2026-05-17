@@ -13,6 +13,4 @@ RRROCA is powered by neighbours who give a little time to make a big local impac
 
 Please share your interests below and a board member will follow up.
 
-<p><a class="btn btn-primary" href="https://rrroca.getcommunal.com/volunteer" target="_blank" rel="noopener noreferrer">Sign Up to Volunteer</a></p>
-
 {{< volunteer-form >}}
