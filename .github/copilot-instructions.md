@@ -55,9 +55,13 @@ Page content in markdown...
 
 ## Key URLs & Services
 - **Membership**: https://rrroca.getcommunal.com/memberships
+- **Events**: https://rrroca.getcommunal.com/events
+- **Facilities booking**: https://rrroca.getcommunal.com/facilities
 - **Contact email**: info@rrroca.org
 - **Facebook Page**: https://www.facebook.com/rrroca.org
 - **Facebook Group**: https://www.facebook.com/groups/royaloakrockyridgefamilies
+
+⚠️ **Only link to GetCommunal URLs listed above.** Do NOT invent or guess GetCommunal paths (e.g., `/volunteer` does not exist). If unsure whether a URL exists, ask in an issue comment rather than linking to it.
 
 ## Design System
 - Uses CSS custom properties (design tokens) defined in `:root`
@@ -73,6 +77,29 @@ Page content in markdown...
 - **ONLY** verify your work with `hugo --quiet` (build) and `npx jest` (tests)
 - The Jest tests validate the built HTML output — that's sufficient
 
+## Content vs Design — Strict Boundary
+
+**Content changes** (auto-mergeable, no review needed):
+- Adding/editing markdown text, headings, lists, blockquotes
+- Adding/editing standard markdown links: `[text](url)`
+- Adding/editing markdown images: `![alt](path)`
+- Updating front matter (title, date, description, tags)
+- Using existing Hugo shortcodes (e.g., `{{< volunteer-form >}}`)
+
+**Design changes** (require review, NOT auto-mergeable):
+- Any raw HTML tags (`<p>`, `<a>`, `<div>`, `<button>`, `<span>`, etc.)
+- Any CSS class references (`class="..."`)
+- Any inline styles (`style="..."`)
+- Creating or modifying Hugo shortcodes
+- Changes to templates (`layouts/`), CSS, or JavaScript
+- Adding structural sections that change page layout
+
+**If a content-fix issue requires design changes** (buttons, CTAs, layout restructuring):
+1. Do NOT add raw HTML to markdown files
+2. Instead, comment on the issue explaining that this requires a design change
+3. Label the issue `design-change` so a human reviewer handles it
+4. Alternatively, use an existing Hugo shortcode if one fits the need
+
 ## Rules
 1. **Always run the build and tests** before considering work complete
 2. **Never commit personal info** (phone numbers, personal emails) — use @rrroca.org role emails only
@@ -82,3 +109,6 @@ Page content in markdown...
 6. For content updates, create/edit files in `content/` — Hugo handles the rest
 7. For visual/layout changes, edit templates in `themes/rrroca/layouts/` and CSS in `style.css`
 8. **Never launch a browser** to test — use Hugo build + Jest only (see Sandbox rules above)
+9. **Always include `Fixes #N`** in PR descriptions to auto-close the originating issue
+10. **Never prefix PR titles with `[WIP]`** — create draft PRs instead if incomplete
+11. **Never add raw HTML to markdown content files** — if a CTA/button is needed, flag as `design-change`
