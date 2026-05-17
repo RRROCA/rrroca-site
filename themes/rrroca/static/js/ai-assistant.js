@@ -94,6 +94,38 @@ Active community with many options:
 
 [Sports & Clubs Info →](/sports/)`
   },
+  vote: {
+    keywords: ['vote', 'voting', 'cast a vote', 'how do i vote'],
+    response: `🗳️ **Board Voting**
+
+Board members vote on motions through the Board Action Center on the website. Use your @rrroca.org email to propose, second, or vote on motions. You can also vote directly on GitHub issues with emoji reactions: 👍 For, 👎 Against, 😕 Abstain.
+
+👉 [Board Action Center →](/board/actions/)`
+  },
+  motion: {
+    keywords: ['motion', 'motions', 'propose', 'proposal', 'proposing'],
+    response: `📝 **Propose a Motion**
+
+Board members can propose motions through the Board Action Center (/board/actions/). Fill in the plain-language form and submit — it auto-publishes to the site. Another board member must second it before voting opens.
+
+👉 [Board Action Center →](/board/actions/)`
+  },
+  second: {
+    keywords: ['second', 'seconding', 'seconder', 'second a motion'],
+    response: `✋ **Second a Motion**
+
+After a motion is proposed, another board member must second it before voting can begin. Visit the Board Action Center to see pending motions and second them with one click.
+
+👉 [Board Action Center →](/board/actions/)`
+  },
+  board: {
+    keywords: ['board', 'board action center', 'board actions', 'directors', 'governance'],
+    response: `👥 **Board Governance**
+
+Board members can manage motions, second pending items, and vote through the Board Action Center.
+
+👉 [Board Action Center →](/board/actions/)
+📘 [Board Governance →](/board/)`
   volunteer: {
     keywords: ['volunteer', 'help', 'contribute', 'board', 'committee', 'give back'],
     response: `🤝 **Volunteer with RRROCA!**
