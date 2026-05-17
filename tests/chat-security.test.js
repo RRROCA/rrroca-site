@@ -18,7 +18,7 @@ jest.mock('fs', () => ({
 const chatFunction = require('../api/chat/index');
 
 function createContext() {
-  return { res: null, log: { error: jest.fn(), info: jest.fn() } };
+  return { res: null, log: { error: jest.fn(), warn: jest.fn(), info: jest.fn() } };
 }
 
 function createReq(message, history = [], headers = {}) {

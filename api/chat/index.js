@@ -10,7 +10,7 @@ if (fs.existsSync(KB_PATH)) {
 
 // --- SECURITY: Rate limiting (in-memory, per-instance) ---
 const RATE_LIMIT = { maxRequests: 10, windowMs: 60000 }; // 10 req/min per IP
-const DAILY_LIMIT = 200; // max requests per day (all users)
+const DAILY_LIMIT = 250; // max requests per day (all users)
 const requestLog = new Map();
 let dailyCount = 0;
 let dailyResetTime = Date.now() + 86400000;
@@ -101,6 +101,7 @@ module.exports = async function (context, req) {
   // Rate limit check
   const limited = isRateLimited(clientIp);
   if (limited) {
+    context.log.warn(`Rate limited: type=${limited}, ip=${clientIp}, dailyCount=${dailyCount}`);
     context.res = {
       status: 429,
       body: { error: 'Too many requests. Please try again later.', fallback: true }
