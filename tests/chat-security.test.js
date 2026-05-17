@@ -166,7 +166,7 @@ describe('Rate Limiting', () => {
   });
 
   test('blocks after exceeding per-IP limit', async () => {
-    const fixedIp = '10.0.0.50';
+    const fixedIp = '10.0.0.60';
     // Send 10 requests (the limit)
     for (let i = 0; i < 10; i++) {
       const ctx = createContext();
@@ -214,7 +214,7 @@ describe('CORS headers', () => {
     mockSuccessResponse('Hello!');
     const req = {
       method: 'POST',
-      headers: { origin: 'https://rrroca.github.io', 'x-forwarded-for': '10.0.0.50' },
+      headers: { origin: 'https://rrroca.github.io', 'x-forwarded-for': '10.0.0.60' },
       body: { message: 'hi' }
     };
 
