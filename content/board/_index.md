@@ -15,7 +15,7 @@ The Rocky Ridge Royal Oak Community Association is governed by a volunteer Board
 1. **A board member proposes a motion** by filling out a simple online form
 2. **The motion appears here automatically** for full community visibility
 3. **Board members review** and discuss the motion
-4. **Directors vote** with a single click — 👍 For, 👎 Against, or 😐 Abstain
+4. **Directors vote** with a single click — 👍 = For, 👎 = Against, 😐 = Abstain
 5. **Results are recorded permanently** — every vote is part of the public record
 
 This is what transparent governance looks like. No backroom decisions. No lost meeting minutes. Every motion, every vote, every outcome — right here.
