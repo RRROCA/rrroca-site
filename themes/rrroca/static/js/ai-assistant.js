@@ -205,7 +205,10 @@ function handleAISubmit(e) {
 }
 
 async function askAIAPI(question) {
-  const response = await fetch('/api/chat', {
+  const apiBase = window.location.hostname.includes('azurestaticapps.net') || window.location.hostname === 'rrroca.org'
+      ? ''
+      : 'https://zealous-wave-07c275a0f.7.azurestaticapps.net';
+    const response = await fetch(apiBase + '/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
