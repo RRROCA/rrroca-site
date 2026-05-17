@@ -110,4 +110,3 @@ describe('api/chat security hardening', () => {
     expect(global.fetch).toHaveBeenCalledTimes(6);
   });
 });
-

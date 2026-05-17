@@ -8,13 +8,13 @@
     </div>
     <h1>⚖️ {{ .Title }}</h1>
     <p class="page-description">
-      {{ with .Description }}{{ . }}{{ else }}Propose motions, second motions, and vote from one simple board-friendly workflow.{{ end }}
+      {{ with .Description }}{{ . }}{{ else }}Propose motions, second motions, and vote from one simple board-friendly workflow — powered by GitHub.{{ end }}
     </p>
     <div class="motion-summary-bar">
       <div class="motion-summary-stats">
         <span class="motion-summary-stat motion-summary-stat--active"><strong>3 steps</strong> Propose, second, vote</span>
-        <span class="motion-summary-stat"><strong>@rrroca.org</strong> Board email required</span>
-        <span class="motion-summary-stat"><strong>GitHub-free</strong> Board workflow</span>
+        <span class="motion-summary-stat"><strong>Google sign-in</strong> Board members only</span>
+        <span class="motion-summary-stat"><strong>Powered by GitHub</strong> Transparent & auditable</span>
       </div>
     </div>
   </div>
@@ -30,6 +30,18 @@
       {{ end }}
 
       <div class="board-wizard" data-board-wizard data-swa-origin="https://zealous-wave-07c275a0f.7.azurestaticapps.net">
+        <!-- Auth status bar -->
+        <div class="board-auth-bar" data-auth-bar>
+          <div class="board-auth-signed-out" data-auth-signed-out>
+            <p>Sign in with your <strong>@rrroca.org</strong> Google account to propose, second, or vote on motions.</p>
+            <a href="/.auth/login/google?post_login_redirect_uri=/board/actions/" class="btn btn-primary">Sign in with Google</a>
+          </div>
+          <div class="board-auth-signed-in board-wizard-hidden" data-auth-signed-in>
+            <span class="board-auth-badge">✓ Signed in as <strong data-auth-username></strong></span>
+            <a href="/.auth/logout?post_logout_redirect_uri=/board/actions/" class="btn btn-secondary btn-sm">Sign out</a>
+          </div>
+        </div>
+
         <div class="board-wizard-tabs" role="tablist" aria-label="Board action center">
           <button type="button" class="board-wizard-tab is-active" role="tab" aria-selected="true" aria-controls="board-tab-propose" id="board-tab-trigger-propose" data-tab-trigger="propose">1. Propose a Motion</button>
           <button type="button" class="board-wizard-tab" role="tab" aria-selected="false" aria-controls="board-tab-second" id="board-tab-trigger-second" data-tab-trigger="second">2. Second a Motion</button>
@@ -107,22 +119,8 @@
                 <p class="field-error" aria-live="polite"></p>
               </div>
 
-              <div class="rr-form-grid">
-                <div class="rr-field">
-                  <label for="proposer-name">Your name</label>
-                  <input id="proposer-name" name="proposerName" type="text" required data-label="Your name">
-                  <p class="field-error" aria-live="polite"></p>
-                </div>
-
-                <div class="rr-field">
-                  <label for="proposer-email">Your @rrroca.org email</label>
-                  <input id="proposer-email" name="proposerEmail" type="email" required pattern=".+@rrroca\.org$" data-label="Your @rrroca.org email">
-                  <p class="field-error" aria-live="polite"></p>
-                </div>
-              </div>
-
               <div class="form-status" data-form-status aria-live="polite"></div>
-              <button type="submit" class="btn btn-primary rr-form-submit" data-submit-label="Publish motion">Publish motion</button>
+              <button type="submit" class="btn btn-primary rr-form-submit" data-submit-label="Publish motion" data-requires-auth>Publish motion</button>
             </form>
 
             <aside class="board-wizard-preview">
@@ -141,22 +139,6 @@
             <p>Add your second to open voting. Pending motions appear automatically as soon as they are submitted.</p>
           </div>
 
-          <div class="board-wizard-toolbar">
-            <div class="rr-form-grid">
-              <div class="rr-field">
-                <label for="seconder-name">Your name</label>
-                <input id="seconder-name" data-actor-name="second" type="text">
-                <p class="field-error" aria-live="polite"></p>
-              </div>
-              <div class="rr-field">
-                <label for="seconder-email">Your @rrroca.org email</label>
-                <input id="seconder-email" data-actor-email="second" type="email" pattern=".+@rrroca\.org$">
-                <p class="field-error" aria-live="polite"></p>
-              </div>
-            </div>
-            <p class="form-help">Use your RRROCA board email to record the second.</p>
-          </div>
-
           <div class="board-wizard-list" data-motion-list="second" aria-live="polite">
             <p class="board-wizard-empty">Loading pending motions…</p>
           </div>
@@ -166,22 +148,6 @@
           <div class="board-wizard-lead">
             <h2>Vote on open motions</h2>
             <p>Cast your vote in plain language. Tally cards update whenever this page refreshes motion data.</p>
-          </div>
-
-          <div class="board-wizard-toolbar">
-            <div class="rr-form-grid">
-              <div class="rr-field">
-                <label for="voter-name">Your name</label>
-                <input id="voter-name" data-actor-name="vote" type="text">
-                <p class="field-error" aria-live="polite"></p>
-              </div>
-              <div class="rr-field">
-                <label for="voter-email">Your @rrroca.org email</label>
-                <input id="voter-email" data-actor-email="vote" type="email" pattern=".+@rrroca\.org$">
-                <p class="field-error" aria-live="polite"></p>
-              </div>
-            </div>
-            <p class="form-help">Choose one vote per motion: For, Against, or Abstain.</p>
           </div>
 
           <div class="board-wizard-list" data-motion-list="vote" aria-live="polite">
@@ -195,12 +161,12 @@
       <div class="board-action-sidebar">
         <h2>How this works</h2>
         <ol>
+          <li>Sign in with your @rrroca.org Google account.</li>
           <li>Publish a motion in plain language.</li>
-          <li>A second opens the motion for voting.</li>
-          <li>Votes are written into the RRROCA governance record.</li>
+          <li>Board members are notified to second and vote.</li>
         </ol>
         <p>This page writes to the existing GitHub-backed motion workflow, but it keeps the experience friendly for board members who do not use GitHub directly.</p>
-        <p class="board-action-sidebar-note"><strong>Admin setup:</strong> configure the Azure Static Web App application setting <code>GITHUB_TOKEN</code> so the motion API can create issues and comments.</p>
+        <p class="board-action-sidebar-note">All motions are securely stored in GitHub with full audit history. Board members are notified automatically when a motion needs their attention.</p>
         <a href="{{ "board/" | absURL }}" class="btn btn-secondary btn-sm">View Governance Page</a>
       </div>
     </aside>

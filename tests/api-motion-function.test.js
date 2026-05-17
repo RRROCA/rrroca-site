@@ -3,6 +3,16 @@ const { SITE_ORIGINS } = require('./helpers/site-config');
 
 const MOTION_MODULE_PATH = path.join(__dirname, '..', 'api', 'motion', 'index.js');
 
+function makeAuthHeader(email) {
+  const principal = {
+    identityProvider: 'google',
+    userId: 'test-user-' + email.split('@')[0],
+    userDetails: email,
+    userRoles: ['authenticated', 'anonymous']
+  };
+  return Buffer.from(JSON.stringify(principal)).toString('base64');
+}
+
 describe('api/motion security hardening', () => {
   const originalEnv = { ...process.env };
 
@@ -28,11 +38,10 @@ describe('api/motion security hardening', () => {
       query: { action: 'propose' },
       headers: {
         origin: SITE_ORIGINS[0],
-        'x-azure-clientip': '203.0.113.20'
+        'x-azure-clientip': '203.0.113.20',
+        'x-ms-client-principal': makeAuthHeader('board.member@rrroca.org')
       },
       body: {
-        proposerName: 'Board Member',
-        proposerEmail: 'board.member@rrroca.org',
         motionText: 'Approve a new rink light timer.',
         background: 'The existing timer has failed repeatedly.'
       },
@@ -44,10 +53,26 @@ describe('api/motion security hardening', () => {
   }
 
   test('rejects disallowed origins', async () => {
-    const { context } = await invoke({ headers: { origin: 'https://evil.example', 'x-azure-clientip': '203.0.113.20' } });
+    const { context } = await invoke({ headers: { origin: 'https://evil.example', 'x-azure-clientip': '203.0.113.20', 'x-ms-client-principal': makeAuthHeader('board.member@rrroca.org') } });
 
     expect(context.res.status).toBe(403);
     expect(context.res.body.error).toMatch(/Origin not allowed/i);
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  test('rejects unauthenticated requests', async () => {
+    const { context } = await invoke({ headers: { origin: SITE_ORIGINS[0], 'x-azure-clientip': '203.0.113.20' } });
+
+    expect(context.res.status).toBe(401);
+    expect(context.res.body.error).toMatch(/sign in/i);
+    expect(global.fetch).not.toHaveBeenCalled();
+  });
+
+  test('rejects non-rrroca.org email accounts', async () => {
+    const { context } = await invoke({ headers: { origin: SITE_ORIGINS[0], 'x-azure-clientip': '203.0.113.20', 'x-ms-client-principal': makeAuthHeader('someone@gmail.com') } });
+
+    expect(context.res.status).toBe(403);
+    expect(context.res.body.error).toMatch(/@rrroca\.org/i);
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
@@ -59,16 +84,8 @@ describe('api/motion security hardening', () => {
     expect(global.fetch).not.toHaveBeenCalled();
   });
 
-  test('enforces strict rrroca.org email validation', async () => {
-    const { context } = await invoke({ body: { proposerName: 'Board Member', proposerEmail: 'board.member@rrroca.org.evil.com', motionText: 'Test', background: 'Test background' } });
-
-    expect(context.res.status).toBe(403);
-    expect(context.res.body.error).toMatch(/valid @rrroca\.org address/i);
-    expect(global.fetch).not.toHaveBeenCalled();
-  });
-
   test('rejects overlong motion text', async () => {
-    const { context } = await invoke({ body: { proposerName: 'Board Member', proposerEmail: 'board.member@rrroca.org', motionText: 'a'.repeat(5001), background: 'Test background' } });
+    const { context } = await invoke({ body: { motionText: 'a'.repeat(5001), background: 'Test background' } });
 
     expect(context.res.status).toBe(400);
     expect(context.res.body.error).toMatch(/motionText exceeds the 5000 character limit/i);
@@ -87,25 +104,31 @@ describe('api/motion security hardening', () => {
       });
 
     const payload = {
-      proposerName: 'Alice **Admin** <script>@board</script>',
-      proposerEmail: 'alice@rrroca.org',
       title: 'LED upgrade @rrroca/board',
       motionText: 'Approve <script>alert(1)</script> and notify @rrroca/board',
       background: 'Needed for <!-- comment --> winter operations',
       supportingDocs: '[budget](javascript:alert(1))'
     };
 
-    const { context } = await invoke({ body: payload });
+    const { context } = await invoke({
+      body: payload,
+      headers: {
+        origin: SITE_ORIGINS[0],
+        'x-azure-clientip': '203.0.113.20',
+        'x-ms-client-principal': makeAuthHeader('alice@rrroca.org')
+      }
+    });
     expect(context.res.status).toBe(200);
 
     const firstCall = global.fetch.mock.calls[0];
     const requestBody = JSON.parse(firstCall[1].body);
-    expect(requestBody.title).toContain('@rrroca/board');
-    expect(requestBody.body).toContain('&lt;script&gt;alert\(1\)&lt;/script&gt;');
+    expect(requestBody.body).toContain('&lt;script&gt;');
     expect(requestBody.body).toContain('@​rrroca/board');
-    expect(requestBody.body).toContain('Needed for &lt;!-- comment --&gt; winter operations');
     expect(requestBody.body).not.toContain('<script>alert(1)</script>');
     expect(requestBody.body).toContain('RRROCA_MOTION_META');
+    // The @RRROCA/board mention has been removed — notifications are now handled by
+    // GitHub Actions workflow (board-notify.yml) which emails board@rrroca.org
+    expect(requestBody.body).not.toContain('@RRROCA/board');
   });
 
   test('rate limits write requests by trusted client IP instead of x-forwarded-for', async () => {
@@ -125,12 +148,11 @@ describe('api/motion security hardening', () => {
         headers: {
           origin: SITE_ORIGINS[0],
           'x-azure-clientip': '198.51.100.8',
-          'x-forwarded-for': `10.0.0.${index}`
+          'x-forwarded-for': '10.0.0.' + index,
+          'x-ms-client-principal': makeAuthHeader('member' + index + '@rrroca.org')
         },
         body: {
-          proposerName: `Board Member ${index}`,
-          proposerEmail: `member${index}@rrroca.org`,
-          motionText: `Motion ${index}`,
+          motionText: 'Motion ' + index,
           background: 'Background text'
         }
       });
@@ -145,11 +167,10 @@ describe('api/motion security hardening', () => {
       headers: {
         origin: SITE_ORIGINS[0],
         'x-azure-clientip': '198.51.100.8',
-        'x-forwarded-for': '203.0.113.99'
+        'x-forwarded-for': '203.0.113.99',
+        'x-ms-client-principal': makeAuthHeader('member11@rrroca.org')
       },
       body: {
-        proposerName: 'Board Member 11',
-        proposerEmail: 'member11@rrroca.org',
         motionText: 'Motion 11',
         background: 'Background text'
       }
@@ -158,4 +179,3 @@ describe('api/motion security hardening', () => {
     expect(blockedContext.res.status).toBe(429);
   });
 });
-

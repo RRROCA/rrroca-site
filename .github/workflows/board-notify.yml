@@ -1,0 +1,121 @@
+name: Board Motion Notifications
+
+on:
+  issues:
+    types: [opened]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: read
+
+jobs:
+  notify-board:
+    # Only board motions should generate email notifications.
+    if: contains(github.event.issue.labels.*.name, 'motion')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Build email content from motion metadata
+        id: motion-email
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
+        env:
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+        with:
+          result-encoding: string
+          script: |
+            const issue = context.payload.issue;
+            const issueTitle = issue.title;
+            const issueUrl = 'https://rrroca.org/board/actions/';
+            const defaultFrom = 'RRROCA Board Actions <noreply@rrroca.org>';
+            const smtpFrom = process.env.SMTP_FROM || defaultFrom;
+
+            function extractJson(body, marker) {
+              const text = String(body || '');
+              const regex = new RegExp(`<!--\\s*${marker}:\\s*([\\s\\S]*?)\\s*-->`, 'i');
+              const match = text.match(regex);
+              if (!match) {
+                return null;
+              }
+
+              try {
+                return JSON.parse(match[1]);
+              } catch (error) {
+                core.warning(`Unable to parse ${marker}: ${error.message}`);
+                return null;
+              }
+            }
+
+            function escapeHtml(value) {
+              return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+            }
+
+            let shouldSend = false;
+            let subject = '';
+            let htmlBody = '';
+
+            if (context.eventName === 'issues') {
+              const meta = extractJson(issue.body, 'RRROCA_MOTION_META');
+              if (meta) {
+                shouldSend = true;
+                subject = `📋 New Motion: ${issueTitle}`;
+                htmlBody = `
+                  <h2>${escapeHtml(issueTitle)}</h2>
+                  <p>A new motion has been proposed and needs a second.</p>
+                  <p><a href="${issueUrl}">Open the RRROCA Board Action Center</a></p>
+                  <p>Sign in with your @rrroca.org Google account to review and second this motion.</p>
+                `;
+              }
+            }
+
+            if (context.eventName === 'issue_comment') {
+              const motionEvent = extractJson(context.payload.comment.body, 'RRROCA_MOTION_EVENT');
+              if (motionEvent && motionEvent.type === 'second') {
+                shouldSend = true;
+                subject = `✅ Motion Seconded: ${issueTitle}`;
+                htmlBody = `
+                  <h2>${escapeHtml(issueTitle)}</h2>
+                  <p>This motion is now open for voting.</p>
+                  <p><a href="${issueUrl}">Open the RRROCA Board Action Center</a></p>
+                `;
+              }
+
+              if (motionEvent && motionEvent.type === 'vote') {
+                const voter = motionEvent.name || 'A board member';
+                const vote = String(motionEvent.vote || '').toLowerCase();
+                const voteLabel = vote === 'for' ? 'for' : vote === 'against' ? 'against' : vote === 'abstain' ? 'abstain' : vote || 'unknown';
+                shouldSend = true;
+                subject = `🗳️ Vote Recorded: ${issueTitle}`;
+                htmlBody = `
+                  <h2>${escapeHtml(issueTitle)}</h2>
+                  <p>${escapeHtml(voter)} voted ${escapeHtml(voteLabel)}.</p>
+                  <p><a href="${issueUrl}">Open the RRROCA Board Action Center</a></p>
+                `;
+              }
+            }
+
+            core.setOutput('should_send', shouldSend ? 'true' : 'false');
+            core.setOutput('subject', subject);
+            core.setOutput('html_body', htmlBody.trim());
+            core.setOutput('smtp_from', smtpFrom);
+            return shouldSend ? 'ready' : 'skipped';
+
+      - name: Send notification email
+        if: steps.motion-email.outputs.should_send == 'true'
+        uses: dawidd6/action-send-mail@4226df7daafa6fc901a43789c49bf7ab309066e7 # v3
+        with:
+          server_address: ${{ secrets.SMTP_SERVER }}
+          server_port: ${{ secrets.SMTP_PORT }}
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          secure: ${{ secrets.SMTP_PORT == '465' }}
+          subject: ${{ steps.motion-email.outputs.subject }}
+          html_body: ${{ steps.motion-email.outputs.html_body }}
+          to: board@rrroca.org
+          from: ${{ steps.motion-email.outputs.smtp_from }}

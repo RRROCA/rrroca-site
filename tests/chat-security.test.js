@@ -1,8 +1,9 @@
-const { SITE_ORIGINS } = require('./helpers/site-config');
 /**
  * Chat API security guardrails tests
  * Tests: input validation, rate limiting, prompt injection, history sanitization
  */
+
+const { SITE_ORIGINS } = require('./helpers/site-config');
 
 // Mock the Azure OpenAI response
 const mockFetch = jest.fn();

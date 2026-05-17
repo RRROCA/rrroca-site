@@ -326,7 +326,7 @@ describe('Link guard', () => {
           return;
         }
 
-        if (!isInternalUrl(href)) {
+        if (!isInternalUrl(href) || href.startsWith('/.auth/')) {
           return;
         }
         const cleanHref = href.split('#')[0].split('?')[0];

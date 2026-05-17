@@ -166,6 +166,187 @@ The Rocky Ridge Royal Oak Community Association represents ~25,000 residents in 
   }
 };
 
+const BOARD_EMAIL_DOMAIN = '@rrroca.org';
+const BOARD_CONTEXT_TTL_MS = 60000;
+const assistantState = {
+  boardUser: null,
+  pendingMotions: [],
+  boardGreetingShown: false,
+  authInitialized: false,
+  boardInitPromise: null,
+  boardContextPromise: null,
+  boardContextLoadedAt: 0
+};
+
+function getApiBase() {
+  const host = window.location.hostname.toLowerCase();
+  if (host === 'rrroca.org' || host === 'www.rrroca.org' || host.includes('azurestaticapps.net')) {
+    return '';
+  }
+
+  return 'https://zealous-wave-07c275a0f.7.azurestaticapps.net';
+}
+
+function formatBoardMemberName(email) {
+  return String(email || '')
+    .split('@')[0]
+    .split(/[._-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ') || 'Board member';
+}
+
+function isBoardMember(user) {
+  return Boolean(user && typeof user.email === 'string' && user.email.toLowerCase().endsWith(BOARD_EMAIL_DOMAIN));
+}
+
+function normalizePendingMotions(motions) {
+  if (!Array.isArray(motions)) {
+    return [];
+  }
+
+  return motions
+    .filter((motion) => motion && (motion.status === 'awaiting_second' || motion.status === 'open'))
+    .map((motion) => ({
+      number: motion.number,
+      motionNumber: motion.motionNumber,
+      title: motion.title,
+      status: motion.status,
+      votesFor: Number(motion.votesFor) || 0,
+      votesAgainst: Number(motion.votesAgainst) || 0,
+      votesAbstain: Number(motion.votesAbstain) || 0,
+      url: motion.url || ''
+    }));
+}
+
+async function fetchBoardAuthStatus() {
+  if (typeof fetch !== 'function') {
+    return null;
+  }
+
+  try {
+    const response = await fetch(getApiBase() + '/.auth/me', { credentials: 'include' });
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+    const principal = data && data.clientPrincipal;
+    if (!principal || !principal.userDetails) {
+      return null;
+    }
+
+    const email = String(principal.userDetails || '').toLowerCase();
+    return {
+      id: principal.userId,
+      email,
+      name: formatBoardMemberName(email),
+      provider: principal.identityProvider,
+      roles: Array.isArray(principal.userRoles) ? principal.userRoles : []
+    };
+  } catch (error) {
+    return null;
+  }
+}
+
+async function fetchPendingMotions() {
+  if (typeof fetch !== 'function' || !isBoardMember(assistantState.boardUser)) {
+    return [];
+  }
+
+  try {
+    const response = await fetch(getApiBase() + '/api/motion?action=list', {
+      method: 'GET',
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      return assistantState.pendingMotions;
+    }
+
+    const data = await response.json();
+    const pendingMotions = normalizePendingMotions(data && data.motions);
+    assistantState.pendingMotions = pendingMotions;
+    assistantState.boardContextLoadedAt = Date.now();
+    return pendingMotions;
+  } catch (error) {
+    return assistantState.pendingMotions;
+  }
+}
+
+function ensureBoardContext(forceRefresh = false) {
+  if (!isBoardMember(assistantState.boardUser)) {
+    return Promise.resolve([]);
+  }
+
+  const isFresh = assistantState.boardContextLoadedAt && (Date.now() - assistantState.boardContextLoadedAt) < BOARD_CONTEXT_TTL_MS;
+  if (!forceRefresh && isFresh) {
+    return Promise.resolve(assistantState.pendingMotions);
+  }
+
+  if (assistantState.boardContextPromise) {
+    return assistantState.boardContextPromise;
+  }
+
+  assistantState.boardContextPromise = fetchPendingMotions().finally(() => {
+    assistantState.boardContextPromise = null;
+  });
+
+  return assistantState.boardContextPromise;
+}
+
+function initializeBoardAwareness() {
+  if (assistantState.authInitialized) {
+    return Promise.resolve(assistantState.boardUser);
+  }
+
+  if (assistantState.boardInitPromise) {
+    return assistantState.boardInitPromise;
+  }
+
+  assistantState.boardInitPromise = (async () => {
+    const boardUser = await fetchBoardAuthStatus();
+    assistantState.boardUser = isBoardMember(boardUser) ? boardUser : null;
+    assistantState.authInitialized = true;
+
+    if (assistantState.boardUser) {
+      await ensureBoardContext(true);
+    }
+
+    return assistantState.boardUser;
+  })().catch(() => {
+    assistantState.boardUser = null;
+    assistantState.pendingMotions = [];
+    assistantState.boardContextLoadedAt = 0;
+    assistantState.authInitialized = true;
+    return null;
+  }).finally(() => {
+    assistantState.boardInitPromise = null;
+  });
+
+  return assistantState.boardInitPromise;
+}
+
+async function maybeShowBoardGreeting() {
+  const panel = document.getElementById('ai-panel');
+  if (!panel || !panel.classList.contains('open') || assistantState.boardGreetingShown) {
+    return;
+  }
+
+  await initializeBoardAwareness();
+  if (!isBoardMember(assistantState.boardUser)) {
+    return;
+  }
+
+  const pendingMotions = await ensureBoardContext();
+  if (!panel.classList.contains('open') || assistantState.boardGreetingShown || !pendingMotions.length) {
+    return;
+  }
+
+  addMessage(`Welcome back, ${assistantState.boardUser.name}. You have ${pendingMotions.length} motion(s) pending your attention.`, 'bot');
+  assistantState.boardGreetingShown = true;
+}
+
 function toggleAssistant() {
   const panel = document.getElementById('ai-panel');
   const fab = document.getElementById('ai-fab');
@@ -173,6 +354,7 @@ function toggleAssistant() {
   fab.classList.toggle('hidden');
   if (panel.classList.contains('open')) {
     document.getElementById('ai-input-field').focus();
+    maybeShowBoardGreeting();
   }
 }
 
@@ -222,16 +404,38 @@ function handleAISubmit(e) {
 }
 
 async function askAIAPI(question) {
-  const apiBase = window.location.hostname.includes('azurestaticapps.net') || window.location.hostname === 'rrroca.org'
-      ? ''
-      : 'https://zealous-wave-07c275a0f.7.azurestaticapps.net';
-    const response = await fetch(apiBase + '/api/chat', {
+  if (typeof fetch !== 'function') {
+    throw new Error('API unavailable');
+  }
+
+  await initializeBoardAwareness();
+
+  let boardContext;
+  if (isBoardMember(assistantState.boardUser)) {
+    const pendingMotions = await ensureBoardContext();
+    boardContext = {
+      pendingMotions: pendingMotions.map((motion) => ({
+        number: motion.number,
+        motionNumber: motion.motionNumber,
+        title: motion.title,
+        status: motion.status,
+        votesFor: motion.votesFor,
+        votesAgainst: motion.votesAgainst,
+        votesAbstain: motion.votesAbstain,
+        url: motion.url
+      }))
+    };
+  }
+
+  const response = await fetch(getApiBase() + '/api/chat', {
     method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       message: question,
       history: conversationHistory.slice(-6),
-    }),
+      boardContext
+    })
   });
 
   const data = await response.json();
@@ -349,10 +553,15 @@ function bindAssistantControls() {
   }
 }
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', bindAssistantControls);
-} else {
+function initializeAssistant() {
   bindAssistantControls();
+  initializeBoardAwareness().catch(() => {});
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeAssistant);
+} else {
+  initializeAssistant();
 }
 
 // Keyboard shortcut: Escape to close

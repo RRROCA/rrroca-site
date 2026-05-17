@@ -22,22 +22,18 @@ The Rocky Ridge Royal Oak Community Association is governed by a volunteer Board
 
 This is what transparent governance looks like. No backroom decisions. No lost meeting minutes. Every motion, every vote, every outcome — right here.
 
+### [📋 View Approved Decisions →](/board/decisions/)
+
+Every approved motion and its formal documents are permanently archived for community access.
 
 ---
 
 ### Board Members: How to Vote
 
-All voting happens on GitHub. Here is what to do:
+Board members sign in with their @rrroca.org Google account. Once signed in:
 
 1. **Click on a motion** from the list below
 2. **Click the "Vote on This Motion" button** (or "Second This Motion" if it needs a second)
-3. **You will land on the GitHub issue** — scroll to the original post at the top
-4. **React with an emoji:**
-   - Party popper (tada) = **Second this motion** (so voting can begin)
-   - Thumbs up = **For** (approve)
-   - Thumbs down = **Against** (reject)
-   - Confused face = **Abstain**
+3. **Cast your vote** — 👍 For, 👎 Against, or 😐 Abstain
 
-That is it. Votes update on this site automatically.
-
-**Need a GitHub account?** Sign up free at [github.com](https://github.com) using your @rrroca.org email. Takes 2 minutes.
+That is it. Votes update on this site automatically, and supporting documents are available directly from each motion page.
