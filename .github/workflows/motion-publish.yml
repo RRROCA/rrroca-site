@@ -163,12 +163,18 @@ jobs:
           git checkout -b "$BRANCH"
           git commit -m "Auto-publish motion from issue #${{ github.event.issue.number }}"
           git push origin "$BRANCH" --force
-          gh pr create --title "motion: publish #${{ github.event.issue.number }} — ${{ steps.parse.outputs.motion-number }}" \
-            --body "Auto-generated from issue #${{ github.event.issue.number }}. Motion ${{ steps.parse.outputs.motion-number }}." \
-            --base master --head "$BRANCH" --label "content-fix"
-          # Trigger CI for this branch (GITHUB_TOKEN PRs don't trigger other workflows)
+          # Create PR if one doesn't already exist
+          EXISTING_PR=$(gh pr list --head "$BRANCH" --json number --jq '.[0].number' 2>/dev/null || echo "")
+          if [ -z "$EXISTING_PR" ]; then
+            gh pr create --title "motion: publish #${{ github.event.issue.number }} — ${{ steps.parse.outputs.motion-number }}" \
+              --body "Auto-generated from issue #${{ github.event.issue.number }}. Motion ${{ steps.parse.outputs.motion-number }}." \
+              --base master --head "$BRANCH" --label "content-fix"
+          else
+            echo "PR #$EXISTING_PR already exists — force-push updated it"
+          fi
+          # Trigger CI (GITHUB_TOKEN PRs don't trigger other workflows)
           gh workflow run ci.yml --ref "$BRANCH" || true
-          gh pr merge "$BRANCH" --squash --auto --delete-branch
+          gh pr merge "$BRANCH" --squash --auto --delete-branch || echo "Auto-merge queued or already set"
 
       - name: Comment on issue with website link
         if: github.event.action == 'opened'
