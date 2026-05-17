@@ -1,6 +1,15 @@
 const fs = require('fs');
 const path = require('path');
 
+// --- CORS: Allow GitHub Pages and production domains ---
+const ALLOWED_ORIGINS = ['https://rrroca.github.io', 'https://rrroca.org', 'https://www.rrroca.org'];
+function getCorsHeaders(req) {
+  const origin = (req.headers && req.headers['origin']) || '';
+  return ALLOWED_ORIGINS.includes(origin)
+    ? { 'Access-Control-Allow-Origin': origin, 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' }
+    : {};
+}
+
 // Load knowledge base (built at deploy time)
 let knowledgeBase = null;
 const KB_PATH = path.join(__dirname, 'knowledge-base.json');
@@ -96,6 +105,14 @@ COMMUNITY KNOWLEDGE BASE:
 ${knowledgeBase ? knowledgeBase.pages.map(p => `## ${p.title} (${p.path})\n${p.content}`).join('\n\n') : 'Knowledge base not loaded.'}`;
 
 module.exports = async function (context, req) {
+  const corsHeaders = getCorsHeaders(req);
+
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    context.res = { status: 204, headers: corsHeaders };
+    return;
+  }
+
   const clientIp = req.headers['x-forwarded-for'] || req.headers['client-ip'] || 'unknown';
 
   // Rate limit check
@@ -104,6 +121,7 @@ module.exports = async function (context, req) {
     context.log.warn(`Rate limited: type=${limited}, ip=${clientIp}, dailyCount=${dailyCount}`);
     context.res = {
       status: 429,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       body: { error: 'Too many requests. Please try again later.', fallback: true }
     };
     return;
@@ -116,6 +134,7 @@ module.exports = async function (context, req) {
   if (!validation.valid) {
     context.res = {
       status: 400,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       body: { error: validation.reason, fallback: validation.reason.includes('RRROCA') }
     };
     return;
@@ -128,6 +147,7 @@ module.exports = async function (context, req) {
   if (!endpoint || !apiKey) {
     context.res = {
       status: 503,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       body: { error: 'AI service not configured', fallback: true }
     };
     return;
@@ -161,6 +181,7 @@ module.exports = async function (context, req) {
       context.log.error(`Azure OpenAI error: ${response.status} ${errBody}`);
       context.res = {
         status: 502,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         body: { error: 'AI service error', fallback: true }
       };
       return;
@@ -171,7 +192,7 @@ module.exports = async function (context, req) {
 
     context.res = {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       body: {
         reply,
         usage: {
@@ -184,7 +205,9 @@ module.exports = async function (context, req) {
     context.log.error(`Chat function error: ${err.message}`);
     context.res = {
       status: 500,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       body: { error: 'Internal error', fallback: true }
     };
   }
 };
+
