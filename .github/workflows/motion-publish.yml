@@ -83,7 +83,7 @@ jobs:
             const reactions = issue.reactions || {};
             const votesFor = reactions['+1'] || 0;
             const votesAgainst = reactions['-1'] || 0;
-            const votesAbstain = reactions['confused'] || 0; // 😕 as abstain fallback
+            const votesAbstain = reactions['confused'] || 0; // GitHub's confused reaction maps to abstain
 
             // Build front matter
             let frontMatter = `---
@@ -205,6 +205,8 @@ jobs:
             - 👍 = **For** (approve the motion)
             - 👎 = **Against** (reject the motion)
             - 😐 = **Abstain**
+
+            For **Abstain**, use the 😕 reaction (confused face emoji).
 
             Votes are tracked automatically. When voting closes, the result will be published on the website.
 
