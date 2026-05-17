@@ -1,0 +1,211 @@
+{{ define "main" }}
+<section class="page-header page-header--board">
+  <div class="container">
+    <div class="page-breadcrumb">
+      <a href="{{ "" | absURL }}">Home</a> ·
+      <a href="{{ "board/" | absURL }}">Board Governance</a> ·
+      <span>{{ .Title }}</span>
+    </div>
+    <h1>⚖️ {{ .Title }}</h1>
+    <p class="page-description">
+      {{ with .Description }}{{ . }}{{ else }}Propose motions, second motions, and vote from one simple board-friendly workflow.{{ end }}
+    </p>
+    <div class="motion-summary-bar">
+      <div class="motion-summary-stats">
+        <span class="motion-summary-stat motion-summary-stat--active"><strong>3 steps</strong> Propose, second, vote</span>
+        <span class="motion-summary-stat"><strong>@rrroca.org</strong> Board email required</span>
+        <span class="motion-summary-stat"><strong>GitHub-free</strong> Board workflow</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container content-layout content-layout--immersive board-action-layout">
+    <div class="content-main">
+      {{ with .Content }}
+      <div class="article-content motion-intro">
+        {{ . }}
+      </div>
+      {{ end }}
+
+      <div class="board-wizard" data-board-wizard data-swa-origin="https://zealous-wave-07c275a0f.7.azurestaticapps.net">
+        <div class="board-wizard-tabs" role="tablist" aria-label="Board action center">
+          <button type="button" class="board-wizard-tab is-active" role="tab" aria-selected="true" aria-controls="board-tab-propose" id="board-tab-trigger-propose" data-tab-trigger="propose">1. Propose a Motion</button>
+          <button type="button" class="board-wizard-tab" role="tab" aria-selected="false" aria-controls="board-tab-second" id="board-tab-trigger-second" data-tab-trigger="second">2. Second a Motion</button>
+          <button type="button" class="board-wizard-tab" role="tab" aria-selected="false" aria-controls="board-tab-vote" id="board-tab-trigger-vote" data-tab-trigger="vote">3. Vote</button>
+        </div>
+
+        <div class="board-wizard-status form-status" data-global-status aria-live="polite"></div>
+
+        <section class="board-wizard-panel is-active" id="board-tab-propose" role="tabpanel" aria-labelledby="board-tab-trigger-propose" data-tab-panel="propose">
+          <div class="board-wizard-lead">
+            <h2>Propose a new motion</h2>
+            <p>Tell the board what needs approval, why it matters, and when you need a decision. We will format it into a formal motion automatically.</p>
+          </div>
+
+          <div class="board-wizard-grid">
+            <form class="rr-form board-wizard-form" data-motion-form="propose" novalidate>
+              <div class="rr-field">
+                <label for="motion-text">What do you want the board to approve?</label>
+                <textarea id="motion-text" name="motionText" required data-label="What you want the board to approve"></textarea>
+                <p class="field-error" aria-live="polite"></p>
+              </div>
+
+              <div class="rr-field">
+                <label for="motion-background">Why is this needed?</label>
+                <textarea id="motion-background" name="background" required data-label="Why this is needed"></textarea>
+                <p class="field-error" aria-live="polite"></p>
+              </div>
+
+              <div class="rr-form-group board-toggle-group" data-spending-toggle>
+                <p class="board-toggle-label">Does this involve spending money?</p>
+                <div class="board-toggle-options" role="group" aria-label="Does this involve spending money?">
+                  <button type="button" class="board-toggle-option is-active" data-spending-option="no" aria-pressed="true">No</button>
+                  <button type="button" class="board-toggle-option" data-spending-option="yes" aria-pressed="false">Yes</button>
+                </div>
+                <input type="hidden" name="spending" value="no">
+              </div>
+
+              <div class="rr-field board-wizard-hidden" data-amount-wrapper>
+                <label for="motion-amount">How much?</label>
+                <input id="motion-amount" name="amount" type="number" min="0" step="0.01" inputmode="decimal" data-label="Amount">
+                <p class="field-error" aria-live="polite"></p>
+              </div>
+
+              <div class="rr-form-grid">
+                <div class="rr-field">
+                  <label for="motion-category">Which area does this fall under?</label>
+                  <select id="motion-category" name="category" required data-label="Area">
+                    <option value="">Choose one</option>
+                    <option value="Events">Events</option>
+                    <option value="Safety">Safety</option>
+                    <option value="Communications">Communications</option>
+                    <option value="Facilities">Facilities</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Other">Other</option>
+                  </select>
+                  <p class="field-error" aria-live="polite"></p>
+                </div>
+
+                <div class="rr-field">
+                  <label for="motion-deadline">When do you need a decision by?</label>
+                  <input id="motion-deadline" name="deadline" type="date" data-label="Decision date">
+                  <p class="field-error" aria-live="polite"></p>
+                </div>
+              </div>
+
+              <div class="rr-field">
+                <label for="motion-portfolio">Portfolio or lead director <span class="form-optional">(optional)</span></label>
+                <input id="motion-portfolio" name="portfolio" type="text" maxlength="120" placeholder="Example: Events Director">
+                <p class="field-error" aria-live="polite"></p>
+              </div>
+
+              <div class="rr-field">
+                <label for="motion-supporting-docs">Any supporting links or documents? <span class="form-optional">(optional)</span></label>
+                <textarea id="motion-supporting-docs" name="supportingDocs" placeholder="Paste links, Google Drive items, SharePoint links, or short notes."></textarea>
+                <p class="field-error" aria-live="polite"></p>
+              </div>
+
+              <div class="rr-form-grid">
+                <div class="rr-field">
+                  <label for="proposer-name">Your name</label>
+                  <input id="proposer-name" name="proposerName" type="text" required data-label="Your name">
+                  <p class="field-error" aria-live="polite"></p>
+                </div>
+
+                <div class="rr-field">
+                  <label for="proposer-email">Your @rrroca.org email</label>
+                  <input id="proposer-email" name="proposerEmail" type="email" required pattern=".+@rrroca\.org$" data-label="Your @rrroca.org email">
+                  <p class="field-error" aria-live="polite"></p>
+                </div>
+              </div>
+
+              <div class="form-status" data-form-status aria-live="polite"></div>
+              <button type="submit" class="btn btn-primary rr-form-submit" data-submit-label="Publish motion">Publish motion</button>
+            </form>
+
+            <aside class="board-wizard-preview">
+              <p class="board-wizard-preview-label">Preview</p>
+              <h2>Formal motion text</h2>
+              <div class="board-wizard-preview-body" data-motion-preview>
+                <p>Your formal motion preview updates as you type.</p>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="board-wizard-panel" id="board-tab-second" role="tabpanel" aria-labelledby="board-tab-trigger-second" data-tab-panel="second" hidden>
+          <div class="board-wizard-lead">
+            <h2>Second a pending motion</h2>
+            <p>Add your second to open voting. Pending motions appear automatically as soon as they are submitted.</p>
+          </div>
+
+          <div class="board-wizard-toolbar">
+            <div class="rr-form-grid">
+              <div class="rr-field">
+                <label for="seconder-name">Your name</label>
+                <input id="seconder-name" data-actor-name="second" type="text">
+                <p class="field-error" aria-live="polite"></p>
+              </div>
+              <div class="rr-field">
+                <label for="seconder-email">Your @rrroca.org email</label>
+                <input id="seconder-email" data-actor-email="second" type="email" pattern=".+@rrroca\.org$">
+                <p class="field-error" aria-live="polite"></p>
+              </div>
+            </div>
+            <p class="form-help">Use your RRROCA board email to record the second.</p>
+          </div>
+
+          <div class="board-wizard-list" data-motion-list="second" aria-live="polite">
+            <p class="board-wizard-empty">Loading pending motions…</p>
+          </div>
+        </section>
+
+        <section class="board-wizard-panel" id="board-tab-vote" role="tabpanel" aria-labelledby="board-tab-trigger-vote" data-tab-panel="vote" hidden>
+          <div class="board-wizard-lead">
+            <h2>Vote on open motions</h2>
+            <p>Cast your vote in plain language. Tally cards update whenever this page refreshes motion data.</p>
+          </div>
+
+          <div class="board-wizard-toolbar">
+            <div class="rr-form-grid">
+              <div class="rr-field">
+                <label for="voter-name">Your name</label>
+                <input id="voter-name" data-actor-name="vote" type="text">
+                <p class="field-error" aria-live="polite"></p>
+              </div>
+              <div class="rr-field">
+                <label for="voter-email">Your @rrroca.org email</label>
+                <input id="voter-email" data-actor-email="vote" type="email" pattern=".+@rrroca\.org$">
+                <p class="field-error" aria-live="polite"></p>
+              </div>
+            </div>
+            <p class="form-help">Choose one vote per motion: For, Against, or Abstain.</p>
+          </div>
+
+          <div class="board-wizard-list" data-motion-list="vote" aria-live="polite">
+            <p class="board-wizard-empty">Loading motions open for voting…</p>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <aside class="content-sidebar">
+      <div class="board-action-sidebar">
+        <h2>How this works</h2>
+        <ol>
+          <li>Publish a motion in plain language.</li>
+          <li>A second opens the motion for voting.</li>
+          <li>Votes are written into the RRROCA governance record.</li>
+        </ol>
+        <p>This page writes to the existing GitHub-backed motion workflow, but it keeps the experience friendly for board members who do not use GitHub directly.</p>
+        <p class="board-action-sidebar-note"><strong>Admin setup:</strong> configure the Azure Static Web App application setting <code>GITHUB_TOKEN</code> so the motion API can create issues and comments.</p>
+        <a href="{{ "board/" | absURL }}" class="btn btn-secondary btn-sm">View Governance Page</a>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<script src="{{ "js/board-wizard.js" | absURL }}" defer></script>
+{{ end }}
