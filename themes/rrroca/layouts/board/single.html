@@ -161,6 +161,46 @@
         {{ end }}
       </div>
 
+      <!-- Approved Document Badge (post-approval) -->
+      {{ if or (eq (lower $status) "approved") (eq (lower $status) "passed") }}
+      {{ with .Params.approved_document }}
+      <div class="motion-approved-document">
+        <div class="approved-document-badge">
+          <span class="approved-doc-icon">📄</span>
+          <div class="approved-doc-info">
+            <strong>Adopted Document</strong>
+            <p>This is the formal document approved by the Board of Directors.</p>
+          </div>
+          <a href="{{ . | absURL }}" class="btn btn-primary" target="_blank" rel="noopener">
+            Download PDF
+          </a>
+        </div>
+      </div>
+      {{ end }}
+      {{ end }}
+
+      <!-- Supporting Documents -->
+      {{ with .Params.documents }}
+      <div class="motion-documents-panel">
+        <h2 class="motion-detail-heading">📎 Supporting Documents</h2>
+        <div class="motion-documents-list">
+          {{ range . }}
+          <div class="motion-document-item">
+            {{ $isExternal := or (hasPrefix .url "http://") (hasPrefix .url "https://") }}
+            <a href="{{ if $isExternal }}{{ .url }}{{ else }}{{ .url | absURL }}{{ end }}" 
+               class="motion-document-link"
+               {{ if $isExternal }}target="_blank" rel="noopener"{{ end }}>
+              <span class="doc-icon">{{ if eq .type "pdf" }}📄{{ else if eq .type "docx" }}📝{{ else if eq .type "md" }}📋{{ else }}📎{{ end }}</span>
+              <span class="doc-name">{{ .title }}</span>
+              {{ with .type }}<span class="doc-type-badge">{{ upper . }}</span>{{ end }}
+            </a>
+            {{ with .description }}<p class="doc-description">{{ . }}</p>{{ end }}
+          </div>
+          {{ end }}
+        </div>
+      </div>
+      {{ end }}
+
       <!-- Motion Body -->
       <div class="motion-body">
         {{ .Content }}

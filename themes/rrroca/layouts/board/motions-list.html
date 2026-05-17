@@ -68,6 +68,11 @@
               <span class="motion-meta-item">
                 👤 {{ .Params.proposed_by | default (.Params.mover | default "Unknown") }}
               </span>
+              {{ with .Params.documents }}
+              <span class="motion-meta-item">
+                📎 {{ len . }} document{{ if gt (len .) 1 }}s{{ end }}
+              </span>
+              {{ end }}
               {{ with .Params.deadline }}
               <span class="motion-meta-item motion-meta-item--deadline">
                 ⏰ Vote by {{ time . | dateFormat "Jan 2, 2006" }}

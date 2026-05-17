@@ -12,6 +12,24 @@ github_pr: ""
 categories:
   - governance
   - strategy
+documents:
+  - title: "Integrated Technology Strategy (2025–2028)"
+    url: "https://github.com/RRROCA/rrroca-site/blob/master/docs/RRROCA%20Integrated%20Technology%20Strategy%202025-2028.docx"
+    type: "docx"
+    description: "The full board-ready strategy document covering 11 technology domains."
+  - title: "Technology Domain Evaluation"
+    url: "https://github.com/RRROCA/rrroca-site/blob/master/docs/strategic-evaluation.md"
+    type: "md"
+    description: "Detailed evaluation of all 11 technology domains against 9 architecture principles."
+  - title: "Architecture Principles & Decision Framework"
+    url: "https://github.com/RRROCA/rrroca-site/blob/master/docs/architecture-principles.md"
+    type: "md"
+    description: "The 9 principles derived from RRROCA's Strategic and Business Plans, plus the 10-question decision gauntlet."
+  - title: "User Experience Journeys"
+    url: "https://github.com/RRROCA/rrroca-site/blob/master/docs/user-journeys.md"
+    type: "md"
+    description: "How community members, board members, and maintainers interact with RRROCA's digital tools."
+approved_document: ""
 draft: false
 ---
 
@@ -45,12 +63,6 @@ With an adopted strategy:
 - The board has already agreed on *what matters* (the 9 principles)
 - Individual decisions are faster because the evaluation criteria are pre-established
 - Operational improvements (newsletter, cybersecurity, social media) can proceed under portfolio authority without consuming board meeting time
-
-## Supporting Documents
-
-- [Integrated Technology Strategy (PDF/DOCX)](https://github.com/RRROCA/rrroca-site/blob/master/docs/RRROCA%20Integrated%20Technology%20Strategy%202025-2028.docx) — board-ready strategy document
-- [Technology Domain Evaluation](https://github.com/RRROCA/rrroca-site/blob/master/docs/strategic-evaluation.md) — the full 11-domain evaluation
-- [Architecture Principles](https://github.com/RRROCA/rrroca-site/blob/master/docs/architecture-principles.md) — the 9 principles and decision framework
 
 ## Financial Impact
 

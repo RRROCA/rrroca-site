@@ -2,7 +2,8 @@ const crypto = require('crypto');
 
 const GITHUB_OWNER = 'RRROCA';
 const GITHUB_REPO = 'rrroca-site';
-const BOARD_TEAM_MENTION = '@RRROCA/board';
+// Notification delivery handled by GitHub Actions workflow (board-notify.yml)
+// which emails board@rrroca.org when issues/comments are created.
 const MOTION_LABEL = 'motion';
 const AWAITING_SECOND_LABEL = 'awaiting-second';
 const OPEN_FOR_VOTE_LABEL = 'open-for-vote';
@@ -492,7 +493,7 @@ function buildIssueBody(payload, user) {
     '',
     '---',
     '',
-    `📢 ${BOARD_TEAM_MENTION} — a new motion has been submitted and needs a **second** before voting can begin.`,
+    `📋 This motion needs a **second** before voting can begin.`,
     '',
     '👉 **[Open the Board Action Center to second this motion](https://rrroca.org/board/actions/)**',
     '',
@@ -514,7 +515,7 @@ function buildSecondComment(user) {
     recordedAt: new Date().toISOString()
   };
 
-  return `✅ **Seconded by ${displayName}** (${user.email}).\n\n📢 ${BOARD_TEAM_MENTION} — this motion is now **open for voting**.\n\n👉 **[Open the Board Action Center to vote](https://rrroca.org/board/actions/)**\n\n<!-- RRROCA_MOTION_EVENT: ${JSON.stringify(event)} -->`;
+  return `✅ **Seconded by ${displayName}** (${user.email}).\n\nThis motion is now **open for voting**.\n\n👉 **[Open the Board Action Center to vote](https://rrroca.org/board/actions/)**\n\n<!-- RRROCA_MOTION_EVENT: ${JSON.stringify(event)} -->`;
 }
 
 function buildVoteComment(user, vote) {

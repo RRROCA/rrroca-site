@@ -336,6 +336,56 @@ When evaluating any new service, tool, or feature for the RRROCA site, run it th
 
 **Recommended:** Defer online payments. Current `mailto:` approach works fine for a CA. When ready: Stripe Checkout (no monthly fee, embedded on the membership page). Keep cheque/e-transfer as permanent fallback.
 
+### Board Identity & Authentication
+
+| Principle | Implication |
+|-----------|------------|
+| P0 (Community First) | Faster board governance → better outcomes for residents |
+| P1 (Survive turnover) | New board members sign in with their existing @rrroca.org email — zero onboarding |
+| P2 (Zero cost) | Azure SWA built-in auth is free. No per-user licensing. |
+| P4 (Progressive skill) | "Sign in with Google" — one click, no training required |
+| P5 (Security by elimination) | Azure SWA handles OAuth — no custom auth code, no password storage |
+| P7 (Portability) | Swap Google → Microsoft Entra ID with one config change when/if @rrroca.org migrates |
+
+**Decided:** Google OAuth via Azure Static Web Apps built-in authentication. Board members authenticate with their existing @rrroca.org Google Workspace accounts. Authorization enforced in the API by verifying `@rrroca.org` email domain from the `x-ms-client-principal` header.
+
+**Decision gauntlet (May 2026):** Evaluated three options — (A) Google OAuth + direct email notifications, (B) GitHub Enterprise SSO ($168/month — rejected, fails P2), (C) simple GitHub accounts for board members (rejected, fails P4 — onboarding friction for non-technical volunteers). Option A passes all 10 checks with zero hard fails.
+
+**Migration path:** When/if RRROCA moves from Google Workspace to Microsoft 365, change `auth.identityProviders.google` to `auth.identityProviders.azureActiveDirectory` in `staticwebapp.config.json`. Board members experience zero change — same @rrroca.org email, same sign-in flow.
+
+### Board Notifications
+
+| Principle | Implication |
+|-----------|------------|
+| P2 (Zero cost) | GitHub Actions is free for public repos. Google Group included in Workspace. |
+| P3 (Minimal maintenance) | Self-contained workflow triggers on issue events. Board membership managed in Google Groups. |
+| P5 (Security by elimination) | No email API keys in application code. SMTP secrets in GitHub repository secrets. |
+| P6 (Graceful degradation) | If email fails → Board Action Center page and AI assistant still show all pending motions. |
+| P7 (Portability) | Google Group today → M365 Group tomorrow. SMTP is standard protocol. |
+
+**Decided:** GitHub Actions workflow (`board-notify.yml`) sends email to `board@rrroca.org` (Google Group) when motions are proposed, seconded, or voted on. The workflow triggers on GitHub Issue events with the `motion` label. Board members receive email, click a link to `rrroca.org/board/actions/`, sign in, and act.
+
+**Why not GitHub @mentions:** Requires board members to have GitHub accounts (fails P4 — onboarding friction). Why not SendGrid/ACS in the Azure Function: adds API keys to the app (fails P5 — unnecessary attack surface). GitHub Actions + Google Group is zero new infrastructure — both already exist.
+
+### AI Community Assistant (Chatbot)
+
+| Principle | Implication |
+|-----------|------------|
+| P0 (Community First) | Residents get instant answers. Board members get a "board secretary." |
+| P2 (Zero cost) | Azure OpenAI via existing Azure subscription. No per-query cost at CA volume. |
+| P3 (Minimal maintenance) | System prompt is text. Knowledge base auto-builds from site content. |
+| P4 (Progressive skill) | Conversational interface — the most accessible possible UI |
+| P5 (Security by elimination) | Strict system prompt guardrails. Board features gated by auth. |
+| P6 (Graceful degradation) | If chatbot fails → search bar, navigation, and static pages still work |
+| P7 (Portability) | System prompt is plain text. Swappable to any LLM provider. |
+
+**Decided:** Single chatbot with progressive capabilities based on authentication state:
+
+- **Public visitors:** Community Q&A from site knowledge base. Events, safety, programs, facilities.
+- **Authenticated board members:** All public capabilities PLUS board context — pending motions, vote status, meeting awareness. Can help draft motions and communications. Directs to Board Action Center for official actions (propose/second/vote).
+
+**Note:** This supersedes the earlier anti-pattern "Don't build an AI chatbot." The original concern was valid (paid chatbot services at $50-100/month violate P2 and P6). The implementation uses Azure OpenAI at zero incremental cost on the existing Azure subscription, with graceful degradation to static content if the service is unavailable. The chatbot is an enhancement layer, never a dependency.
+
 ---
 
 ## AI Tooling Strategy
@@ -406,7 +456,7 @@ Board operations (meetings, motions, communications, partner coordination) are S
 
 | Anti-Pattern | Why It's Wrong | What To Do Instead |
 |---|---|---|
-| **"Build an AI chatbot for the website"** | $50-100/month (violates P2), breaks when subscription lapses (violates P6), requires prompt engineering maintenance (violates P3) | Static FAQ page + good search. AI assists the volunteer writing content, not the resident reading it. |
+| **~~"Build an AI chatbot"~~** | ~~$50-100/month (violates P2), breaks when subscription lapses (violates P6), requires prompt engineering maintenance (violates P3)~~ | **UPDATE (May 2026):** Implemented at zero incremental cost using Azure OpenAI on the existing Azure subscription. Graceful degradation to static FAQ + search if AI is unavailable. Board-aware capabilities gated by authentication. See [AI Community Assistant](#ai-community-assistant-chatbot) guidance above. |
 | **"Use AI to auto-generate content"** | Hallucination risk for safety-critical content (crime stats, emergency contacts), community trust issue | AI drafts, human reviews. Never auto-publish AI content without board member approval. |
 | **"Choose the platform with the best AI features"** | AI features in managed platforms are vendor lock-in (violates P7) and add cost as features mature past free tiers (violates P2) | Choose the platform AI tools can WORK WITH (text-based, standard, open), not the one WITH AI built in. |
 | **"AI replaces the need for documentation"** | AI tools are better with context; documentation makes AI MORE effective, not less | Document decisions (P8) — AI reads docs and gives better answers. Undocumented systems = bad AI output. |
@@ -425,7 +475,7 @@ Board operations (meetings, motions, communications, partner coordination) are S
 | **"Optimize for power users"** | Power users are rare and temporary in volunteer orgs | Optimize for the least technical board member first, then add power-user paths |
 | **"This tool is better technically"** | Technical superiority doesn't matter if volunteers can't use or maintain it | Choose boring, proven, well-documented tools over cutting-edge ones |
 | **"One platform for everything"** | Forces bad trade-offs — what's best for 20K residents (website) ≠ what's best for 20 board members (ops) | Decouple website from board ops. Optimize each for its audience. Connect via content, not platform. |
-| **"Build an AI chatbot"** | $50-100/month (violates P2), breaks when subscription lapses (violates P6), requires prompt engineering (violates P3) | Static FAQ + good search. AI assists volunteers writing content, not residents reading it. |
+| **~~"Build an AI chatbot"~~** | ~~$50-100/month (violates P2), breaks when subscription lapses (violates P6), requires prompt engineering (violates P3)~~ | **Superseded.** Implemented at zero cost via Azure OpenAI. See [Applied Guidance](#ai-community-assistant-chatbot). |
 | **"AI will handle it"** | AI-generated content without review = hallucination risk, especially for safety-critical info | AI drafts, humans approve. AI assists volunteers, doesn't replace governance. |
 | **"Choose the platform with the best AI"** | AI features in managed platforms are vendor lock-in (P7) and add cost past free tiers (P2) | Choose the platform AI tools can WORK WITH (text-based, open), not the one WITH AI built in. |
 

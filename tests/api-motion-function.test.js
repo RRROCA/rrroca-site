@@ -126,8 +126,9 @@ describe('api/motion security hardening', () => {
     expect(requestBody.body).toContain('@​rrroca/board');
     expect(requestBody.body).not.toContain('<script>alert(1)</script>');
     expect(requestBody.body).toContain('RRROCA_MOTION_META');
-    // The trusted @RRROCA/board mention should be present (not sanitized)
-    expect(requestBody.body).toContain('@RRROCA/board');
+    // The @RRROCA/board mention has been removed — notifications are now handled by
+    // GitHub Actions workflow (board-notify.yml) which emails board@rrroca.org
+    expect(requestBody.body).not.toContain('@RRROCA/board');
   });
 
   test('rate limits write requests by trusted client IP instead of x-forwarded-for', async () => {

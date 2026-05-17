@@ -4,107 +4,87 @@
 
 ---
 
-## Your Two Tools
+## Your Tools
 
 | Tool | What it's for | How to access |
 |------|---------------|---------------|
+| **Board Action Center** | Propose, second & vote on board motions | [rrroca.org/board/actions/](https://rrroca.org/board/actions/) |
+| **AI Assistant** | Ask questions, check motion status, draft communications | Chat icon on any page (sign in for board features) |
 | **CMS** (Content Management System) | Edit website content — news, events, board bios, safety pages | [rrroca.github.io/rrroca-site/admin/](https://rrroca.github.io/rrroca-site/admin/) |
-| **GitHub Issues** | Report bugs, propose & vote on board motions | [github.com/RRROCA/rrroca-site/issues](https://github.com/RRROCA/rrroca-site/issues) |
-
-**Simple rule:** If you're *editing content*, use the CMS. If you're *reporting a problem* or *proposing a motion*, use GitHub Issues.
 
 ---
 
 ## Getting Started
 
-### 1. Create a GitHub Account (one-time)
+### Sign in with your @rrroca.org Google account
 
-1. Go to [github.com/join](https://github.com/join)
-2. Sign up with your email — it's free
-3. Tell the Safety & Technology Director your GitHub username so they can add you as a collaborator
+1. Go to **[rrroca.org/board/actions/](https://rrroca.org/board/actions/)**
+2. Click **"Sign in with Google"**
+3. Use your **@rrroca.org email** — the same one you use for board email
+4. That's it — you're authenticated. No new accounts to create.
 
-That's it. This one account works for both the CMS and GitHub Issues.
-
----
-
-## Using the CMS (Content Editing)
-
-### Signing In
-
-1. Go to **[rrroca.github.io/rrroca-site/admin/](https://rrroca.github.io/rrroca-site/admin/)**
-2. Click **"Sign in with GitHub"**
-3. Authorize the app if prompted
-4. You're in!
-
-### Creating a News Article
-
-1. Click **News** in the left sidebar
-2. Click **New News** at the top
-3. Fill in the fields:
-   - **Title** — headline for the article
-   - **Date** — when to publish
-   - **Description** — one-sentence summary (appears in previews)
-   - **Body** — the full article text (use the toolbar to add bold, links, images)
-4. Set **Draft** to `false` when ready to publish
-5. Click **Save** — it goes live within 2 minutes
-
-### Creating an Event
-
-1. Click **Events** in the left sidebar
-2. Click **New Events**
-3. Fill in: Title, Start Date & Time, End Date & Time, Location (venue name), Address (full address with postal code), Description
-4. Click **Save**
-
-### Editing Board Member Bios
-
-1. Click **Board Members** in the left sidebar
-2. Click the person's name
-3. Edit their bio or details
-4. Click **Save**
-
-### Tips
-
-- Changes go live automatically within ~2 minutes
-- You can save a draft and come back later
-- If you make a mistake, the Safety & Technology Director can revert it
-- Images can be uploaded directly — the CMS handles file placement
+**Note:** The CMS (for editing website content) uses a separate GitHub login. Most board members won't need the CMS — it's for the Communications Chair and content editors. If you need CMS access, the Safety & Technology Director will set it up.
 
 ---
 
-## Using GitHub Issues
+## Board Actions (Motions)
 
-### Reporting a Bug
+### How you'll be notified
 
-1. Go to [New Bug Report](https://github.com/RRROCA/rrroca-site/issues/new?template=bug-report.yml)
-2. Fill in:
-   - **What happened?** — describe the problem
-   - **What page were you on?** — the URL or page name
-   - **Browser/device** — select from the dropdown
-   - **Screenshot** — drag and drop an image (optional but helpful)
-3. Click **Submit new issue**
+When a motion is proposed, seconded, or voted on, you'll get an email at your @rrroca.org address. The email includes:
+- What happened (new motion, second, vote)
+- A direct link to the Board Action Center
 
-### Proposing a Board Motion
+**Just click the link, sign in, and act.** You never need to visit GitHub.
 
-1. Go to [New Board Motion](https://github.com/RRROCA/rrroca-site/issues/new?template=board-motion.yml)
-2. Fill in:
-   - **Motion title** — e.g., "Motion 2026-003: Approve Park Upgrades"
-   - **Proposed by** — your name and role
-   - **Motion text** — the formal text (start with "BE IT RESOLVED THAT...")
-   - **Rationale** — why is this motion needed?
+### Proposing a Motion
+
+1. Go to the **[Board Action Center](https://rrroca.org/board/actions/)**
+2. Sign in with Google (if not already signed in)
+3. Fill in the motion form:
+   - **Title** — e.g., "Approve playground fence repair"
+   - **Motion text** — the formal resolution
+   - **Background** — why this is needed
    - **Financial impact** — "$0" or describe costs
-3. Click **Submit new issue**
+4. Click **Submit**
+
+**Or ask the AI Assistant:** Open the chat and say *"I want to propose a motion about playground fence repair"* — it will help you draft it.
+
+### Seconding a Motion
+
+1. Click the link in your notification email (or visit the Board Action Center)
+2. Sign in with Google
+3. Find the motion marked "Awaiting Second"
+4. Click **Second**
 
 ### Voting on a Motion
 
-1. Go to the motion issue (you'll get a link via email or in the meeting)
-2. Scroll to the bottom of the issue description
-3. Click the emoji reaction button (smiley face icon):
-   - 👍 = **Vote FOR**
-   - 👎 = **Vote AGAINST**
-   - 👀 = **ABSTAIN**
-4. Add a comment if you want to explain your vote or discuss
+1. Click the link in your notification email (or visit the Board Action Center)
+2. Sign in with Google
+3. Find the motion marked "Open for Voting"
+4. Click **For**, **Against**, or **Abstain**
 
-The President will close the issue and record the result once voting is complete.
+### Checking Motion Status
+
+Open the AI Assistant (chat icon) while signed in and ask:
+- *"What motions are pending?"*
+- *"How many votes does the technology strategy motion have?"*
+- *"What needs my attention?"*
+
+---
+
+## AI Assistant (Your Board Secretary)
+
+When you're signed in with your @rrroca.org account, the AI assistant knows you're a board member and can help with:
+
+- **Motion status** — "What motions are pending my vote?"
+- **Board process** — "How does the seconding process work?"
+- **Drafting help** — "Help me draft a motion about..."
+- **Communications** — "Draft an email to residents about the parking bylaw change"
+
+The assistant also proactively tells you when you have pending items: *"Welcome back, Sarah. You have 1 motion pending your vote."*
+
+**Important:** Official actions (propose, second, vote) happen through the Board Action Center, not through chat. The assistant helps you prepare and informs you — the Action Center is where you act.
 
 ---
 
@@ -112,16 +92,17 @@ The President will close the issue and record the result once voting is complete
 
 These things are handled automatically — you never need to touch them:
 
-- **Pull requests** — the system handles code changes
-- **Branches** — content goes directly to the live site
-- **Git commands** — everything is done through the web interface
-- **HTML/CSS/code** — the CMS handles formatting
-- **Deployment** — changes go live automatically after saving
+- **GitHub** — motions are stored there but you never visit it
+- **Pull requests, branches, Git** — invisible infrastructure
+- **HTML/CSS/code** — the CMS and chat handle everything
+- **Deployment** — changes go live automatically
+- **Email notifications** — sent automatically when motions are created or updated
 
 ---
 
 ## Need Help?
 
-- **Website issues:** [File a bug report](https://github.com/RRROCA/rrroca-site/issues/new?template=bug-report.yml)
+- **Board actions:** Open the AI Assistant and ask — it knows board process
+- **Website content issues:** [File a bug report](https://github.com/RRROCA/rrroca-site/issues/new?template=bug-report.yml) (requires GitHub account — ask the Safety & Technology Director)
 - **CMS questions:** Contact the Safety & Technology Director
-- **Can't sign in:** Make sure you've been added as a collaborator — contact the Safety & Technology Director with your GitHub username
+- **Can't sign in:** Make sure you're using your @rrroca.org Google account. Contact the Safety & Technology Director if you still have trouble.
