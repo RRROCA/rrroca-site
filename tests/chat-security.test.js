@@ -207,3 +207,71 @@ describe('Error Handling', () => {
     expect(ctx.res.body.fallback).toBe(true);
   });
 });
+
+describe('CORS headers', () => {
+  const allowedOrigin = ['https://', 'rrroca.github.io'].join('');
+
+  test('returns CORS headers for allowed origins', async () => {
+    const ctx = createContext();
+    mockSuccessResponse('Hello!');
+    const req = {
+      method: 'POST',
+      headers: { origin: allowedOrigin, 'x-forwarded-for': '10.0.0.60' },
+      body: { message: 'hi' }
+    };
+
+    await chatFunction(ctx, req);
+
+    expect(ctx.res.status).toBe(200);
+    expect(ctx.res.headers['Access-Control-Allow-Origin']).toBe(allowedOrigin);
+    expect(ctx.res.headers['Access-Control-Allow-Methods']).toBe('POST, OPTIONS');
+    expect(ctx.res.headers['Access-Control-Allow-Headers']).toBe('Content-Type');
+  });
+
+  test('does not return CORS headers for disallowed origins', async () => {
+    const ctx = createContext();
+    mockSuccessResponse('Hello!');
+    const req = {
+      method: 'POST',
+      headers: { origin: 'https://evil.com', 'x-forwarded-for': '10.0.0.51' },
+      body: { message: 'hi' }
+    };
+
+    await chatFunction(ctx, req);
+
+    expect(ctx.res.status).toBe(200);
+    expect(ctx.res.headers['Access-Control-Allow-Origin']).toBeUndefined();
+    expect(ctx.res.headers['Access-Control-Allow-Methods']).toBeUndefined();
+  });
+
+  test('handles OPTIONS preflight with CORS headers for allowed origins', async () => {
+    const ctx = createContext();
+    const req = {
+      method: 'OPTIONS',
+      headers: { origin: allowedOrigin },
+      body: {}
+    };
+
+    await chatFunction(ctx, req);
+
+    expect(ctx.res.status).toBe(204);
+    expect(ctx.res.headers['Access-Control-Allow-Origin']).toBe(allowedOrigin);
+    expect(ctx.res.headers['Access-Control-Allow-Methods']).toBe('POST, OPTIONS');
+  });
+
+  test('does not return CORS headers when origin header is missing', async () => {
+    const ctx = createContext();
+    mockSuccessResponse('Hello!');
+    const req = {
+      method: 'POST',
+      headers: { 'x-forwarded-for': '10.0.0.52' },
+      body: { message: 'hi' }
+    };
+
+    await chatFunction(ctx, req);
+
+    expect(ctx.res.status).toBe(200);
+    expect(ctx.res.headers['Access-Control-Allow-Origin']).toBeUndefined();
+    expect(ctx.res.headers['Access-Control-Allow-Methods']).toBeUndefined();
+  });
+});
