@@ -30,7 +30,7 @@
       const reactions = issue.reactions || {};
       const votesFor = reactions['+1'] || 0;
       const votesAgainst = reactions['-1'] || 0;
-      const votesAbstain = reactions['confused'] || 0;
+      const votesAbstain = reactions.confused || 0;
       const total = votesFor + votesAgainst + votesAbstain;
 
       // Update vote counts
