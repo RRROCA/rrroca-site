@@ -126,6 +126,7 @@ Board members can manage motions, second pending items, and vote through the Boa
 
 👉 [Board Action Center →](/board/actions/)
 📘 [Board Governance →](/board/)`
+  },
   volunteer: {
     keywords: ['volunteer', 'help', 'contribute', 'board', 'committee', 'give back'],
     response: `🤝 **Volunteer with RRROCA!**
@@ -379,3 +380,4 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
