@@ -37,12 +37,14 @@ jobs:
             const docsOnly = files.every(f =>
               f.name.startsWith('docs/') ||
               f.name.startsWith('.github/') ||
+              f.name.startsWith('content/') ||
+              f.name.startsWith('static/images/') ||
               f.name === 'README.md' ||
               f.name === 'package.json' ||
               f.name === 'package-lock.json'
             );
             if (docsOnly) {
-              console.log('Docs/config only — no test issue needed');
+              console.log('Content/docs/config only — no test issue needed');
               return;
             }
 
