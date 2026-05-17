@@ -14,8 +14,10 @@
 4. [Break-Glass: Emergency Recovery](#break-glass-emergency-recovery)
 5. [Graceful Degradation Layers](#graceful-degradation-layers)
 6. [Microsoft Nonprofit Program — Benefits & Risk Mitigation](#microsoft-nonprofit-program--benefits--risk-mitigation)
-7. [GitHub Copilot — Costs & Considerations](#github-copilot--costs--considerations)
-8. [Transfer Checklist](#transfer-checklist)
+7. [Plan B: Self-Funded](#plan-b-self-funded-if-nonprofit-benefits-unavailable)
+8. [How a Microsoft Employee Can Help](#how-a-microsoft-employee-can-help-without-being-the-customer)
+9. [GitHub Copilot — Costs & Considerations](#github-copilot--costs--considerations)
+10. [Transfer Checklist](#transfer-checklist)
 
 ---
 
@@ -326,28 +328,24 @@ Available as an add-on to M365 licenses. This is the AI assistant for Word, Exce
 - **Cloudflare Workers** — Would need separate solution (or replace Sveltia CMS auth with Entra ID if M365 adopted).
 - **Google Workspace** — Would still need to be maintained if not migrating to M365, or shut down if migrating.
 
-### Recommendation: Start the Nonprofit Registration Now
+### Recommendation: Apply, But Plan for "No"
 
-**Yes, start sooner rather than later.** Here's why:
+**Apply anyway — it's free and takes 30 minutes.** But be realistic: RRROCA is an Alberta Societies Act nonprofit (community association), not a CRA-registered charity. Microsoft's eligibility benchmarks against US 501(c)(3) charitable status, and community associations in the US are typically 501(c)(4) or 501(c)(7) — excluded categories. RRROCA primarily serves its own members, which is an association model, not a charitable model.
 
-1. **Registration can take 2–4 weeks** — Microsoft validates nonprofit status
-2. **Eligibility is the key unknown** — applying is the only way to resolve it, and there's zero cost to try
-3. **Azure grant is the #1 resiliency fix** — eliminates personal subscription dependency
-4. **No obligation to migrate to M365** — you can take the Azure grant alone and keep Google Workspace
-5. **The Azure grant renews annually** — ongoing benefit, not one-time
-6. **Board doesn't need to approve applying** — this is research/due diligence, not a commitment
-7. **If RRROCA doesn't qualify as a society**, consider whether pursuing CRA charitable registration is worthwhile (separate board discussion — has tax receipt implications, annual CRA filing requirements, etc.)
+**In RRROCA's favour:** recognized legal nonprofit status, volunteer-run, genuine community safety mission, not generating profit. Microsoft's Canada-specific requirements *might* be broader than the US benchmark.
 
-#### Suggested Sequence
+**Bottom line:** Apply, but build the budget and architecture assuming the answer is no.
+
+#### If Approved: Suggested Sequence
 
 ```
 Phase 1 (NOW):     Register RRROCA at nonprofit.microsoft.com
                    Provide Alberta Societies Act incorporation docs
-                   → If approved: eliminates the #1 bus factor risk
+                   → If approved:
                        Create RRROCA org-owned Azure subscription
                        Migrate SWA from Chad's personal sub → org sub
                        Add 2+ board members as Azure subscription admins
-                   → If rejected: no loss, consider CRA charitable registration path
+                       → Eliminates #1 bus factor risk
 
 Phase 2 (LATER):   Evaluate M365 nonprofit grant/discount
                    Board decision: keep Google Workspace or migrate to M365
@@ -357,6 +355,90 @@ Phase 2 (LATER):   Evaluate M365 nonprofit grant/discount
 Phase 3 (FUTURE):  If M365 adopted, evaluate Entra ID for Sveltia CMS auth
                    → Eliminates #3 bus factor risk (Cloudflare Workers)
                    Consider M365 Copilot for board productivity (only if ROI clear)
+```
+
+### Plan B: Self-Funded (If Nonprofit Benefits Unavailable)
+
+If RRROCA doesn't qualify for Microsoft nonprofit benefits, the costs are still very manageable for a community association budget.
+
+#### Annual Cost Breakdown
+
+| Component | USD/year | CAD/year (approx) | Notes |
+|-----------|---------|-------------------|-------|
+| Azure SWA Standard | $108 | $148 | Hosting + Azure Functions |
+| Azure OpenAI | ~$30–60 | ~$41–82 | Chat API usage (low volume) |
+| Google Workspace | $0 | $0 | Already exists, org-owned |
+| GitHub (Free plan) | $0 | $0 | Already exists, org-owned |
+| Domain renewal (rrroca.org) | ~$15 | ~$20 | Already budgeted |
+| **Total** | **~$153–183** | **~$209–250** | |
+
+#### Optional Add-Ons
+
+| Component | USD/year | CAD/year (approx) | Notes |
+|-----------|---------|-------------------|-------|
+| GitHub Copilot Pro (1 seat) | $120 | $164 | For site maintainer, if desired |
+| Cloudflare Workers (paid) | $0 | $0 | Free tier sufficient |
+| **Total with Copilot** | **~$273–303** | **~$373–414** | |
+
+**Context:** RRROCA's annual budget likely handles community events, insurance, hall maintenance, etc. An additional ~$250 CAD/year for the entire technology platform is extremely modest. Many CAs spend more on a single newsletter mailing.
+
+#### Self-Funded Migration Path
+
+Even without nonprofit benefits, the key resiliency improvement remains the same: **move Azure off Chad's personal subscription.**
+
+```
+Step 1:  Board approves ~$250 CAD/year technology budget line
+Step 2:  Create a new Azure subscription under RRROCA
+         - Use a shared board email (e.g., technology@rrroca.org) as account owner
+         - Add 2+ board members as subscription admins
+         - Set up pay-as-you-go with a board-authorized credit card or association bank account
+Step 3:  Migrate SWA from Chad's personal sub → RRROCA org sub
+         - Export/import SWA configuration
+         - Update GitHub secret (SWA deploy token) to new subscription
+         - Update Azure OpenAI endpoint to new subscription
+Step 4:  Chad remains as technical contributor, no longer single point of failure for hosting
+```
+
+### How a Microsoft Employee Can Help (Without Being the Customer)
+
+Chad is a Microsoft employee volunteering for RRROCA. This creates both advantages and boundaries:
+
+#### What You CAN Do
+
+1. **Nonprofit registration guidance** — Help RRROCA navigate the nonprofit.microsoft.com registration process. You know the system; a board member must submit, but you can guide them through it.
+
+2. **Internal warm introduction** — Connect RRROCA (via the board president or another director) with your local Microsoft Philanthropies or Nonprofits team. An internal referral carries weight and can clarify eligibility questions before formal application.
+
+3. **Tech for Social Impact team** — Microsoft's [Tech for Social Impact](https://www.microsoft.com/en-us/nonprofits) organization manages the nonprofit program. As an employee, you can find the right contact on the internal directory and facilitate an introduction. They can advise on whether Alberta Societies Act status qualifies before RRROCA applies.
+
+4. **Azure architecture guidance** — You can help design the Azure subscription structure, recommend SKUs, and provide technical best practices. This is volunteering your expertise, not a customer engagement.
+
+5. **Microsoft Nonprofit AI Advisors** — Microsoft's employee giving platform accepts volunteer opportunities from nonprofits. RRROCA could submit a request for skilled AI/cloud volunteers, and Microsoft employees (including you, or others) could engage through official channels. This makes the relationship formal and above-board.
+
+6. **GitHub for Nonprofits application** — Similarly, you can guide RRROCA through the GitHub nonprofit application at https://support.github.com/contact/nonprofit.
+
+#### What You Should NOT Do
+
+- **Don't register on RRROCA's behalf** — The registration must be done by "an employee or strategic volunteer of the nonprofit." As a board director, you technically qualify, but having a non-Microsoft-employee board member register avoids any appearance of conflict.
+- **Don't use your Microsoft credentials/subscription as the permanent solution** — That's the current problem. The goal is org-owned infrastructure.
+- **Don't position this as a Microsoft engagement** — RRROCA is not a Microsoft customer. You're a volunteer who happens to work at Microsoft.
+- **Don't commit Microsoft resources** — Any support from Microsoft Philanthropies or the nonprofit team should come through their official programs, not as a personal favour.
+
+#### Recommended Approach
+
+```
+1. Pre-qualify:    Find the Tech for Social Impact / Nonprofit team internally
+                  Ask: "Does an Alberta Societies Act nonprofit qualify?"
+                  → This avoids a wasted application and sets expectations
+
+2. If yes:        Have another board director register at nonprofit.microsoft.com
+                  You provide technical guidance on Azure subscription setup
+                  Migrate SWA to the new org-owned subscription
+
+3. If no:         Proceed with Plan B (self-funded, ~$250 CAD/year)
+                  Still move Azure to an org-owned subscription
+                  Consider whether CRA charitable registration is worth pursuing
+                  (separate discussion — has implications beyond Microsoft benefits)
 ```
 
 ### Risks and Considerations
