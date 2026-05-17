@@ -114,12 +114,8 @@ describeIfBuild('BaseURL Consistency', () => {
     }
   });
 
-  test('no bare /images/ src attributes in templates (should use absURL)', () => {
-    // Only check gallery and membership pages — content pages use render hooks
-    const criticalPages = htmlFiles.filter(f =>
-      f.path.includes('gallery') || f.path.includes('membership')
-    );
-    const broken = criticalPages.filter(f => /src=["']\/images\//.test(f.content));
+  test('no hardcoded absolute rrroca.org URLs in image src attributes', () => {
+    const broken = htmlFiles.filter(f => /src=["']https?:\/\/rrroca\.org\/images\//.test(f.content));
     expect(broken.map(f => path.relative(PUBLIC, f.path))).toEqual([]);
   });
 });

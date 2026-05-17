@@ -10,8 +10,8 @@
 <section class="page-header page-header--board">
   <div class="container">
     <div class="page-breadcrumb">
-      <a href="{{ "" | absURL }}">Home</a> ·
-      <a href="{{ "board/" | absURL }}">Board Governance</a> ·
+      <a href="{{ "" | relURL }}">Home</a> ·
+      <a href="{{ "board/" | relURL }}">Board Governance</a> ·
       <span>Decisions</span>
     </div>
     <h1>📋 {{ .Title }}</h1>
@@ -47,7 +47,7 @@
           </div>
           {{ with .Params.approved_document }}
           <div class="decision-card-document">
-            <a href="{{ . | absURL }}" class="btn btn-sm btn-outline" target="_blank" rel="noopener">
+            <a href="{{ . | relURL }}" class="btn btn-sm btn-outline" target="_blank" rel="noopener">
               📄 Download Formal Document (PDF)
             </a>
           </div>
@@ -63,7 +63,7 @@
         <div class="empty-state-icon">📋</div>
         <h2>No Decisions Yet</h2>
         <p>Once the board approves motions, they will appear here as part of the permanent public record.</p>
-        <a href="{{ "board/motions/" | absURL }}" class="btn btn-primary">View Active Motions →</a>
+        <a href="{{ "board/motions/" | relURL }}" class="btn btn-primary">View Active Motions →</a>
       </div>
       {{ end }}
 

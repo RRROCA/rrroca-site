@@ -2,6 +2,6 @@
 {{- $isExternal := strings.HasPrefix .Destination "http" -}}
 {{- $isProtocol := or (strings.HasPrefix $href "tel:") (strings.HasPrefix $href "mailto:") (strings.HasPrefix $href "#") -}}
 {{- if and (not $isExternal) (not $isProtocol) (strings.HasPrefix $href "/") (not (strings.HasPrefix $href "//")) -}}
-  {{- $href = printf "%s" (strings.TrimPrefix "/" $href | absURL) -}}
+  {{- $href = printf "%s" (strings.TrimPrefix "/" $href | relURL) -}}
 {{- end -}}
 <a href="{{ $href | safeURL }}"{{ with .Title }} title="{{ . }}"{{ end }}{{ if $isExternal }} rel="noopener" target="_blank"{{ end }}>{{ .Text }}</a>

@@ -1210,9 +1210,6 @@ p { margin-bottom: var(--space-md); }
 }
 .ai-panel-title { display: flex; align-items: center; gap: var(--space-sm); }
 .ai-panel-title small { display: block; opacity: 0.8; font-size: 0.75rem; }
-.ai-auth-status.ai-auth-active { color: #b8e6c8; opacity: 1; }
-.ai-auth-link { color: inherit; text-decoration: underline; opacity: 0.9; }
-.ai-auth-link:hover { opacity: 1; }
 .ai-close {
   background: none; border: none; color: white; font-size: 1.2rem;
   cursor: pointer; padding: 4px; opacity: 0.8;

@@ -17,7 +17,7 @@
   <link rel="preload" href="{{ "fonts/merriweather-700.woff2" | relURL }}" as="font" type="font/woff2" crossorigin="anonymous">
   {{ $css := resources.Get "css/style.css" | fingerprint }}
   <link rel="stylesheet" href="{{ $css.RelPermalink }}" integrity="{{ $css.Data.Integrity }}" crossorigin="anonymous">
-  <meta name="base-url" content="{{ "" | absURL }}">
+  <meta name="base-url" content="{{ "" | relURL }}">
   <script src="{{ "js/base-config.js" | relURL }}" defer></script>
   <script src="{{ "js/newsletter.js" | relURL }}" defer></script>
   {{ hugo.Generator }}

@@ -327,28 +327,6 @@ function initializeBoardAwareness() {
   return assistantState.boardInitPromise;
 }
 
-function updateChatAuthUI() {
-  var statusEl = document.getElementById('ai-auth-status');
-  if (!statusEl) return;
-
-  if (isBoardMember(assistantState.boardUser)) {
-    statusEl.innerHTML = '✓ ' + assistantState.boardUser.email +
-      ' · <a href="/.auth/logout?post_logout_redirect_uri=' +
-      encodeURIComponent(window.location.pathname) +
-      '" class="ai-auth-link">Sign out</a>';
-    statusEl.classList.add('ai-auth-active');
-  } else if (assistantState.authInitialized) {
-    var host = window.location.hostname.toLowerCase();
-    if (host.endsWith('.azurestaticapps.net') || host === 'rrroca.org' || host === 'www.rrroca.org') {
-      statusEl.innerHTML = '🔒 Board member? <a href="/.auth/login/google?post_login_redirect_uri=' +
-        encodeURIComponent(window.location.pathname) +
-        '" class="ai-auth-link">Sign in</a>';
-    } else {
-      statusEl.textContent = 'Your community AI helper';
-    }
-  }
-}
-
 async function maybeShowBoardGreeting() {
   const panel = document.getElementById('ai-panel');
   if (!panel || !panel.classList.contains('open')) {
@@ -356,7 +334,6 @@ async function maybeShowBoardGreeting() {
   }
 
   await initializeBoardAwareness();
-  updateChatAuthUI();
 
   if (!isBoardMember(assistantState.boardUser) || assistantState.boardGreetingShown) {
     return;

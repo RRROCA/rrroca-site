@@ -19,8 +19,8 @@
 <section class="page-header page-header--board">
   <div class="container">
     <div class="page-breadcrumb">
-      <a href="{{ "" | absURL }}">Home</a> ·
-      <a href="{{ "board/" | absURL }}">Board Governance</a> ·
+      <a href="{{ "" | relURL }}">Home</a> ·
+      <a href="{{ "board/" | relURL }}">Board Governance</a> ·
       <span>Motion #{{ .Params.motion_number }}</span>
     </div>
     <h1>{{ .Title }}</h1>
@@ -171,7 +171,7 @@
             <strong>Adopted Document</strong>
             <p>This is the formal document approved by the Board of Directors.</p>
           </div>
-          <a href="{{ . | absURL }}" class="btn btn-primary" target="_blank" rel="noopener">
+          <a href="{{ . | relURL }}" class="btn btn-primary" target="_blank" rel="noopener">
             Download PDF
           </a>
         </div>
@@ -187,7 +187,7 @@
           {{ range . }}
           <div class="motion-document-item">
             {{ $isExternal := or (hasPrefix .url "http://") (hasPrefix .url "https://") }}
-            <a href="{{ if $isExternal }}{{ .url }}{{ else }}{{ .url | absURL }}{{ end }}" 
+            <a href="{{ if $isExternal }}{{ .url }}{{ else }}{{ .url | relURL }}{{ end }}" 
                class="motion-document-link"
                {{ if $isExternal }}target="_blank" rel="noopener"{{ end }}>
               <span class="doc-icon">{{ if eq .type "pdf" }}📄{{ else if eq .type "docx" }}📝{{ else if eq .type "md" }}📋{{ else }}📎{{ end }}</span>
@@ -209,13 +209,13 @@
       {{ with .Params.tags }}
       <div class="article-tags">
         {{ range . }}
-        <a href="{{ (printf "tags/%s/" (. | urlize)) | absURL }}" class="tag">{{ . }}</a>
+        <a href="{{ (printf "tags/%s/" (. | urlize)) | relURL }}" class="tag">{{ . }}</a>
         {{ end }}
       </div>
       {{ end }}
 
       <div class="motion-back-link">
-        <a href="{{ "board/" | absURL }}" class="read-more">← Back to Board Governance</a>
+        <a href="{{ "board/" | relURL }}" class="read-more">← Back to Board Governance</a>
       </div>
     </article>
 
