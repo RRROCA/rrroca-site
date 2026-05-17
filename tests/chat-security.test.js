@@ -206,4 +206,53 @@ describe('Error Handling', () => {
     expect(ctx.res.status).toBe(500);
     expect(ctx.res.body.fallback).toBe(true);
   });
+
+  // --- CORS / Cross-origin support ---
+  describe('CORS support', () => {
+    it('returns CORS headers for allowed origins', async () => {
+      mockFetch({ choices: [{ message: { content: 'Hello!' } }], usage: {} });
+      const req = {
+        method: 'POST',
+        headers: { 'origin': 'https://rrroca.github.io', 'x-forwarded-for': '10.0.0.50' },
+        body: { message: 'hi' }
+      };
+      await chatFunction(context, req);
+      expect(context.res.headers['Access-Control-Allow-Origin']).toBe('https://rrroca.github.io');
+      expect(context.res.headers['Access-Control-Allow-Methods']).toBe('POST, OPTIONS');
+    });
+
+    it('does not return CORS headers for disallowed origins', async () => {
+      mockFetch({ choices: [{ message: { content: 'Hello!' } }], usage: {} });
+      const req = {
+        method: 'POST',
+        headers: { 'origin': 'https://evil.com', 'x-forwarded-for': '10.0.0.51' },
+        body: { message: 'hi' }
+      };
+      await chatFunction(context, req);
+      expect(context.res.headers['Access-Control-Allow-Origin']).toBeUndefined();
+    });
+
+    it('handles OPTIONS preflight with CORS headers', async () => {
+      const req = {
+        method: 'OPTIONS',
+        headers: { 'origin': 'https://rrroca.github.io' },
+        body: {}
+      };
+      await chatFunction(context, req);
+      expect(context.res.status).toBe(204);
+      expect(context.res.headers['Access-Control-Allow-Origin']).toBe('https://rrroca.github.io');
+    });
+
+    it('parses text/plain body as JSON (cross-origin no-preflight mode)', async () => {
+      mockFetch({ choices: [{ message: { content: 'Parsed!' } }], usage: {} });
+      const req = {
+        method: 'POST',
+        headers: { 'content-type': 'text/plain', 'x-forwarded-for': '10.0.0.52' },
+        body: '{"message":"hello from text/plain"}'
+      };
+      await chatFunction(context, req);
+      expect(context.res.status).toBe(200);
+      expect(context.res.body.reply).toBe('Parsed!');
+    });
+  });
 });
