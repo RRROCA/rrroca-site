@@ -19,6 +19,10 @@
       "statusCode": 404
     },
     {
+      "route": "/.auth/login/aad",
+      "statusCode": 404
+    },
+    {
       "headers": {
         "Access-Control-Allow-Headers": "Content-Type",
         "Access-Control-Allow-Origin": "https://rrroca.github.io",
