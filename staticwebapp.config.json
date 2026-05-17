@@ -1,6 +1,14 @@
 {
   "routes": [
     {
+      "headers": {
+        "Access-Control-Allow-Headers": "Content-Type",
+        "Access-Control-Allow-Origin": "https://rrroca.github.io",
+        "Access-Control-Allow-Methods": "POST, OPTIONS"
+      },
+      "route": "/api/*"
+    },
+    {
       "route": "/404",
       "statusCode": 404
     },
