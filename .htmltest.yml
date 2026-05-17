@@ -12,6 +12,7 @@ IgnoreURLs:
   - "http://localhost"
   - "^/rrroca-site/"          # Hugo baseURL path prefix — valid on deployed site
   - "^https://rrroca.github.io/rrroca-site/"
+  - "^/\\.auth/"              # Azure SWA runtime auth routes (not static files)
 IgnoreDirs:
   - "admin"
 LogLevel: 1
