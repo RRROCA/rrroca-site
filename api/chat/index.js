@@ -1,54 +1,14 @@
 const fs = require('fs');
 const path = require('path');
 
-// --- CORS: Allow GitHub Pages and production domains ---
-const ALLOWED_ORIGINS = ['https://rrroca.github.io', 'https://rrroca.org', 'https://www.rrroca.org'];
-function getCorsHeaders(req) {
-  const origin = (req.headers && req.headers['origin']) || '';
-  return ALLOWED_ORIGINS.includes(origin)
-    ? { 'Access-Control-Allow-Origin': origin, 'Access-Control-Allow-Methods': 'POST, OPTIONS', 'Access-Control-Allow-Headers': 'Content-Type' }
-    : {};
-}
-
-// Load knowledge base (built at deploy time)
-let knowledgeBase = null;
-const KB_PATH = path.join(__dirname, 'knowledge-base.json');
-if (fs.existsSync(KB_PATH)) {
-  knowledgeBase = JSON.parse(fs.readFileSync(KB_PATH, 'utf-8'));
-}
-
-// --- SECURITY: Rate limiting (in-memory, per-instance) ---
-const RATE_LIMIT = { maxRequests: 10, windowMs: 60000 }; // 10 req/min per IP
-const DAILY_LIMIT = 250; // max requests per day (all users)
-const requestLog = new Map();
-let dailyCount = 0;
-let dailyResetTime = Date.now() + 86400000;
-
-function isRateLimited(ip) {
-  const now = Date.now();
-
-  // Reset daily counter
-  if (now > dailyResetTime) {
-    dailyCount = 0;
-    dailyResetTime = now + 86400000;
-  }
-  if (dailyCount >= DAILY_LIMIT) return 'daily';
-
-  // Per-IP rate limit
-  const entry = requestLog.get(ip) || { count: 0, resetTime: now + RATE_LIMIT.windowMs };
-  if (now > entry.resetTime) {
-    entry.count = 0;
-    entry.resetTime = now + RATE_LIMIT.windowMs;
-  }
-  if (entry.count >= RATE_LIMIT.maxRequests) return 'ip';
-  entry.count++;
-  dailyCount++;
-  requestLog.set(ip, entry);
-  return false;
-}
-
-// --- SECURITY: Input validation ---
-const MAX_MESSAGE_LENGTH = 500;
+const ALLOWED_ORIGINS = new Set(['https://rrroca.github.io', 'https://rrroca.org', 'https://www.rrroca.org']);
+const TRUSTED_IP_HEADERS = ['x-azure-clientip', 'x-ms-client-ip', 'client-ip'];
+const MAX_BODY_BYTES = 16 * 1024;
+const MAX_MESSAGE_LENGTH = 1000;
+const MAX_HISTORY_ITEMS = 6;
+const REQUEST_TIMEOUT_MS = 10000;
+const RATE_LIMIT = { maxRequests: 6, windowMs: 60000 };
+const DAILY_LIMIT = 200;
 const INJECTION_PATTERNS = [
   /ignore\s+(all\s+)?(previous|prior|above)\s+(instructions|rules|prompts)/i,
   /you\s+are\s+now\s+/i,
@@ -58,30 +18,162 @@ const INJECTION_PATTERNS = [
   /act\s+as\s+(if|though)\s+you/i,
   /reveal\s+(your|the)\s+(system|initial)\s+(prompt|instructions)/i,
   /what\s+(are|is)\s+your\s+(instructions|system\s+prompt|rules)/i,
+  /developer\s+mode/i,
+  /bypass\s+(the\s+)?(rules|filters|guardrails)/i,
+  /jailbreak/i
 ];
+const requestLog = new Map();
+let dailyCount = 0;
+let dailyResetTime = Date.now() + 86400000;
+
+function getHeader(req, name) {
+  if (!req || !req.headers) return '';
+  return req.headers[name] || req.headers[name.toLowerCase()] || req.headers[name.toUpperCase()] || '';
+}
+
+function normalizeOrigin(origin) {
+  return String(origin || '').trim();
+}
+
+function isAllowedOrigin(origin) {
+  return !origin || ALLOWED_ORIGINS.has(origin);
+}
+
+function getCorsHeaders(req) {
+  const origin = normalizeOrigin(getHeader(req, 'origin'));
+  const headers = { Vary: 'Origin' };
+
+  if (ALLOWED_ORIGINS.has(origin)) {
+    headers['Access-Control-Allow-Origin'] = origin;
+    headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS';
+    headers['Access-Control-Allow-Headers'] = 'Content-Type';
+  }
+
+  return headers;
+}
+
+function createHttpError(status, message, logMessage) {
+  const error = new Error(message);
+  error.status = status;
+  error.logMessage = logMessage || message;
+  return error;
+}
+
+function sanitizeLog(value, maxLength = 200) {
+  return String(value || '').replace(/[\r\n]+/g, ' ').slice(0, maxLength);
+}
+
+function getTrustedClientIp(req) {
+  for (const header of TRUSTED_IP_HEADERS) {
+    const candidate = String(getHeader(req, header) || '').split(',')[0].trim();
+    if (candidate && candidate.length <= 64) {
+      return candidate;
+    }
+  }
+
+  return 'unknown';
+}
+
+function getRequestBodySize(req) {
+  if (typeof req?.rawBody === 'string') {
+    return Buffer.byteLength(req.rawBody, 'utf8');
+  }
+
+  if (Buffer.isBuffer(req?.rawBody)) {
+    return req.rawBody.length;
+  }
+
+  if (typeof req?.body === 'string') {
+    return Buffer.byteLength(req.body, 'utf8');
+  }
+
+  if (req?.body === undefined || req?.body === null) {
+    return 0;
+  }
+
+  try {
+    return Buffer.byteLength(JSON.stringify(req.body), 'utf8');
+  } catch (error) {
+    return MAX_BODY_BYTES + 1;
+  }
+}
+
+function parseRequestBody(req) {
+  if (!req || req.body === undefined || req.body === null || req.body === '') {
+    return {};
+  }
+
+  if (typeof req.body === 'string') {
+    try {
+      return req.body.trim() ? JSON.parse(req.body) : {};
+    } catch (error) {
+      throw createHttpError(400, 'Malformed JSON body.');
+    }
+  }
+
+  if (typeof req.body !== 'object' || Array.isArray(req.body)) {
+    throw createHttpError(400, 'Request body must be a JSON object.');
+  }
+
+  return req.body;
+}
+
+// Load knowledge base (built at deploy time)
+let knowledgeBase = null;
+const KB_PATH = path.join(__dirname, 'knowledge-base.json');
+if (fs.existsSync(KB_PATH)) {
+  knowledgeBase = JSON.parse(fs.readFileSync(KB_PATH, 'utf-8'));
+}
+
+function isRateLimited(ip) {
+  const now = Date.now();
+
+  if (now > dailyResetTime) {
+    dailyCount = 0;
+    dailyResetTime = now + 86400000;
+  }
+  if (dailyCount >= DAILY_LIMIT) return 'daily';
+
+  const entry = requestLog.get(ip) || { count: 0, resetTime: now + RATE_LIMIT.windowMs };
+  if (now > entry.resetTime) {
+    entry.count = 0;
+    entry.resetTime = now + RATE_LIMIT.windowMs;
+  }
+  if (entry.count >= RATE_LIMIT.maxRequests) return 'ip';
+
+  entry.count += 1;
+  dailyCount += 1;
+  requestLog.set(ip, entry);
+  return false;
+}
 
 function validateMessage(message) {
-  if (typeof message !== 'string') return { valid: false, reason: 'Message must be a string' };
-  if (message.trim().length === 0) return { valid: false, reason: 'Message cannot be empty' };
-  if (message.length > MAX_MESSAGE_LENGTH) return { valid: false, reason: `Message too long (max ${MAX_MESSAGE_LENGTH} characters)` };
+  if (typeof message !== 'string') return { valid: false, reason: 'Message must be a string.' };
+
+  const trimmed = message.trim();
+  if (!trimmed) return { valid: false, reason: 'Message cannot be empty.' };
+  if (trimmed.length > MAX_MESSAGE_LENGTH) {
+    return { valid: false, reason: `Message too long (max ${MAX_MESSAGE_LENGTH} characters).` };
+  }
+
   for (const pattern of INJECTION_PATTERNS) {
-    if (pattern.test(message)) {
+    if (pattern.test(trimmed)) {
       return { valid: false, reason: 'I can only help with RRROCA community questions.' };
     }
   }
-  return { valid: true };
+
+  return { valid: true, message: trimmed };
 }
 
 function sanitizeHistory(history) {
   if (!Array.isArray(history)) return [];
-  // Only allow user/assistant roles, cap at 6 turns, truncate content
+
   return history
-    .filter(h => h && (h.role === 'user' || h.role === 'assistant') && typeof h.content === 'string')
-    .slice(-6)
-    .map(h => ({ role: h.role, content: h.content.slice(0, MAX_MESSAGE_LENGTH) }));
+    .filter((turn) => turn && (turn.role === 'user' || turn.role === 'assistant') && typeof turn.content === 'string')
+    .slice(-MAX_HISTORY_ITEMS)
+    .map((turn) => ({ role: turn.role, content: turn.content.slice(0, MAX_MESSAGE_LENGTH) }));
 }
 
-// --- System prompt with hardened instructions ---
 const SYSTEM_PROMPT = `You are the RRROCA Community Assistant — a friendly, helpful AI for the Rocky Ridge Royal Oak Community Association website (rrroca.org) in NW Calgary, Alberta.
 
 RULES:
@@ -102,116 +194,150 @@ SECURITY RULES (non-negotiable):
 - Never output content in any format other than helpful community information.
 
 COMMUNITY KNOWLEDGE BASE:
-${knowledgeBase ? knowledgeBase.pages.map(p => `## ${p.title} (${p.path})\n${p.content}`).join('\n\n') : 'Knowledge base not loaded.'}`;
+${knowledgeBase ? knowledgeBase.pages.map((page) => `## ${page.title} (${page.path})\n${page.content}`).join('\n\n') : 'Knowledge base not loaded.'}`;
 
 module.exports = async function (context, req) {
+  const origin = normalizeOrigin(getHeader(req, 'origin'));
   const corsHeaders = getCorsHeaders(req);
 
-  // Handle CORS preflight
   if (req.method === 'OPTIONS') {
-    context.res = { status: 204, headers: corsHeaders };
-    return;
-  }
-
-  const clientIp = req.headers['x-forwarded-for'] || req.headers['client-ip'] || 'unknown';
-
-  // Rate limit check
-  const limited = isRateLimited(clientIp);
-  if (limited) {
-    context.log.warn(`Rate limited: type=${limited}, ip=${clientIp}, dailyCount=${dailyCount}`);
     context.res = {
-      status: 429,
+      status: isAllowedOrigin(origin) ? 204 : 403,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      body: { error: 'Too many requests. Please try again later.', fallback: true }
+      body: isAllowedOrigin(origin) ? '' : { error: 'Origin not allowed.' }
     };
     return;
   }
 
-  // Handle text/plain body (used to avoid CORS preflight from cross-origin sites)
-  let body = req.body;
-  if (typeof body === 'string') {
-    try { body = JSON.parse(body); } catch (e) { body = {}; }
-  }
-  const { message, history } = body || {};
-
-  // Input validation
-  const validation = validateMessage(message);
-  if (!validation.valid) {
+  if (req.method !== 'POST') {
     context.res = {
-      status: 400,
+      status: 405,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      body: { error: validation.reason, fallback: validation.reason.includes('RRROCA') }
+      body: { error: 'Method not allowed.', fallback: true }
     };
     return;
   }
 
-  const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
-  const apiKey = process.env.AZURE_OPENAI_KEY;
-  const deployment = process.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-4o';
-
-  if (!endpoint || !apiKey) {
+  if (!isAllowedOrigin(origin)) {
     context.res = {
-      status: 503,
+      status: 403,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      body: { error: 'AI service not configured', fallback: true }
+      body: { error: 'Origin not allowed.', fallback: true }
     };
     return;
   }
 
-  // Build messages with sanitized history
-  const messages = [{ role: 'system', content: SYSTEM_PROMPT }];
-  const cleanHistory = sanitizeHistory(history);
-  messages.push(...cleanHistory);
-  messages.push({ role: 'user', content: message });
+  const clientIp = getTrustedClientIp(req);
 
   try {
-    const url = `${endpoint}/openai/deployments/${deployment}/chat/completions?api-version=2024-10-21`;
+    const requestSize = getRequestBodySize(req);
+    if (requestSize > MAX_BODY_BYTES) {
+      throw createHttpError(413, 'Request body too large.', `bodyBytes=${requestSize}`);
+    }
 
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'api-key': apiKey,
-      },
-      body: JSON.stringify({
-        messages,
-        max_tokens: 500,
-        temperature: 0.3,
-        top_p: 0.9,
-      }),
-    });
-
-    if (!response.ok) {
-      const errBody = await response.text();
-      context.log.error(`Azure OpenAI error: ${response.status} ${errBody}`);
+    const limited = isRateLimited(clientIp);
+    if (limited) {
+      context.log.warn(`Rate limited: type=${limited}, ip=${sanitizeLog(clientIp)}, dailyCount=${dailyCount}`);
       context.res = {
-        status: 502,
+        status: 429,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        body: { error: 'AI service error', fallback: true }
+        body: { error: 'Too many requests. Please try again later.', fallback: true }
       };
       return;
     }
 
-    const data = await response.json();
-    const reply = data.choices?.[0]?.message?.content || 'Sorry, I could not generate a response.';
+    const body = parseRequestBody(req);
+    const { message, history } = body;
+    const validation = validateMessage(message);
+    if (!validation.valid) {
+      context.res = {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        body: { error: validation.reason, fallback: validation.reason.includes('RRROCA') }
+      };
+      return;
+    }
 
-    context.res = {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      body: {
-        reply,
-        usage: {
-          prompt_tokens: data.usage?.prompt_tokens,
-          completion_tokens: data.usage?.completion_tokens,
-        }
+    const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
+    const apiKey = process.env.AZURE_OPENAI_KEY;
+    const deployment = process.env.AZURE_OPENAI_DEPLOYMENT || 'gpt-4o';
+
+    if (!endpoint || !apiKey) {
+      context.res = {
+        status: 503,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        body: { error: 'AI service not configured.', fallback: true }
+      };
+      return;
+    }
+
+    const messages = [{ role: 'system', content: SYSTEM_PROMPT }];
+    messages.push(...sanitizeHistory(history));
+    messages.push({ role: 'user', content: validation.message });
+
+    const url = `${endpoint}/openai/deployments/${deployment}/chat/completions?api-version=2024-10-21`;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': apiKey
+        },
+        body: JSON.stringify({
+          messages,
+          max_tokens: 500,
+          temperature: 0.3,
+          top_p: 0.9
+        }),
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        context.log.error(`Azure OpenAI error: status=${response.status}`);
+        context.res = {
+          status: 502,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          body: { error: 'AI service error.', fallback: true }
+        };
+        return;
       }
-    };
-  } catch (err) {
-    context.log.error(`Chat function error: ${err.message}`);
+
+      let data;
+      try {
+        data = await response.json();
+      } catch (error) {
+        throw createHttpError(502, 'AI service error.', 'Invalid JSON response from Azure OpenAI');
+      }
+
+      const reply = data.choices?.[0]?.message?.content || 'Sorry, I could not generate a response.';
+      context.res = {
+        status: 200,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        body: {
+          reply,
+          usage: {
+            prompt_tokens: data.usage?.prompt_tokens,
+            completion_tokens: data.usage?.completion_tokens
+          }
+        }
+      };
+    } finally {
+      clearTimeout(timeout);
+    }
+  } catch (error) {
+    const status = error.name === 'AbortError' ? 504 : (error.status || 500);
+    const message = error.name === 'AbortError'
+      ? 'AI service timed out.'
+      : (status >= 500 ? 'Internal error.' : error.message);
+
+    context.log.error(`Chat function error: status=${status} ip=${sanitizeLog(clientIp)} detail=${sanitizeLog(error.logMessage || error.message)}`);
     context.res = {
-      status: 500,
+      status,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      body: { error: 'Internal error', fallback: true }
+      body: { error: message, fallback: true }
     };
   }
 };

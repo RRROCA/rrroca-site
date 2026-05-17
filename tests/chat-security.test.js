@@ -23,8 +23,13 @@ function createContext() {
 
 function createReq(message, history = [], headers = {}) {
   return {
+    method: 'POST',
     body: { message, history },
-    headers: { 'x-forwarded-for': '192.168.1.' + Math.floor(Math.random() * 254), ...headers }
+    headers: {
+      origin: 'https://rrroca.org',
+      'x-azure-clientip': '192.168.1.' + Math.floor(Math.random() * 254),
+      ...headers
+    }
   };
 }
 
@@ -55,22 +60,22 @@ describe('Input Validation', () => {
 
   test('rejects null message', async () => {
     const ctx = createContext();
-    await chatFunction(ctx, { body: { message: null }, headers: { 'x-forwarded-for': '1.2.3.4' } });
+    await chatFunction(ctx, { method: 'POST', body: { message: null }, headers: { origin: 'https://rrroca.org', 'x-azure-clientip': '1.2.3.4' } });
     expect(ctx.res.status).toBe(400);
   });
 
-  test('rejects oversized message (>500 chars)', async () => {
+  test('rejects oversized message (>1000 chars)', async () => {
     const ctx = createContext();
-    const longMessage = 'a'.repeat(501);
+    const longMessage = 'a'.repeat(1001);
     await chatFunction(ctx, createReq(longMessage));
     expect(ctx.res.status).toBe(400);
     expect(ctx.res.body.error).toContain('too long');
   });
 
-  test('accepts message at exactly 500 chars', async () => {
+  test('accepts message at exactly 1000 chars', async () => {
     const ctx = createContext();
     mockSuccessResponse();
-    await chatFunction(ctx, createReq('a'.repeat(500)));
+    await chatFunction(ctx, createReq('a'.repeat(1000)));
     expect(ctx.res.status).toBe(200);
   });
 });
@@ -138,8 +143,8 @@ describe('History Sanitization', () => {
     ];
     await chatFunction(ctx, createReq('Hello', history));
     const callBody = JSON.parse(mockFetch.mock.calls[0][1].body);
-    // History content should be truncated to 500 chars
-    expect(callBody.messages[1].content.length).toBeLessThanOrEqual(500);
+    // History content should be truncated to 1000 chars
+    expect(callBody.messages[1].content.length).toBeLessThanOrEqual(1000);
   });
 
   test('caps history at 6 entries', async () => {
@@ -160,22 +165,22 @@ describe('Rate Limiting', () => {
   test('allows requests under the limit', async () => {
     const ctx = createContext();
     mockSuccessResponse();
-    const req = createReq('Hello', [], { 'x-forwarded-for': '10.0.0.99' });
+    const req = createReq('Hello', [], { 'x-azure-clientip': '10.0.0.99' });
     await chatFunction(ctx, req);
     expect(ctx.res.status).toBe(200);
   });
 
   test('blocks after exceeding per-IP limit', async () => {
     const fixedIp = '10.0.0.50';
-    // Send 10 requests (the limit)
-    for (let i = 0; i < 10; i++) {
+    // Send 6 requests (the limit)
+    for (let i = 0; i < 6; i++) {
       const ctx = createContext();
       mockSuccessResponse();
-      await chatFunction(ctx, createReq(`Question ${i}`, [], { 'x-forwarded-for': fixedIp }));
+      await chatFunction(ctx, createReq(`Question ${i}`, [], { 'x-azure-clientip': fixedIp, 'x-forwarded-for': `203.0.113.${i}` }));
     }
-    // 11th should be rate limited
+    // 7th should be rate limited even with a different spoofed x-forwarded-for value
     const ctx = createContext();
-    await chatFunction(ctx, createReq('One more', [], { 'x-forwarded-for': fixedIp }));
+    await chatFunction(ctx, createReq('One more', [], { 'x-azure-clientip': fixedIp, 'x-forwarded-for': '203.0.113.99' }));
     expect(ctx.res.status).toBe(429);
     expect(ctx.res.body.error).toContain('Too many requests');
     expect(ctx.res.body.fallback).toBe(true);
@@ -216,7 +221,7 @@ describe('CORS headers', () => {
     mockSuccessResponse('Hello!');
     const req = {
       method: 'POST',
-      headers: { origin: allowedOrigin, 'x-forwarded-for': '10.0.0.60' },
+      headers: { origin: allowedOrigin, 'x-azure-clientip': '10.0.0.60' },
       body: { message: 'hi' }
     };
 
@@ -233,13 +238,13 @@ describe('CORS headers', () => {
     mockSuccessResponse('Hello!');
     const req = {
       method: 'POST',
-      headers: { origin: 'https://evil.com', 'x-forwarded-for': '10.0.0.51' },
+      headers: { origin: 'https://evil.com', 'x-azure-clientip': '10.0.0.51' },
       body: { message: 'hi' }
     };
 
     await chatFunction(ctx, req);
 
-    expect(ctx.res.status).toBe(200);
+    expect(ctx.res.status).toBe(403);
     expect(ctx.res.headers['Access-Control-Allow-Origin']).toBeUndefined();
     expect(ctx.res.headers['Access-Control-Allow-Methods']).toBeUndefined();
   });
@@ -264,7 +269,7 @@ describe('CORS headers', () => {
     mockSuccessResponse('Hello!');
     const req = {
       method: 'POST',
-      headers: { 'x-forwarded-for': '10.0.0.52' },
+      headers: { 'x-azure-clientip': '10.0.0.52' },
       body: { message: 'hi' }
     };
 
