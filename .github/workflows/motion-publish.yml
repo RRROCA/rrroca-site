@@ -70,7 +70,7 @@ jobs:
 
             // Determine status based on issue state
             const isClosed = issue.state === 'closed';
-            let motionStatus = 'open';
+            let motionStatus = 'awaiting_second';
             if (isClosed) {
               // Count reactions to determine outcome
               const reactions = issue.reactions;
@@ -195,7 +195,12 @@ jobs:
             Your motion is now live on the RRROCA website:
             🌐 **[View on website](${siteUrl})**
 
-            ### How to Vote
+            ### Next Step: Seconding
+            This motion needs a **second** before voting can begin.
+            
+            👋 **Another board member:** react to this post with 🎉 (the party popper emoji) to second this motion.
+
+            ### Once Seconded — How to Vote
             React to **this issue** (not this comment):
             - 👍 = **For** (approve the motion)
             - 👎 = **Against** (reject the motion)
