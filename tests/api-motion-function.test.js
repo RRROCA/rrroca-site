@@ -1,4 +1,5 @@
 const path = require('path');
+const { SITE_ORIGINS } = require('./helpers/site-config');
 
 const MOTION_MODULE_PATH = path.join(__dirname, '..', 'api', 'motion', 'index.js');
 
@@ -26,7 +27,7 @@ describe('api/motion security hardening', () => {
       method: 'POST',
       query: { action: 'propose' },
       headers: {
-        origin: 'https://rrroca.org',
+        origin: SITE_ORIGINS[0],
         'x-azure-clientip': '203.0.113.20'
       },
       body: {
@@ -122,7 +123,7 @@ describe('api/motion security hardening', () => {
         method: 'POST',
         query: { action: 'propose' },
         headers: {
-          origin: 'https://rrroca.org',
+          origin: SITE_ORIGINS[0],
           'x-azure-clientip': '198.51.100.8',
           'x-forwarded-for': `10.0.0.${index}`
         },
@@ -142,7 +143,7 @@ describe('api/motion security hardening', () => {
       method: 'POST',
       query: { action: 'propose' },
       headers: {
-        origin: 'https://rrroca.org',
+        origin: SITE_ORIGINS[0],
         'x-azure-clientip': '198.51.100.8',
         'x-forwarded-for': '203.0.113.99'
       },
@@ -157,3 +158,4 @@ describe('api/motion security hardening', () => {
     expect(blockedContext.res.status).toBe(429);
   });
 });
+
