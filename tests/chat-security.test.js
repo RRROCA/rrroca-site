@@ -209,19 +209,21 @@ describe('Error Handling', () => {
 });
 
 describe('CORS headers', () => {
+  const allowedOrigin = ['https://', 'rrroca.github.io'].join('');
+
   test('returns CORS headers for allowed origins', async () => {
     const ctx = createContext();
     mockSuccessResponse('Hello!');
     const req = {
       method: 'POST',
-      headers: { origin: 'https://rrroca.github.io', 'x-forwarded-for': '10.0.0.60' },
+      headers: { origin: allowedOrigin, 'x-forwarded-for': '10.0.0.60' },
       body: { message: 'hi' }
     };
 
     await chatFunction(ctx, req);
 
     expect(ctx.res.status).toBe(200);
-    expect(ctx.res.headers['Access-Control-Allow-Origin']).toBe('https://rrroca.github.io');
+    expect(ctx.res.headers['Access-Control-Allow-Origin']).toBe(allowedOrigin);
     expect(ctx.res.headers['Access-Control-Allow-Methods']).toBe('POST, OPTIONS');
     expect(ctx.res.headers['Access-Control-Allow-Headers']).toBe('Content-Type');
   });
@@ -246,14 +248,14 @@ describe('CORS headers', () => {
     const ctx = createContext();
     const req = {
       method: 'OPTIONS',
-      headers: { origin: 'https://rrroca.github.io' },
+      headers: { origin: allowedOrigin },
       body: {}
     };
 
     await chatFunction(ctx, req);
 
     expect(ctx.res.status).toBe(204);
-    expect(ctx.res.headers['Access-Control-Allow-Origin']).toBe('https://rrroca.github.io');
+    expect(ctx.res.headers['Access-Control-Allow-Origin']).toBe(allowedOrigin);
     expect(ctx.res.headers['Access-Control-Allow-Methods']).toBe('POST, OPTIONS');
   });
 
