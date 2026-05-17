@@ -3,7 +3,7 @@ title: "Board Governance"
 date: 2025-05-09
 description: "Transparent motions, voting, and decisions — see what your board is working on right now."
 layout: "list"
-github_motion_url: "https://github.com/RRROCA/rrroca-site/issues/new?template=motion.yml"
+github_motion_url: "https://github.com/RRROCA/rrroca-site/issues/new?template=board-motion.yml"
 ---
 
 ## Open, Transparent Governance
