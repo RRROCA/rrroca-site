@@ -1,4 +1,5 @@
 const path = require('path');
+const { SITE_ORIGINS } = require('./helpers/site-config');
 
 const CHAT_MODULE_PATH = path.join(__dirname, '..', 'api', 'chat', 'index.js');
 
@@ -33,7 +34,7 @@ describe('api/chat security hardening', () => {
     const req = {
       method: 'POST',
       headers: {
-        origin: 'https://rrroca.org',
+        origin: SITE_ORIGINS[0],
         'x-azure-clientip': '203.0.113.10'
       },
       body: { message: 'When is the next board meeting?' },
@@ -84,7 +85,7 @@ describe('api/chat security hardening', () => {
       await handler(context, {
         method: 'POST',
         headers: {
-          origin: 'https://rrroca.org',
+          origin: SITE_ORIGINS[0],
           'x-azure-clientip': '198.51.100.4',
           'x-forwarded-for': `10.0.0.${index}`
         },
@@ -98,7 +99,7 @@ describe('api/chat security hardening', () => {
     await handler(blockedContext, {
       method: 'POST',
       headers: {
-        origin: 'https://rrroca.org',
+        origin: SITE_ORIGINS[0],
         'x-azure-clientip': '198.51.100.4',
         'x-forwarded-for': '203.0.113.99'
       },
@@ -109,3 +110,4 @@ describe('api/chat security hardening', () => {
     expect(global.fetch).toHaveBeenCalledTimes(6);
   });
 });
+
