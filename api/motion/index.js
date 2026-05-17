@@ -2,11 +2,11 @@ const crypto = require('crypto');
 
 const GITHUB_OWNER = 'RRROCA';
 const GITHUB_REPO = 'rrroca-site';
+const BOARD_TEAM_MENTION = '@RRROCA/board';
 const MOTION_LABEL = 'motion';
 const AWAITING_SECOND_LABEL = 'awaiting-second';
 const OPEN_FOR_VOTE_LABEL = 'open-for-vote';
 const EMAIL_DOMAIN = '@rrroca.org';
-const EMAIL_REGEX = /^[a-z0-9.!#$%&'*+/=?^_`{|}~-]+@rrroca\.org$/i;
 const MOTION_META_REGEX = /<!--\s*RRROCA_MOTION_META:\s*([\s\S]*?)\s*-->/i;
 const MOTION_EVENT_REGEX = /<!--\s*RRROCA_MOTION_EVENT:\s*([\s\S]*?)\s*-->/i;
 const TRUSTED_IP_HEADERS = ['x-azure-clientip', 'x-ms-client-ip', 'client-ip'];
@@ -15,7 +15,7 @@ const MAX_BODY_BYTES = 32 * 1024;
 const REQUEST_RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const REQUEST_RATE_LIMIT_MAX = 20;
 const WRITE_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
-const EMAIL_RATE_LIMIT_MAX = 5;
+const USER_RATE_LIMIT_MAX = 10;
 const IP_WRITE_RATE_LIMIT_MAX = 10;
 const FIELD_LIMITS = {
   title: 160,
@@ -24,10 +24,7 @@ const FIELD_LIMITS = {
   category: 80,
   portfolio: 80,
   deadline: 40,
-  supportingDocs: 1000,
-  proposerName: 100,
-  seconderName: 100,
-  voterName: 100
+  supportingDocs: 1000
 };
 const allowedOrigins = new Set([
   'https://rrroca.github.io',
@@ -37,6 +34,8 @@ const allowedOrigins = new Set([
 ]);
 const rateLimitStore = global.__RRROCA_MOTION_RATE_LIMITS || new Map();
 global.__RRROCA_MOTION_RATE_LIMITS = rateLimitStore;
+
+// --- Error Handling ---
 
 function createHttpError(status, message, logMessage) {
   const error = new Error(message);
@@ -48,6 +47,8 @@ function createHttpError(status, message, logMessage) {
 function sanitizeLog(value, maxLength = 200) {
   return String(value || '').replace(/[\r\n]+/g, ' ').slice(0, maxLength);
 }
+
+// --- Request Helpers ---
 
 function getHeader(req, name) {
   if (!req || !req.headers) return '';
@@ -69,17 +70,51 @@ function getTrustedClientIp(req) {
   return 'unknown';
 }
 
-function normalizeEmail(email) {
-  return String(email || '').trim().toLowerCase();
+// --- Authentication ---
+
+function getAuthenticatedUser(req) {
+  const header = getHeader(req, 'x-ms-client-principal');
+  if (!header) {
+    return null;
+  }
+
+  try {
+    const decoded = Buffer.from(header, 'base64').toString('utf8');
+    const principal = JSON.parse(decoded);
+
+    if (!principal || !principal.userDetails) {
+      return null;
+    }
+
+    return {
+      id: principal.userId,
+      email: String(principal.userDetails || '').toLowerCase(),
+      provider: principal.identityProvider,
+      roles: Array.isArray(principal.userRoles) ? principal.userRoles : []
+    };
+  } catch (error) {
+    return null;
+  }
 }
 
-function isBoardEmail(email) {
-  return EMAIL_REGEX.test(normalizeEmail(email));
+function requireBoardMember(req) {
+  const user = getAuthenticatedUser(req);
+  if (!user) {
+    throw createHttpError(401, 'Please sign in with your @rrroca.org Google account to perform this action.');
+  }
+
+  if (!user.email.endsWith(EMAIL_DOMAIN)) {
+    throw createHttpError(403, 'Only board members with an @rrroca.org account can perform this action.');
+  }
+
+  return user;
 }
 
-function hashEmail(email) {
-  return crypto.createHash('sha256').update(normalizeEmail(email)).digest('hex');
+function getUserDisplayName(user) {
+  return user.email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, function (c) { return c.toUpperCase(); });
 }
+
+// --- Text Processing ---
 
 function normalizeText(value) {
   return String(value || '')
@@ -144,18 +179,7 @@ function validateAmount(value) {
   return amount;
 }
 
-function validateEmailField(body, field) {
-  const email = normalizeEmail(body[field]);
-  if (!email) {
-    throw createHttpError(400, `Missing required field: ${field}.`);
-  }
-
-  if (!isBoardEmail(email)) {
-    throw createHttpError(403, `Email must be a valid ${EMAIL_DOMAIN} address.`);
-  }
-
-  return email;
-}
+// --- Metadata Parsing ---
 
 function parseEmbeddedJson(source, pattern) {
   const match = String(source || '').match(pattern);
@@ -178,6 +202,8 @@ function extractMotionEvent(commentBody) {
   return parseEmbeddedJson(commentBody, MOTION_EVENT_REGEX);
 }
 
+// --- CORS & Response ---
+
 function corsHeaders(origin) {
   const headers = {
     'Content-Type': 'application/json; charset=utf-8',
@@ -189,6 +215,7 @@ function corsHeaders(origin) {
     headers['Access-Control-Allow-Origin'] = origin;
     headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS';
     headers['Access-Control-Allow-Headers'] = 'Content-Type';
+    headers['Access-Control-Allow-Credentials'] = 'true';
   }
 
   return headers;
@@ -207,6 +234,8 @@ function assertAllowedOrigin(origin) {
     throw createHttpError(403, 'Origin not allowed.');
   }
 }
+
+// --- Request Body ---
 
 function getRequestBodySize(req) {
   if (typeof req?.rawBody === 'string') {
@@ -252,6 +281,8 @@ function parseBody(req) {
   return req.body;
 }
 
+// --- Rate Limiting ---
+
 function getWindowTimestamps(key, windowMs, now) {
   const timestamps = (rateLimitStore.get(key) || []).filter((timestamp) => now - timestamp < windowMs);
   rateLimitStore.set(key, timestamps);
@@ -272,23 +303,25 @@ function enforceRequestRateLimit(clientIp) {
   return true;
 }
 
-function enforceWriteRateLimit(email, clientIp) {
+function enforceWriteRateLimit(userId, clientIp) {
   const now = Date.now();
-  const emailKey = `email:${normalizeEmail(email)}`;
+  const userKey = `user:${userId}`;
   const ipKey = `write-ip:${clientIp}`;
-  const emailTimestamps = getWindowTimestamps(emailKey, WRITE_RATE_LIMIT_WINDOW_MS, now);
+  const userTimestamps = getWindowTimestamps(userKey, WRITE_RATE_LIMIT_WINDOW_MS, now);
   const ipTimestamps = getWindowTimestamps(ipKey, WRITE_RATE_LIMIT_WINDOW_MS, now);
 
-  if (emailTimestamps.length >= EMAIL_RATE_LIMIT_MAX || ipTimestamps.length >= IP_WRITE_RATE_LIMIT_MAX) {
+  if (userTimestamps.length >= USER_RATE_LIMIT_MAX || ipTimestamps.length >= IP_WRITE_RATE_LIMIT_MAX) {
     return false;
   }
 
-  emailTimestamps.push(now);
+  userTimestamps.push(now);
   ipTimestamps.push(now);
-  rateLimitStore.set(emailKey, emailTimestamps);
+  rateLimitStore.set(userKey, userTimestamps);
   rateLimitStore.set(ipKey, ipTimestamps);
   return true;
 }
+
+// --- Motion Helpers ---
 
 function summarize(text) {
   const compact = normalizeText(text).replace(/\s+/g, ' ');
@@ -314,87 +347,7 @@ function formatMultilineSection(text) {
   return sanitized || 'None provided.';
 }
 
-function buildIssueBody(payload) {
-  const meta = {
-    motionText: sanitizeForGitHub(payload.motionText, { multiline: true }),
-    background: sanitizeForGitHub(payload.background, { multiline: true }),
-    category: sanitizeForGitHub(payload.category) || 'Other',
-    amount: Number.isFinite(payload.amount) ? payload.amount : null,
-    portfolio: sanitizeForGitHub(payload.portfolio),
-    deadline: sanitizeForGitHub(payload.deadline),
-    supportingDocs: sanitizeForGitHub(payload.supportingDocs, { multiline: true }),
-    proposerName: sanitizeForGitHub(payload.proposerName),
-    proposerEmailHash: hashEmail(payload.proposerEmail),
-    submittedAt: new Date().toISOString()
-  };
-
-  const lines = [
-    '## Motion Summary',
-    '',
-    `**Proposed by:** ${meta.proposerName}`,
-    `**Category:** ${meta.category}`,
-    meta.portfolio ? `**Portfolio:** ${meta.portfolio}` : '',
-    Number.isFinite(meta.amount) ? `**Amount:** CAD ${meta.amount.toFixed(2)}` : '**Amount:** No spending requested',
-    meta.deadline ? `**Decision requested by:** ${meta.deadline}` : '',
-    '',
-    '## Motion Text',
-    '',
-    formatMultilineSection(payload.motionText),
-    '',
-    '## Why This Is Needed',
-    '',
-    formatMultilineSection(payload.background),
-    '',
-    '## Supporting Links or Documents',
-    '',
-    formatMultilineSection(payload.supportingDocs),
-    '',
-    '_Submitted through the RRROCA Board Action Center. A seconder is required before voting opens._',
-    '',
-    `<!-- RRROCA_MOTION_META: ${JSON.stringify(meta)} -->`
-  ].filter(Boolean);
-
-  return lines.join('\n');
-}
-
-function buildSecondComment(name, email) {
-  const event = {
-    type: 'second',
-    name: sanitizeForGitHub(name),
-    emailHash: hashEmail(email),
-    recordedAt: new Date().toISOString()
-  };
-
-  return `Seconded by **${event.name}**.\n\n<!-- RRROCA_MOTION_EVENT: ${JSON.stringify(event)} -->`;
-}
-
-function buildVoteComment(name, email, vote) {
-  const event = {
-    type: 'vote',
-    vote,
-    name: sanitizeForGitHub(name),
-    emailHash: hashEmail(email),
-    recordedAt: new Date().toISOString()
-  };
-
-  return `Vote recorded: **${event.name}** voted **${vote.toUpperCase()}**.\n\n<!-- RRROCA_MOTION_EVENT: ${JSON.stringify(event)} -->`;
-}
-
-function mapGithubError(responseStatus) {
-  if (responseStatus === 404) {
-    return createHttpError(404, 'That motion could not be found.');
-  }
-
-  if (responseStatus === 401 || responseStatus === 403) {
-    return createHttpError(503, 'Motion service is temporarily unavailable.');
-  }
-
-  if (responseStatus === 429) {
-    return createHttpError(429, 'Motion service is temporarily rate limited. Please try again later.');
-  }
-
-  return createHttpError(502, 'Motion service error. Please try again later.');
-}
+// --- GitHub API ---
 
 async function githubRequest(path, options = {}) {
   const token = process.env.GITHUB_TOKEN;
@@ -462,6 +415,22 @@ async function githubRequest(path, options = {}) {
   }
 }
 
+function mapGithubError(responseStatus) {
+  if (responseStatus === 404) {
+    return createHttpError(404, 'That motion could not be found.');
+  }
+
+  if (responseStatus === 401 || responseStatus === 403) {
+    return createHttpError(503, 'Motion service is temporarily unavailable.');
+  }
+
+  if (responseStatus === 429) {
+    return createHttpError(429, 'Motion service is temporarily rate limited. Please try again later.');
+  }
+
+  return createHttpError(502, 'Motion service error. Please try again later.');
+}
+
 async function fetchIssue(issueNumber) {
   return githubRequest(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues/${issueNumber}`);
 }
@@ -481,6 +450,88 @@ async function updateIssueLabels(issue, addLabels = [], removeLabels = []) {
     body: { labels: nextLabels }
   });
 }
+
+// --- Issue/Comment Builders ---
+
+function buildIssueBody(payload, user) {
+  const displayName = getUserDisplayName(user);
+  const meta = {
+    motionText: sanitizeForGitHub(payload.motionText, { multiline: true }),
+    background: sanitizeForGitHub(payload.background, { multiline: true }),
+    category: sanitizeForGitHub(payload.category) || 'Other',
+    amount: Number.isFinite(payload.amount) ? payload.amount : null,
+    portfolio: sanitizeForGitHub(payload.portfolio),
+    deadline: sanitizeForGitHub(payload.deadline),
+    supportingDocs: sanitizeForGitHub(payload.supportingDocs, { multiline: true }),
+    proposerName: displayName,
+    proposerEmail: user.email,
+    proposerId: user.id,
+    submittedAt: new Date().toISOString()
+  };
+
+  const lines = [
+    '## Motion Summary',
+    '',
+    `**Proposed by:** ${displayName} (${user.email})`,
+    `**Category:** ${meta.category}`,
+    meta.portfolio ? `**Portfolio:** ${meta.portfolio}` : '',
+    Number.isFinite(meta.amount) ? `**Amount:** CAD ${meta.amount.toFixed(2)}` : '**Amount:** No spending requested',
+    meta.deadline ? `**Decision requested by:** ${meta.deadline}` : '',
+    '',
+    '## Motion Text',
+    '',
+    formatMultilineSection(payload.motionText),
+    '',
+    '## Why This Is Needed',
+    '',
+    formatMultilineSection(payload.background),
+    '',
+    '## Supporting Links or Documents',
+    '',
+    formatMultilineSection(payload.supportingDocs),
+    '',
+    '---',
+    '',
+    `📢 ${BOARD_TEAM_MENTION} — a new motion has been submitted and needs a **second** before voting can begin.`,
+    '',
+    '👉 **[Open the Board Action Center to second this motion](https://rrroca.org/board/actions/)**',
+    '',
+    '_Submitted through the RRROCA Board Action Center._',
+    '',
+    `<!-- RRROCA_MOTION_META: ${JSON.stringify(meta)} -->`
+  ].filter(Boolean);
+
+  return lines.join('\n');
+}
+
+function buildSecondComment(user) {
+  const displayName = getUserDisplayName(user);
+  const event = {
+    type: 'second',
+    name: displayName,
+    email: user.email,
+    userId: user.id,
+    recordedAt: new Date().toISOString()
+  };
+
+  return `✅ **Seconded by ${displayName}** (${user.email}).\n\n📢 ${BOARD_TEAM_MENTION} — this motion is now **open for voting**.\n\n👉 **[Open the Board Action Center to vote](https://rrroca.org/board/actions/)**\n\n<!-- RRROCA_MOTION_EVENT: ${JSON.stringify(event)} -->`;
+}
+
+function buildVoteComment(user, vote) {
+  const displayName = getUserDisplayName(user);
+  const event = {
+    type: 'vote',
+    vote,
+    name: displayName,
+    email: user.email,
+    userId: user.id,
+    recordedAt: new Date().toISOString()
+  };
+
+  return `🗳️ Vote recorded: **${displayName}** voted **${vote.toUpperCase()}**.\n\n<!-- RRROCA_MOTION_EVENT: ${JSON.stringify(event)} -->`;
+}
+
+// --- Vote Counting ---
 
 function getSecondEvent(issue, comments) {
   const structuredSecond = comments
@@ -504,7 +555,7 @@ function getVoteSummary(issue, comments) {
     against: Number(issue.reactions && issue.reactions['-1']) || 0,
     abstain: 0
   };
-  const votesByEmail = new Map();
+  const votesByUser = new Map();
 
   comments.forEach((comment) => {
     const event = extractMotionEvent(comment.body);
@@ -512,11 +563,11 @@ function getVoteSummary(issue, comments) {
       return;
     }
 
-    const key = event.emailHash || `${event.name}-${event.recordedAt}`;
-    votesByEmail.set(key, event);
+    const key = event.userId || event.email || `${event.name}-${event.recordedAt}`;
+    votesByUser.set(key, event);
   });
 
-  votesByEmail.forEach((event) => {
+  votesByUser.forEach((event) => {
     if (event.vote === 'for') {
       tally.for += 1;
     } else if (event.vote === 'against') {
@@ -526,12 +577,12 @@ function getVoteSummary(issue, comments) {
     }
   });
 
-  return { tally, votesByEmail };
+  return { tally, votesByUser };
 }
 
+// --- Validation ---
+
 function validateProposal(body) {
-  const proposerName = validateTextField(body, 'proposerName', { required: true, maxLength: FIELD_LIMITS.proposerName });
-  const proposerEmail = validateEmailField(body, 'proposerEmail');
   const motionText = validateTextField(body, 'motionText', { required: true, maxLength: FIELD_LIMITS.motionText, multiline: true });
   const background = validateTextField(body, 'background', { required: true, maxLength: FIELD_LIMITS.background, multiline: true });
   const title = validateTextField(body, 'title', { maxLength: FIELD_LIMITS.title }) || summarize(motionText);
@@ -544,17 +595,13 @@ function validateProposal(body) {
     amount: validateAmount(body.amount),
     portfolio: validateTextField(body, 'portfolio', { maxLength: FIELD_LIMITS.portfolio }),
     deadline: validateTextField(body, 'deadline', { maxLength: FIELD_LIMITS.deadline }),
-    supportingDocs: validateTextField(body, 'supportingDocs', { maxLength: FIELD_LIMITS.supportingDocs, multiline: true }),
-    proposerName,
-    proposerEmail
+    supportingDocs: validateTextField(body, 'supportingDocs', { maxLength: FIELD_LIMITS.supportingDocs, multiline: true })
   };
 }
 
 function validateSecondRequest(body) {
   return {
-    issueNumber: validateIssueNumber(body.issueNumber),
-    seconderName: validateTextField(body, 'seconderName', { required: true, maxLength: FIELD_LIMITS.seconderName }),
-    seconderEmail: validateEmailField(body, 'seconderEmail')
+    issueNumber: validateIssueNumber(body.issueNumber)
   };
 }
 
@@ -566,20 +613,20 @@ function validateVoteRequest(body) {
 
   return {
     issueNumber: validateIssueNumber(body.issueNumber),
-    voterName: validateTextField(body, 'voterName', { required: true, maxLength: FIELD_LIMITS.voterName }),
-    voterEmail: validateEmailField(body, 'voterEmail'),
     vote
   };
 }
 
-async function handlePropose(body, clientIp) {
+// --- Action Handlers ---
+
+async function handlePropose(body, user, clientIp) {
   const proposal = validateProposal(body);
 
-  if (!enforceWriteRateLimit(proposal.proposerEmail, clientIp)) {
+  if (!enforceWriteRateLimit(user.id, clientIp)) {
     throw createHttpError(429, 'Rate limit exceeded. Please wait before submitting another board action.');
   }
 
-  const issueBody = buildIssueBody(proposal);
+  const issueBody = buildIssueBody(proposal, user);
   const issue = await githubRequest(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues`, {
     method: 'POST',
     body: {
@@ -605,10 +652,10 @@ async function handlePropose(body, clientIp) {
   };
 }
 
-async function handleSecond(body, clientIp) {
+async function handleSecond(body, user, clientIp) {
   const request = validateSecondRequest(body);
 
-  if (!enforceWriteRateLimit(request.seconderEmail, clientIp)) {
+  if (!enforceWriteRateLimit(user.id, clientIp)) {
     throw createHttpError(429, 'Rate limit exceeded. Please wait before recording another board action.');
   }
 
@@ -622,10 +669,16 @@ async function handleSecond(body, clientIp) {
     throw createHttpError(409, 'This motion has already been seconded.');
   }
 
+  // Prevent proposer from seconding their own motion
+  const meta = extractMotionMeta(issue.body);
+  if (meta.proposerId === user.id || meta.proposerEmail === user.email) {
+    throw createHttpError(409, 'You cannot second your own motion.');
+  }
+
   await githubRequest(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues/${request.issueNumber}/comments`, {
     method: 'POST',
     body: {
-      body: buildSecondComment(request.seconderName, request.seconderEmail)
+      body: buildSecondComment(user)
     }
   });
 
@@ -633,10 +686,10 @@ async function handleSecond(body, clientIp) {
   return { success: true };
 }
 
-async function handleVote(body, clientIp) {
+async function handleVote(body, user, clientIp) {
   const request = validateVoteRequest(body);
 
-  if (!enforceWriteRateLimit(request.voterEmail, clientIp)) {
+  if (!enforceWriteRateLimit(user.id, clientIp)) {
     throw createHttpError(429, 'Rate limit exceeded. Please wait before recording another board action.');
   }
 
@@ -646,16 +699,15 @@ async function handleVote(body, clientIp) {
     throw createHttpError(409, 'This motion is still awaiting a seconder, so voting is not open yet.');
   }
 
-  const { votesByEmail } = getVoteSummary(issue, comments);
-  const emailHash = hashEmail(request.voterEmail);
-  if (votesByEmail.has(emailHash)) {
-    throw createHttpError(409, 'A vote from this email has already been recorded for this motion.');
+  const { votesByUser } = getVoteSummary(issue, comments);
+  if (votesByUser.has(user.id) || votesByUser.has(user.email)) {
+    throw createHttpError(409, 'You have already voted on this motion.');
   }
 
   await githubRequest(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues/${request.issueNumber}/comments`, {
     method: 'POST',
     body: {
-      body: buildVoteComment(request.voterName, request.voterEmail, request.vote)
+      body: buildVoteComment(user, request.vote)
     }
   });
 
@@ -698,6 +750,8 @@ async function handleList() {
   return { motions };
 }
 
+// --- Main Handler ---
+
 module.exports = async function (context, req) {
   const origin = normalizeOrigin(getHeader(req, 'origin'));
   const action = String((req.query && req.query.action) || '').trim().toLowerCase();
@@ -728,11 +782,14 @@ module.exports = async function (context, req) {
     if (req.method === 'GET' && action === 'list') {
       result = await handleList();
     } else if (req.method === 'POST' && action === 'propose') {
-      result = await handlePropose(parseBody(req), clientIp);
+      const user = requireBoardMember(req);
+      result = await handlePropose(parseBody(req), user, clientIp);
     } else if (req.method === 'POST' && action === 'second') {
-      result = await handleSecond(parseBody(req), clientIp);
+      const user = requireBoardMember(req);
+      result = await handleSecond(parseBody(req), user, clientIp);
     } else if (req.method === 'POST' && action === 'vote') {
-      result = await handleVote(parseBody(req), clientIp);
+      const user = requireBoardMember(req);
+      result = await handleVote(parseBody(req), user, clientIp);
     } else {
       throw createHttpError(405, 'Unsupported method or action.');
     }

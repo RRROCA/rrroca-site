@@ -3,6 +3,8 @@
  * Tests: input validation, rate limiting, prompt injection, history sanitization
  */
 
+const { SITE_ORIGINS } = require('./helpers/site-config');
+
 // Mock the Azure OpenAI response
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
@@ -26,7 +28,7 @@ function createReq(message, history = [], headers = {}) {
     method: 'POST',
     body: { message, history },
     headers: {
-      origin: 'https://rrroca.org',
+      origin: SITE_ORIGINS[0],
       'x-azure-clientip': '192.168.1.' + Math.floor(Math.random() * 254),
       ...headers
     }
@@ -60,7 +62,7 @@ describe('Input Validation', () => {
 
   test('rejects null message', async () => {
     const ctx = createContext();
-    await chatFunction(ctx, { method: 'POST', body: { message: null }, headers: { origin: 'https://rrroca.org', 'x-azure-clientip': '1.2.3.4' } });
+    await chatFunction(ctx, { method: 'POST', body: { message: null }, headers: { origin: SITE_ORIGINS[0], 'x-azure-clientip': '1.2.3.4' } });
     expect(ctx.res.status).toBe(400);
   });
 
