@@ -84,7 +84,7 @@ jobs:
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   issue_number: issue.number,
-                  body: `## ✋ Motion Seconded!\n\n**${secondReaction.user.login}** has seconded this motion.\n\n🗳️ **Voting is now open!**\n\nBoard members: react to the original post above with:\n- 👍 = **For** (approve)\n- 👎 = **Against** (reject)\n- 😐 = **Abstain**`
+                  body: `## ✋ Motion Seconded!\n\n**${secondReaction.user.login}** has seconded this motion.\n\n🗳️ **Voting is now open!**\n\nBoard members: react to the original post above with:\n- 👍 = **For** (approve)\n- 👎 = **Against** (reject)\n- 😐 = **Abstain**\n\nFor **Abstain**, use the 😕 reaction (confused face emoji).`
                 });
 
                 console.log(`Motion in ${file} seconded by ${secondReaction.user.login}`);
