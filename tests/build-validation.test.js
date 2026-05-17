@@ -201,6 +201,38 @@ describe('Hugo build validation', () => {
     });
   });
 
+  it('renders GetCommunal call-to-action links on events, get involved, and volunteer pages', () => {
+    const ctaPages = [
+      {
+        file: path.join('public', 'events', 'index.html'),
+        href: 'https://rrroca.getcommunal.com/events',
+        text: /Register on GetCommunal/i
+      },
+      {
+        file: path.join('public', 'get-involved', 'index.html'),
+        href: 'https://rrroca.getcommunal.com/facilities',
+        text: /Book a Facility/i
+      },
+      {
+        file: path.join('public', 'get-involved', 'volunteer', 'index.html'),
+        href: 'https://rrroca.getcommunal.com/volunteer',
+        text: /Sign Up to Volunteer/i
+      }
+    ];
+
+    ctaPages.forEach(({ file, href, text }) => {
+      const document = loadDocument(file);
+      const link = [...document.querySelectorAll('a[href]')].find(
+        (anchor) => anchor.getAttribute('href') === href
+      );
+
+      expect(link).toBeTruthy();
+      expect(link.textContent).toMatch(text);
+      expect(link.getAttribute('target')).toBe('_blank');
+      expect(link.getAttribute('rel') || '').toMatch(/noopener/i);
+    });
+  });
+
   it('includes core meta tags across generated HTML pages', () => {
     const htmlFiles = [
       path.join(PUBLIC_DIR, 'index.html'),

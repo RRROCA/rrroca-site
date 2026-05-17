@@ -23,6 +23,8 @@ Want to make a difference? [Check out our volunteer opportunities](/get-involved
 
 We are always looking for volunteers to support events and general activities of the Association. Email [volunteer@rrroca.org](mailto:volunteer@rrroca.org) for more information.
 
+<p><a class="btn btn-primary" href="https://rrroca.getcommunal.com/facilities" target="_blank" rel="noopener noreferrer">Book a Facility</a></p>
+
 ### Sponsor Us
 
 We are looking for local businesses that are willing to participate in our "Discounts for Members" program. Please email [sponsorship@rrroca.org](mailto:sponsorship@rrroca.org).
