@@ -40,6 +40,7 @@ describe('Hugo build validation', () => {
     expect(fs.existsSync(path.join(PUBLIC_DIR, 'js', 'directory-search.js'))).toBe(true);
     expect(fs.existsSync(path.join(PUBLIC_DIR, 'js', 'safety-dashboard.js'))).toBe(true);
     expect(fs.existsSync(path.join(PUBLIC_DIR, 'js', 'search.js'))).toBe(true);
+    expect(fs.existsSync(path.join(PUBLIC_DIR, 'js', 'board-wizard.js'))).toBe(true);
 
     const indexDocument = loadDocument(path.join('public', 'index.html'));
     const stylesheet = indexDocument.querySelector('link[rel="stylesheet"][href*="/css/style."]');
@@ -123,6 +124,7 @@ describe('Hugo build validation', () => {
       '/community/parks-pathways/',
       '/sports/',
       '/board/',
+      '/board/actions/',
       '/safety/electrical-safety/',
       '/safety/winter-safety/',
       '/safety/wild-animal-safety/'
@@ -162,6 +164,10 @@ describe('Hugo build validation', () => {
       {
         file: path.join('public', 'business-directory', 'index.html'),
         heading: 'Community Business Directory'
+      },
+      {
+        file: path.join('public', 'board', 'actions', 'index.html'),
+        heading: 'Board Action Center'
       }
     ];
 

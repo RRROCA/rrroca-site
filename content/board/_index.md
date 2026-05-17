@@ -12,6 +12,8 @@ The Rocky Ridge Royal Oak Community Association is governed by a volunteer Board
 
 ### How It Works
 
+**Board Members: [Go to Board Action Center →](/board/actions/)**
+
 1. **A board member proposes a motion** by filling out a simple online form
 2. **The motion appears here automatically** for full community visibility
 3. **Board members review** and discuss the motion
