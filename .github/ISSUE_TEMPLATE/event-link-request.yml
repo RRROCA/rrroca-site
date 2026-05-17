@@ -1,0 +1,50 @@
+name: "📅 Event or Link Request"
+description: "Request a new event, link, or page be added to the website. Auto-handled by our AI assistant."
+title: ""
+labels: ["content-fix"]
+body:
+  - type: dropdown
+    id: request-type
+    attributes:
+      label: What do you need?
+      options:
+        - "📅 Add a new event to the website"
+        - "🔗 Add a link to a page"
+        - "📄 Create a new page"
+        - "📢 Post an announcement or news item"
+    validations:
+      required: true
+
+  - type: textarea
+    id: details
+    attributes:
+      label: Tell us what to add
+      description: Include all the details — dates, links, descriptions, who it's for, etc.
+      placeholder: |
+        Example: Add a link to our GetCommunal events page (https://rrroca.getcommunal.com/events) 
+        on the Events page. The link text should be "Register for Events".
+    validations:
+      required: true
+
+  - type: input
+    id: where
+    attributes:
+      label: Where should this go on the site?
+      description: Which page or section?
+      placeholder: "Events page, Get Involved page, News section, etc."
+    validations:
+      required: true
+
+  - type: textarea
+    id: attachments
+    attributes:
+      label: Any images or files to include? (optional)
+      description: Drag and drop photos, flyers, or documents here
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        ✅ **What happens next:** Our AI assistant will automatically make this change and deploy it. You'll get a notification when it's live (usually within minutes).

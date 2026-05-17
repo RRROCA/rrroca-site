@@ -165,6 +165,9 @@ function askAI(question) {
   handleAISubmit(new Event('submit'));
 }
 
+// Conversation history for multi-turn context
+const conversationHistory = [];
+
 function handleAISubmit(e) {
   e.preventDefault();
   const input = document.getElementById('ai-input-field');
@@ -173,16 +176,67 @@ function handleAISubmit(e) {
 
   addMessage(question, 'user');
   input.value = '';
+  input.disabled = true;
 
   // Hide suggestion buttons after first question
   const suggestions = document.getElementById('ai-suggestions');
   if (suggestions) suggestions.style.display = 'none';
 
-  // Find best matching response
-  setTimeout(() => {
-    const response = findAnswer(question);
-    addMessage(response, 'bot');
-  }, 300 + Math.random() * 400);
+  // Show typing indicator
+  const typingId = showTypingIndicator();
+
+  // Try API first, fall back to keyword matching
+  askAIAPI(question)
+    .then((reply) => {
+      removeTypingIndicator(typingId);
+      addMessage(reply, 'bot');
+      conversationHistory.push({ role: 'user', content: question });
+      conversationHistory.push({ role: 'assistant', content: reply });
+      input.disabled = false;
+      input.focus();
+    })
+    .catch(() => {
+      removeTypingIndicator(typingId);
+      const fallbackReply = findAnswer(question);
+      addMessage(fallbackReply, 'bot');
+      input.disabled = false;
+      input.focus();
+    });
+}
+
+async function askAIAPI(question) {
+  const response = await fetch('/api/chat', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: question,
+      history: conversationHistory.slice(-6),
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok || data.fallback) {
+    throw new Error(data.error || 'API unavailable');
+  }
+
+  return data.reply;
+}
+
+function showTypingIndicator() {
+  const messages = document.getElementById('ai-messages');
+  const div = document.createElement('div');
+  div.className = 'ai-message ai-bot ai-typing';
+  div.id = 'ai-typing-' + Date.now();
+  div.innerHTML = '<p><span class="typing-dots"><span>.</span><span>.</span><span>.</span></span></p>';
+  messages.appendChild(div);
+  messages.scrollTop = messages.scrollHeight;
+  return div.id;
+}
+
+function removeTypingIndicator(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
 }
 
 function findAnswer(question) {
