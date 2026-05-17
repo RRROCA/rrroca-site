@@ -1,0 +1,107 @@
+name: Motion Second
+
+on:
+  # GitHub doesn't have a native reaction trigger, so we use issue_comment
+  # as a proxy combined with a scheduled check
+  schedule:
+    - cron: '*/15 * * * *'  # Check every 15 minutes
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  check-seconds:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for seconded motions
+        uses: actions/github-script@v7
+        id: check
+        with:
+          script: |
+            // Find all open issues with 'motion' label
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'motion',
+              state: 'open',
+              per_page: 50
+            });
+
+            const fs = require('fs');
+            const motionDir = 'content/board/motions';
+            let updated = false;
+
+            for (const issue of issues.data) {
+              // Get reactions on the issue
+              const reactions = await github.rest.reactions.listForIssue({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                per_page: 100
+              });
+
+              // Look for a 👋 (hooray) reaction from someone other than the proposer
+              const secondReaction = reactions.data.find(r =>
+                r.content === 'hooray' && r.user.login !== issue.user.login
+              );
+
+              if (!secondReaction) continue;
+
+              // Check if motion file exists and is still awaiting_second
+              const files = fs.existsSync(motionDir)
+                ? fs.readdirSync(motionDir).filter(f => f.endsWith('.md'))
+                : [];
+
+              for (const file of files) {
+                const content = fs.readFileSync(`${motionDir}/${file}`, 'utf8');
+                if (!content.includes(`github_issue: ${issue.number}`)) continue;
+                if (!content.includes('motion_status: "awaiting_second"')) continue;
+
+                // Update status to open and record seconder
+                const updatedContent = content
+                  .replace('motion_status: "awaiting_second"', 'motion_status: "open"')
+                  .replace(/seconded_by: ".*?"/, `seconded_by: "${secondReaction.user.login}"`)
+                  .replace(/seconder: ".*?"/, `seconder: "${secondReaction.user.login}"`);
+
+                // Add seconder if not present
+                const finalContent = updatedContent.includes('seconder:')
+                  ? updatedContent
+                  : updatedContent.replace(
+                      /motion_status: "open"/,
+                      `motion_status: "open"\nseconder: "${secondReaction.user.login}"`
+                    );
+
+                fs.writeFileSync(`${motionDir}/${file}`, finalContent);
+                updated = true;
+
+                // Comment on the issue
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: issue.number,
+                  body: `## ✋ Motion Seconded!\n\n**${secondReaction.user.login}** has seconded this motion.\n\n🗳️ **Voting is now open!**\n\nBoard members: react to the original post above with:\n- 👍 = **For** (approve)\n- 👎 = **Against** (reject)\n- 😐 = **Abstain**`
+                });
+
+                console.log(`Motion in ${file} seconded by ${secondReaction.user.login}`);
+                break;
+              }
+            }
+
+            core.setOutput('updated', updated.toString());
+
+      - name: Commit changes
+        if: steps.check.outputs.updated == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add content/board/motions/
+          git diff --cached --quiet && echo "No changes" && exit 0
+          git commit -m "auto: motion seconded — voting now open"
+          git push origin master
