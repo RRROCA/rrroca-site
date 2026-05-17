@@ -329,12 +329,13 @@ function initializeBoardAwareness() {
 
 async function maybeShowBoardGreeting() {
   const panel = document.getElementById('ai-panel');
-  if (!panel || !panel.classList.contains('open') || assistantState.boardGreetingShown) {
+  if (!panel || !panel.classList.contains('open')) {
     return;
   }
 
   await initializeBoardAwareness();
-  if (!isBoardMember(assistantState.boardUser)) {
+
+  if (!isBoardMember(assistantState.boardUser) || assistantState.boardGreetingShown) {
     return;
   }
 

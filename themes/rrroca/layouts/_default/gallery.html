@@ -32,12 +32,12 @@
         <button
           type="button"
           class="gallery-card-button"
-          data-lightbox-src="{{ strings.TrimPrefix "/" .src | absURL }}"
+          data-lightbox-src="{{ strings.TrimPrefix "/" .src | relURL }}"
           data-lightbox-caption="{{ .caption }}"
           data-lightbox-category="{{ .category }}"
           aria-label="Open photo: {{ .caption }}">
           <img
-            src="{{ strings.TrimPrefix "/" .src | absURL }}"
+            src="{{ strings.TrimPrefix "/" .src | relURL }}"
             alt="{{ .caption }}"
             class="gallery-image"
             loading="lazy">

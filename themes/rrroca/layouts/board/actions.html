@@ -2,8 +2,8 @@
 <section class="page-header page-header--board">
   <div class="container">
     <div class="page-breadcrumb">
-      <a href="{{ "" | absURL }}">Home</a> ·
-      <a href="{{ "board/" | absURL }}">Board Governance</a> ·
+      <a href="{{ "" | relURL }}">Home</a> ·
+      <a href="{{ "board/" | relURL }}">Board Governance</a> ·
       <span>{{ .Title }}</span>
     </div>
     <h1>⚖️ {{ .Title }}</h1>
@@ -167,7 +167,7 @@
         </ol>
         <p>This page writes to the existing GitHub-backed motion workflow, but it keeps the experience friendly for board members who do not use GitHub directly.</p>
         <p class="board-action-sidebar-note">All motions are securely stored in GitHub with full audit history. Board members are notified automatically when a motion needs their attention.</p>
-        <a href="{{ "board/" | absURL }}" class="btn btn-secondary btn-sm">View Governance Page</a>
+        <a href="{{ "board/" | relURL }}" class="btn btn-secondary btn-sm">View Governance Page</a>
       </div>
     </aside>
   </div>

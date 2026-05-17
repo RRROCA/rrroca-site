@@ -1,13 +1,13 @@
 {{ define "main" }}
 <!-- Hero — Full-bleed community photo with warm welcome -->
 <section class="hero" id="hero">
-  <div class="hero-photo" style="background-image: url('{{ "images/community-aerial.jpg" | absURL }}');"></div>
+  <div class="hero-photo" style="background-image: url('{{ "images/community-aerial.jpg" | relURL }}');"></div>
   <div class="hero-overlay"></div>
   <div class="hero-glow hero-glow--one" aria-hidden="true"></div>
   <div class="hero-glow hero-glow--two" aria-hidden="true"></div>
   <div class="container hero-content">
     <div class="hero-copy">
-      <img src="{{ "images/rrroca-logo.png" | absURL }}" alt="RRROCA Logo" class="hero-logo" width="120" height="auto">
+      <img src="{{ "images/rrroca-logo.png" | relURL }}" alt="RRROCA Logo" class="hero-logo" width="120" height="auto">
       <p class="hero-tagline">{{ .Site.Params.tagline }}</p>
       <h1 class="hero-title">Welcome to Rocky Ridge<br>&amp; Royal Oak</h1>
       <p class="hero-description">A proud northwest Calgary community where neighbours show up, local businesses belong, and every event makes home feel even more like home.</p>
@@ -26,8 +26,8 @@
         </div>
       </div>
       <div class="hero-actions">
-        <a href="{{ "get-involved/" | absURL }}" class="btn btn-primary btn-lg">Join Your Community</a>
-        <a href="{{ "safety/" | absURL }}" class="btn btn-outline btn-lg">Safety Dashboard</a>
+        <a href="{{ "get-involved/" | relURL }}" class="btn btn-primary btn-lg">Join Your Community</a>
+        <a href="{{ "safety/" | relURL }}" class="btn btn-outline btn-lg">Safety Dashboard</a>
       </div>
       <div class="hero-proof" aria-label="Community proof points">
         <span class="hero-proof-item">Neighbour-led events</span>
@@ -44,37 +44,37 @@
     <div class="strip-scroll">
       <div class="strip-track">
         <div class="strip-item">
-          <img src="{{ "images/stampede-breakfast.jpg" | absURL }}" alt="RRROCA Stampede Pancake Breakfast" loading="lazy">
+          <img src="{{ "images/stampede-breakfast.jpg" | relURL }}" alt="RRROCA Stampede Pancake Breakfast" loading="lazy">
           <span class="strip-caption">Stampede Breakfast</span>
         </div>
         <div class="strip-item">
-          <img src="{{ "images/cascades-royal-oak.jpg" | absURL }}" alt="The Cascades in Royal Oak Calgary" loading="lazy">
+          <img src="{{ "images/cascades-royal-oak.jpg" | relURL }}" alt="The Cascades in Royal Oak Calgary" loading="lazy">
           <span class="strip-caption">The Cascades</span>
         </div>
         <div class="strip-item">
-          <img src="{{ "images/little-free-library.jpg" | absURL }}" alt="Little Free Library in our neighbourhood" loading="lazy">
+          <img src="{{ "images/little-free-library.jpg" | relURL }}" alt="Little Free Library in our neighbourhood" loading="lazy">
           <span class="strip-caption">Little Free Library</span>
         </div>
         <div class="strip-item">
-          <img src="{{ "images/royal-oak-overview.jpg" | absURL }}" alt="Royal Oak neighbourhood overview" loading="lazy">
+          <img src="{{ "images/royal-oak-overview.jpg" | relURL }}" alt="Royal Oak neighbourhood overview" loading="lazy">
           <span class="strip-caption">Our Neighbourhood</span>
         </div>
       </div>
       <div class="strip-track" aria-hidden="true">
         <div class="strip-item">
-          <img src="{{ "images/stampede-breakfast.jpg" | absURL }}" alt="" loading="lazy">
+          <img src="{{ "images/stampede-breakfast.jpg" | relURL }}" alt="" loading="lazy">
           <span class="strip-caption">Stampede Breakfast</span>
         </div>
         <div class="strip-item">
-          <img src="{{ "images/cascades-royal-oak.jpg" | absURL }}" alt="" loading="lazy">
+          <img src="{{ "images/cascades-royal-oak.jpg" | relURL }}" alt="" loading="lazy">
           <span class="strip-caption">The Cascades</span>
         </div>
         <div class="strip-item">
-          <img src="{{ "images/little-free-library.jpg" | absURL }}" alt="" loading="lazy">
+          <img src="{{ "images/little-free-library.jpg" | relURL }}" alt="" loading="lazy">
           <span class="strip-caption">Little Free Library</span>
         </div>
         <div class="strip-item">
-          <img src="{{ "images/royal-oak-overview.jpg" | absURL }}" alt="" loading="lazy">
+          <img src="{{ "images/royal-oak-overview.jpg" | relURL }}" alt="" loading="lazy">
           <span class="strip-caption">Our Neighbourhood</span>
         </div>
       </div>
@@ -91,7 +91,7 @@
       <p class="section-intro">Everything residents need — surfaced fast, beautifully, and without the hunt.</p>
     </div>
     <div class="quick-links-grid">
-      <a href="{{ "safety/" | absURL }}" class="quick-link-card">
+      <a href="{{ "safety/" | relURL }}" class="quick-link-card">
         <span class="quick-link-icon-wrap"><span class="quick-link-icon">🛡️</span></span>
         <div class="quick-link-copy">
           <span class="quick-link-eyebrow">Stay informed</span>
@@ -100,7 +100,7 @@
         </div>
         <span class="quick-link-arrow" aria-hidden="true">→</span>
       </a>
-      <a href="{{ "events/" | absURL }}" class="quick-link-card">
+      <a href="{{ "events/" | relURL }}" class="quick-link-card">
         <span class="quick-link-icon-wrap"><span class="quick-link-icon">🎉</span></span>
         <div class="quick-link-copy">
           <span class="quick-link-eyebrow">Show up</span>
@@ -109,7 +109,7 @@
         </div>
         <span class="quick-link-arrow" aria-hidden="true">→</span>
       </a>
-      <a href="{{ "news/" | absURL }}" class="quick-link-card">
+      <a href="{{ "news/" | relURL }}" class="quick-link-card">
         <span class="quick-link-icon-wrap"><span class="quick-link-icon">📰</span></span>
         <div class="quick-link-copy">
           <span class="quick-link-eyebrow">Know what's next</span>
@@ -118,7 +118,7 @@
         </div>
         <span class="quick-link-arrow" aria-hidden="true">→</span>
       </a>
-      <a href="{{ "sports/" | absURL }}" class="quick-link-card">
+      <a href="{{ "sports/" | relURL }}" class="quick-link-card">
         <span class="quick-link-icon-wrap"><span class="quick-link-icon">⚽</span></span>
         <div class="quick-link-copy">
           <span class="quick-link-eyebrow">Get moving</span>
@@ -127,7 +127,7 @@
         </div>
         <span class="quick-link-arrow" aria-hidden="true">→</span>
       </a>
-      <a href="{{ "community/" | absURL }}" class="quick-link-card">
+      <a href="{{ "community/" | relURL }}" class="quick-link-card">
         <span class="quick-link-icon-wrap"><span class="quick-link-icon">🌳</span></span>
         <div class="quick-link-copy">
           <span class="quick-link-eyebrow">Explore local life</span>
@@ -136,7 +136,7 @@
         </div>
         <span class="quick-link-arrow" aria-hidden="true">→</span>
       </a>
-      <a href="{{ "business-directory/" | absURL }}" class="quick-link-card">
+      <a href="{{ "business-directory/" | relURL }}" class="quick-link-card">
         <span class="quick-link-icon-wrap"><span class="quick-link-icon">🏪</span></span>
         <div class="quick-link-copy">
           <span class="quick-link-eyebrow">Invest locally</span>
@@ -166,7 +166,7 @@
           <span class="involve-cta">Join Now →</span>
         </div>
       </a>
-      <a href="{{ "get-involved/volunteer/" | absURL }}" class="involve-card">
+      <a href="{{ "get-involved/volunteer/" | relURL }}" class="involve-card">
         <div class="involve-card-icon involve-card-icon--volunteer">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         </div>
@@ -176,7 +176,7 @@
           <span class="involve-cta">Get Involved →</span>
         </div>
       </a>
-      <a href="{{ "get-involved/sponsorship/" | absURL }}" class="involve-card">
+      <a href="{{ "get-involved/sponsorship/" | relURL }}" class="involve-card">
         <div class="involve-card-icon involve-card-icon--sponsor">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
         </div>
@@ -199,7 +199,7 @@
     </div>
     {{ partial "safety-dashboard.html" . }}
     <div class="text-center" style="margin-top: var(--space-xl);">
-      <a href="{{ "safety/" | absURL }}" class="btn btn-primary">Full Safety Hub →</a>
+      <a href="{{ "safety/" | relURL }}" class="btn btn-primary">Full Safety Hub →</a>
     </div>
   </div>
 </section>
@@ -239,7 +239,7 @@
       {{ end }}
     </div>
     <div class="text-center" style="margin-top: var(--space-xl);">
-      <a href="{{ "board/" | absURL }}" class="btn btn-outline-dark">All Governance Records →</a>
+      <a href="{{ "board/" | relURL }}" class="btn btn-outline-dark">All Governance Records →</a>
     </div>
   </div>
 </section>
@@ -270,7 +270,7 @@
       {{ end }}
     </div>
     <div class="text-center" style="margin-top: var(--space-xl);">
-      <a href="{{ "news/" | absURL }}" class="btn btn-outline-dark">All News →</a>
+      <a href="{{ "news/" | relURL }}" class="btn btn-outline-dark">All News →</a>
     </div>
   </div>
 </section>
@@ -284,7 +284,7 @@
       <p class="section-intro">Your community association is investing in real improvements — here's what's in progress right now.</p>
     </div>
     <div class="projects-grid">
-      <a href="{{ "community/hub-park-upgrades/" | absURL }}" class="project-card">
+      <a href="{{ "community/hub-park-upgrades/" | relURL }}" class="project-card">
         <div class="project-card-icon">🏞️</div>
         <div class="project-card-body">
           <span class="project-card-tag">NIF Grant Funded</span>
@@ -293,7 +293,7 @@
           <span class="project-card-cta">Learn More →</span>
         </div>
       </a>
-      <a href="{{ "community/tiny-forest/" | absURL }}" class="project-card">
+      <a href="{{ "community/tiny-forest/" | relURL }}" class="project-card">
         <div class="project-card-icon">🌳</div>
         <div class="project-card-body">
           <span class="project-card-tag">Climate Action</span>
@@ -302,7 +302,7 @@
           <span class="project-card-cta">Learn More →</span>
         </div>
       </a>
-      <a href="{{ "community/community-sharing/" | absURL }}" class="project-card">
+      <a href="{{ "community/community-sharing/" | relURL }}" class="project-card">
         <div class="project-card-icon">🔄</div>
         <div class="project-card-body">
           <span class="project-card-tag">In Development</span>
@@ -313,7 +313,7 @@
       </a>
     </div>
     <div class="text-center" style="margin-top: var(--space-xl);">
-      <a href="{{ "community/" | absURL }}" class="btn btn-outline-dark">All Community Info →</a>
+      <a href="{{ "community/" | relURL }}" class="btn btn-outline-dark">All Community Info →</a>
     </div>
   </div>
 </section>
@@ -373,11 +373,11 @@
         </div>
         <div class="membership-actions">
           <a href="{{ .Site.Params.membershipURL }}" target="_blank" rel="noopener" class="btn btn-primary btn-lg">Join RRROCA Today</a>
-          <a href="{{ "get-involved/sponsorship/" | absURL }}" class="btn btn-outline-light btn-lg">Sponsor the Community</a>
+          <a href="{{ "get-involved/sponsorship/" | relURL }}" class="btn btn-outline-light btn-lg">Sponsor the Community</a>
         </div>
       </div>
       <div class="membership-photo">
-        <img src="{{ "images/stampede-breakfast.jpg" | absURL }}" alt="RRROCA community event — Stampede Pancake Breakfast" loading="lazy">
+        <img src="{{ "images/stampede-breakfast.jpg" | relURL }}" alt="RRROCA community event — Stampede Pancake Breakfast" loading="lazy">
         <div class="membership-photo-badge">Alive, welcoming, and worth backing</div>
       </div>
     </div>

@@ -5,7 +5,7 @@
 {{ $labelMap := dict "about" "Community Association" "community" "Neighbourhood Life" "events" "Community Experience" "news" "Community Bulletin" "safety" "Safety Resource" "get-involved" "Volunteer Momentum" "business-directory" "Local Business Spotlight" "general" "Community Story" }}
 {{ $sectionPage := .CurrentSection }}
 {{ $sectionTitle := "Community" }}
-{{ $sectionLink := "" | absURL }}
+{{ $sectionLink := "" | relURL }}
 {{ if $sectionPage }}
   {{ $sectionTitle = $sectionPage.Title }}
   {{ $sectionLink = $sectionPage.RelPermalink }}
@@ -25,7 +25,7 @@
   <div class="container inner-hero-content">
     <nav class="breadcrumb-trail reveal-on-scroll" aria-label="Breadcrumb">
       <ol>
-        <li><a href="{{ "" | absURL }}">Home</a></li>
+        <li><a href="{{ "" | relURL }}">Home</a></li>
         <li><a href="{{ $sectionLink }}">{{ $sectionTitle }}</a></li>
         <li aria-current="page">{{ .Title }}</li>
       </ol>
@@ -86,7 +86,7 @@
       {{ with .Params.tags }}
       <div class="article-tags reveal-on-scroll" aria-label="Tags">
         {{ range . }}
-        <a href="{{ (printf "tags/%s/" (. | urlize)) | absURL }}" class="tag">{{ . }}</a>
+        <a href="{{ (printf "tags/%s/" (. | urlize)) | relURL }}" class="tag">{{ . }}</a>
         {{ end }}
       </div>
       {{ end }}

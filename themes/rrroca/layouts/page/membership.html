@@ -1,7 +1,7 @@
 {{/* Keep content/membership.md at the root so the site preserves the stable /membership/ URL while using this custom page layout. */}}
 {{ define "main" }}
 <section class="membership-page-hero">
-  <div class="membership-page-hero-photo" style="background-image: url('{{ "images/community-aerial.jpg" | absURL }}');"></div>
+  <div class="membership-page-hero-photo" style="background-image: url('{{ "images/community-aerial.jpg" | relURL }}');"></div>
   <div class="membership-page-hero-overlay"></div>
   <div class="container membership-page-hero-content">
     <span class="section-label">Support RRROCA</span>
@@ -131,7 +131,7 @@
       <details class="membership-page-faq-item">
         <summary>Who should I contact about business memberships or help with signup?</summary>
         <div class="membership-page-faq-answer">
-          <p>Please use the <a href="{{ "contact/" | absURL }}">contact form</a> and select Membership or Sponsorship so a RRROCA volunteer can follow up.</p>
+          <p>Please use the <a href="{{ "contact/" | relURL }}">contact form</a> and select Membership or Sponsorship so a RRROCA volunteer can follow up.</p>
         </div>
       </details>
     </div>
