@@ -210,7 +210,7 @@ async function askAIAPI(question) {
       : 'https://zealous-wave-07c275a0f.7.azurestaticapps.net';
     const response = await fetch(apiBase + '/api/chat', {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'text/plain' },
     body: JSON.stringify({
       message: question,
       history: conversationHistory.slice(-6),
