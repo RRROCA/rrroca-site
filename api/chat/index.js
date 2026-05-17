@@ -127,7 +127,12 @@ module.exports = async function (context, req) {
     return;
   }
 
-  const { message, history } = req.body || {};
+  // Handle text/plain body (used to avoid CORS preflight from cross-origin sites)
+  let body = req.body;
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch (e) { body = {}; }
+  }
+  const { message, history } = body || {};
 
   // Input validation
   const validation = validateMessage(message);
