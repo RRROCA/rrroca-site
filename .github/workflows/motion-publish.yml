@@ -165,8 +165,7 @@ jobs:
           gh pr create --title "motion: publish #${{ github.event.issue.number }} — ${{ steps.parse.outputs.motion-number }}" \
             --body "Auto-generated from issue #${{ github.event.issue.number }}. Motion ${{ steps.parse.outputs.motion-number }}." \
             --base master --head "$BRANCH" --label "content-fix"
-          sleep 10
-          gh pr merge "$BRANCH" --squash --admin --delete-branch
+          gh pr merge "$BRANCH" --squash --auto --delete-branch
 
       - name: Comment on issue with website link
         if: github.event.action == 'opened'
