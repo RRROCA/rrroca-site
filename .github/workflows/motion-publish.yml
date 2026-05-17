@@ -149,17 +149,23 @@ jobs:
 
             console.log(`Created motion ${motionNumber} at ${filename}`);
 
-      - name: Commit and push
+      - name: Commit and push via PR
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add content/board/motions/
           git diff --cached --quiet && echo "No changes to commit" && exit 0
-          git commit -m "Auto-publish motion from issue #${{ github.event.issue.number }}
-
-          Motion ${{ steps.parse.outputs.motion-number }} created from GitHub Issue.
-          See: ${{ github.event.issue.html_url }}"
-          git push
+          BRANCH="motion/issue-${{ github.event.issue.number }}"
+          git checkout -b "$BRANCH"
+          git commit -m "Auto-publish motion from issue #${{ github.event.issue.number }}"
+          git push origin "$BRANCH"
+          gh pr create --title "motion: publish #${{ github.event.issue.number }} — ${{ steps.parse.outputs.motion-number }}" \
+            --body "Auto-generated from issue #${{ github.event.issue.number }}. Motion ${{ steps.parse.outputs.motion-number }}." \
+            --base master --head "$BRANCH" --label "content-fix"
+          sleep 10
+          gh pr merge "$BRANCH" --squash --admin --delete-branch
 
       - name: Comment on issue with website link
         if: github.event.action == 'opened'
