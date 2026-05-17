@@ -161,7 +161,7 @@ jobs:
           BRANCH="motion/issue-${{ github.event.issue.number }}"
           git checkout -b "$BRANCH"
           git commit -m "Auto-publish motion from issue #${{ github.event.issue.number }}"
-          git push origin "$BRANCH"
+          git push origin "$BRANCH" --force
           gh pr create --title "motion: publish #${{ github.event.issue.number }} — ${{ steps.parse.outputs.motion-number }}" \
             --body "Auto-generated from issue #${{ github.event.issue.number }}. Motion ${{ steps.parse.outputs.motion-number }}." \
             --base master --head "$BRANCH" --label "content-fix"
