@@ -10,8 +10,6 @@ on:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
@@ -42,43 +40,62 @@ jobs:
               - 'static/css/**'
             js:
               - 'themes/rrroca/static/js/**'
-            docs:
-              - 'docs/**'
-              - '.github/**'
-              - 'README.md'
-              - '*.md'
+            site:
+              - 'content/**'
+              - 'static/**'
+              - 'themes/**'
+              - 'hugo.toml'
+              - 'api/**'
+              - 'scripts/**'
+              - 'tests/**'
+              - 'e2e/**'
+              - 'package.json'
+              - 'package-lock.json'
+              - 'staticwebapp.config.json'
+              - 'playwright.config.js'
+              - 'jest.config.js'
+
+      - name: Docs-only shortcut
+        if: steps.changes.outputs.site == 'false' && github.event_name == 'pull_request'
+        run: echo "✅ Docs-only change — skipping build and tests"
 
       - name: Setup Hugo Extended
+        if: steps.changes.outputs.site == 'true' || github.event_name != 'pull_request'
         uses: peaceiris/actions-hugo@v3
         with:
           hugo-version: '0.161.1'
           extended: true
 
       - name: Setup Node.js
+        if: steps.changes.outputs.site == 'true' || github.event_name != 'pull_request'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: Install dependencies
+        if: steps.changes.outputs.site == 'true' || github.event_name != 'pull_request'
         run: npm ci
 
       - name: Build site
+        if: steps.changes.outputs.site == 'true' || github.event_name != 'pull_request'
         run: hugo --gc --minify --buildFuture --baseURL "https://rrroca.github.io/rrroca-site/"
 
       - name: Run Jest unit tests
+        if: steps.changes.outputs.site == 'true' || github.event_name != 'pull_request'
         run: npx jest --verbose --coverage
 
       - name: Validate HTML (htmltest)
+        if: steps.changes.outputs.site == 'true' || github.event_name != 'pull_request'
         run: |
           curl -sSL https://github.com/wjdp/htmltest/releases/download/v0.17.0/htmltest_0.17.0_linux_amd64.tar.gz | tar -xz
           ./htmltest
 
       - name: Install Playwright browsers
-        if: steps.changes.outputs.content == 'true' || steps.changes.outputs.theme == 'true' || steps.changes.outputs.js == 'true' || github.event_name == 'push'
+        if: (steps.changes.outputs.content == 'true' || steps.changes.outputs.theme == 'true' || steps.changes.outputs.js == 'true' || github.event_name == 'push') && steps.changes.outputs.site == 'true'
         run: npx playwright install --with-deps chromium
 
       - name: Run Playwright e2e smoke tests
-        if: steps.changes.outputs.content == 'true' || steps.changes.outputs.theme == 'true' || steps.changes.outputs.js == 'true' || github.event_name == 'push'
+        if: (steps.changes.outputs.content == 'true' || steps.changes.outputs.theme == 'true' || steps.changes.outputs.js == 'true' || github.event_name == 'push') && steps.changes.outputs.site == 'true'
         run: npx playwright test --project=chromium
 
       - name: Upload test artifacts
@@ -89,28 +106,4 @@ jobs:
           path: test-results/
           retention-days: 7
 
-  # Staging deployment to GitHub Pages (rrroca.github.io/rrroca-site)
-  deploy-staging:
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-    needs: build-and-test
-    runs-on: ubuntu-latest
-    concurrency:
-      group: pages
-      cancel-in-progress: false
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: '0.161.1'
-          extended: true
-      - name: Build for GitHub Pages
-        run: hugo --gc --minify --buildFuture --baseURL "https://rrroca.github.io/rrroca-site/"
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./public
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  # GitHub Pages deployment removed — SWA is the sole deployment target
