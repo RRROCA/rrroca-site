@@ -39,15 +39,21 @@
         <p class="footer-heading">Connect With Us</p>
         <div class="social-links">
           {{ with .Site.Params.facebookPage }}
-            <a href="{{ . }}" target="_blank" rel="noopener" aria-label="Facebook Page">📘 Facebook Page</a>
+            <a href="{{ . }}" target="_blank" rel="noopener" aria-label="RRROCA Facebook Page">📘 Facebook Page</a>
           {{ end }}
           {{ with .Site.Params.facebookGroup }}
-            <a href="{{ . }}" target="_blank" rel="noopener" aria-label="Facebook Group">👨‍👩‍👧‍👦 Families Group</a>
+            <a href="{{ . }}" target="_blank" rel="noopener" aria-label="Families Facebook Group">👨‍👩‍👧‍👦 Families Group</a>
+          {{ end }}
+          {{ with .Site.Params.facebookBlockWatch }}
+            <a href="{{ . }}" target="_blank" rel="noopener" aria-label="Block Watch Facebook Group">🛡️ Block Watch</a>
           {{ end }}
           {{ with .Site.Params.email }}
             <a href="mailto:{{ . }}">✉️ {{ . }}</a>
           {{ end }}
         </div>
+        <p class="footer-suggestion-cta">
+          <a href="#" onclick="if(window.RRROCAChatbot){window.RRROCAChatbot.open('I have a suggestion for the community');return false;}">💡 Share an idea with the board</a>
+        </p>
       </div>
     </div>
     {{ partial "newsletter-signup.html" . }}
