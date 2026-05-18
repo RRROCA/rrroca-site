@@ -1,12 +1,15 @@
 const fs = require('fs');
 const path = require('path');
+const { submitMotion } = require('../shared/motion-service');
+const { createContent, updateContent } = require('../shared/content-service');
 
 const ALLOWED_ORIGINS = new Set(['https://rrroca.github.io', 'https://rrroca.org', 'https://www.rrroca.org', 'https://zealous-wave-07c275a0f.7.azurestaticapps.net']);
 const TRUSTED_IP_HEADERS = ['x-azure-clientip', 'x-ms-client-ip', 'client-ip'];
 const MAX_BODY_BYTES = 16 * 1024;
 const MAX_MESSAGE_LENGTH = 1000;
 const MAX_HISTORY_ITEMS = 6;
-const REQUEST_TIMEOUT_MS = 10000;
+const REQUEST_TIMEOUT_MS = 25000;
+const TOOL_CALL_TIMEOUT_MS = 20000;
 const RATE_LIMIT = { maxRequests: 6, windowMs: 60000 };
 const DAILY_LIMIT = 200;
 const BOARD_EMAIL_DOMAIN = '@rrroca.org';
@@ -34,6 +37,131 @@ let dailyCount = 0;
 let dailyResetTime = Date.now() + 86400000;
 const boardMotionCache = global.__RRROCA_CHAT_BOARD_MOTION_CACHE || { expiresAt: 0, motions: [], pendingFetch: null };
 global.__RRROCA_CHAT_BOARD_MOTION_CACHE = boardMotionCache;
+
+// --- Pending Action Store (server-side confirmation gate) ---
+const pendingActions = global.__RRROCA_CHAT_PENDING_ACTIONS || new Map();
+global.__RRROCA_CHAT_PENDING_ACTIONS = pendingActions;
+const PENDING_ACTION_TTL_MS = 5 * 60 * 1000;
+const WRITE_RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000;
+const WRITE_RATE_LIMIT_MAX = 10;
+const writeRateLimits = global.__RRROCA_CHAT_WRITE_LIMITS || new Map();
+global.__RRROCA_CHAT_WRITE_LIMITS = writeRateLimits;
+
+function generateActionId() {
+  const bytes = require('crypto').randomBytes(12);
+  return bytes.toString('hex');
+}
+
+function storePendingAction(userId, toolName, args) {
+  // Clean expired entries
+  const now = Date.now();
+  for (const [key, entry] of pendingActions) {
+    if (now > entry.expiresAt) pendingActions.delete(key);
+  }
+  const actionId = generateActionId();
+  pendingActions.set(actionId, {
+    userId,
+    toolName,
+    args,
+    expiresAt: now + PENDING_ACTION_TTL_MS
+  });
+  return actionId;
+}
+
+function consumePendingAction(actionId, userId) {
+  const entry = pendingActions.get(actionId);
+  if (!entry) return null;
+  if (entry.userId !== userId) return null;
+  if (Date.now() > entry.expiresAt) {
+    pendingActions.delete(actionId);
+    return null;
+  }
+  pendingActions.delete(actionId);
+  return entry;
+}
+
+function enforceWriteRateLimit(userId) {
+  const now = Date.now();
+  const key = `user:${userId}`;
+  const entry = writeRateLimits.get(key) || { count: 0, resetTime: now + WRITE_RATE_LIMIT_WINDOW_MS };
+  if (now > entry.resetTime) {
+    entry.count = 0;
+    entry.resetTime = now + WRITE_RATE_LIMIT_WINDOW_MS;
+  }
+  if (entry.count >= WRITE_RATE_LIMIT_MAX) return false;
+  entry.count += 1;
+  writeRateLimits.set(key, entry);
+  return true;
+}
+
+// --- Tool Definitions (Azure OpenAI function calling) ---
+const BOARD_TOOLS = [
+  {
+    type: 'function',
+    function: {
+      name: 'submit_motion',
+      description: 'Submit a board motion proposal. Only call this after gathering all required information from the board member and presenting a summary for their confirmation.',
+      parameters: {
+        type: 'object',
+        properties: {
+          title: { type: 'string', description: 'Short title for the motion (max 160 chars). Auto-generated from motionText if omitted.' },
+          motionText: { type: 'string', description: 'The full text of the motion — what is being proposed (required, max 5000 chars).' },
+          background: { type: 'string', description: 'Why this motion is needed — context and rationale (required, max 5000 chars).' },
+          category: { type: 'string', description: 'Category: Safety, Infrastructure, Events, Communications, Finance, Governance, or Other.' },
+          amount: { type: 'number', description: 'Budget amount in CAD if this motion involves spending. Omit if no spending.' },
+          portfolio: { type: 'string', description: 'Board portfolio this falls under (e.g., Safety & Technology, Communications).' },
+          deadline: { type: 'string', description: 'Decision deadline if time-sensitive (e.g., "2026-06-01").' },
+          supportingDocs: { type: 'string', description: 'Links to supporting documents, if any.' }
+        },
+        required: ['motionText', 'background']
+      }
+    }
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'create_content',
+      description: 'Create a new content item (news article, event, or safety alert) on the RRROCA website. Content is created as a draft. Only call after drafting the content and getting board member confirmation.',
+      parameters: {
+        type: 'object',
+        properties: {
+          contentType: { type: 'string', enum: ['news', 'event', 'safety'], description: 'Type of content to create.' },
+          title: { type: 'string', description: 'Article/event title (max 200 chars).' },
+          date: { type: 'string', description: 'Publication/event date in YYYY-MM-DD format.' },
+          description: { type: 'string', description: 'Short summary/description for previews (max 500 chars).' },
+          body: { type: 'string', description: 'Full article body in Markdown format.' },
+          slug: { type: 'string', description: 'URL-friendly slug (auto-generated from title if omitted).' }
+        },
+        required: ['contentType', 'title', 'date', 'description', 'body']
+      }
+    }
+  },
+  {
+    type: 'function',
+    function: {
+      name: 'update_content',
+      description: 'Update an existing content item on the RRROCA website. Only call after showing the proposed changes and getting board member confirmation.',
+      parameters: {
+        type: 'object',
+        properties: {
+          contentType: { type: 'string', enum: ['news', 'event', 'safety'], description: 'Type of content to update.' },
+          slug: { type: 'string', description: 'The slug/filename identifier of the content to update.' },
+          updates: {
+            type: 'object',
+            description: 'Fields to update.',
+            properties: {
+              title: { type: 'string', description: 'New title.' },
+              date: { type: 'string', description: 'New date (YYYY-MM-DD).' },
+              description: { type: 'string', description: 'New description.' },
+              body: { type: 'string', description: 'New body content in Markdown.' }
+            }
+          }
+        },
+        required: ['contentType', 'slug', 'updates']
+      }
+    }
+  }
+];
 
 function getHeader(req, name) {
   if (!req || !req.headers) return '';
@@ -421,30 +549,39 @@ ${motionLines}${extraMotionsNote}
 You can help board members with:
 - Checking motion status ("What motions are pending?")
 - Understanding voting based on the motion statuses and current vote counts shown above
-- Drafting new motions (guide them through title, description, background)
+- **Proposing motions** — guide them through gathering required fields (motionText, background), then optional fields (title, category, amount, portfolio, deadline, supportingDocs). Present a clear summary and ask for confirmation before calling submit_motion.
 - Explaining board process
 
-When a board member wants to propose, second, or vote — direct them to the Board Action Center at /board/actions/ (these actions must go through the authenticated UI, not through chat).
+AGENTIC CAPABILITIES (you have tools to take real actions):
+When a board member wants to propose a motion:
+1. Help them articulate what they want to propose (motionText) and why (background).
+2. Ask about optional fields naturally: category, budget amount, portfolio, deadline, supporting docs.
+3. Present a complete summary of what will be submitted.
+4. Ask "Shall I submit this motion?" — only call submit_motion after they confirm.
+5. After submission, share the motion number and confirm it's awaiting a second.
+
+When a board member wants to create website content (news, events, safety alerts):
+1. Help them draft the content in RRROCA's community voice — warm, neighbourly, Canadian English.
+2. Generate title, date, description (for previews), and body (in Markdown).
+3. Present the full draft for review.
+4. Ask "Shall I create this as a draft on the website?" — only call create_content after they confirm.
+5. Remind them it's saved as a draft and needs to be published via the CMS at /admin/.
+
+When a board member wants to update existing content:
+1. Ask which content type and which article/event.
+2. Show what you plan to change.
+3. Ask for confirmation before calling update_content.
+
+IMPORTANT RULES FOR TOOL USE:
+- NEVER call a tool without first presenting exactly what you will submit and receiving explicit confirmation.
+- If the board member says "no" or wants changes, revise and re-present before submitting.
+- If a tool call fails, explain the error clearly and suggest next steps.
+- You can only create/update content in: news, events, safety alert categories.
 
 CMS GUIDANCE (for board members who ask about editing website content):
 - The CMS is at /admin/ — board members with CMS access can edit content there
-- To create a news article: News → New News → fill in title, date, description, body → Save
-- To create an event: Events → New Events → fill in details → Save
-- To edit board bios: Board Members → click name → edit → Save
-- Changes go live automatically within about 2 minutes
-- CMS access is separate from board sign-in — contact the Safety & Technology Director for CMS access
-- You can help draft content: "Write a news post about [topic]" — then they copy it to the CMS
-
-CONTENT DRAFTING:
-When a board member asks you to draft website content (news articles, event descriptions, safety alerts):
-- Write in RRROCA's community voice — warm, neighbourly, informative
-- Use Canadian English spelling (neighbour, colour, centre)
-- Format as Markdown (the CMS accepts this)
-- Include suggested title, date, and description (for CMS metadata)
-- Always present the draft for review before suggesting they publish it
-- Remind them to publish via the CMS at /admin/ or ask the Communications Chair
-
-Always be helpful but remind board members that official actions (propose/second/vote) happen on the Board Action Center page, not in chat.`;
+- New content created via chat is saved as a DRAFT — it must be published from the CMS
+- Changes committed via chat are auditable and reversible (every change is a git commit)`;
 }
 
 const SYSTEM_PROMPT = `You are the RRROCA Community Assistant — a friendly, helpful AI for the Rocky Ridge Royal Oak Community Association website (rrroca.org) in NW Calgary, Alberta.
@@ -549,62 +686,32 @@ module.exports = async function (context, req) {
     }
 
     const systemPrompt = await buildSystemPrompt(req, context);
+    const boardMember = getBoardMember(req);
     const messages = [{ role: 'system', content: systemPrompt }];
     messages.push(...sanitizeHistory(history));
     messages.push({ role: 'user', content: validation.message });
 
     const url = `${endpoint}/openai/deployments/${deployment}/chat/completions?api-version=2024-10-21`;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-    try {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'api-key': apiKey
-        },
-        body: JSON.stringify({
-          messages,
-          max_tokens: 500,
-          temperature: 0.3,
-          top_p: 0.9
-        }),
-        signal: controller.signal
-      });
-
-      if (!response.ok) {
-        context.log.error(`Azure OpenAI error: status=${response.status}`);
-        context.res = {
-          status: 502,
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          body: { error: 'AI service error.', fallback: true }
-        };
-        return;
-      }
-
-      let data;
-      try {
-        data = await response.json();
-      } catch (error) {
-        throw createHttpError(502, 'AI service error.', 'Invalid JSON response from Azure OpenAI');
-      }
-
-      const reply = data.choices?.[0]?.message?.content || 'Sorry, I could not generate a response.';
-      context.res = {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        body: {
-          reply,
-          usage: {
-            prompt_tokens: data.usage?.prompt_tokens,
-            completion_tokens: data.usage?.completion_tokens
-          }
-        }
-      };
-    } finally {
-      clearTimeout(timeout);
+    // Build request body — include tools only for authenticated board members
+    const requestBody = {
+      messages,
+      max_tokens: boardMember ? 1500 : 500,
+      temperature: 0.3,
+      top_p: 0.9
+    };
+    if (boardMember) {
+      requestBody.tools = BOARD_TOOLS;
+      requestBody.tool_choice = 'auto';
     }
+
+    const result = await executeWithToolLoop(url, apiKey, requestBody, boardMember, context);
+
+    context.res = {
+      status: 200,
+      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      body: result
+    };
   } catch (error) {
     const status = error.name === 'AbortError' ? 504 : (error.status || 500);
     const message = error.name === 'AbortError'
@@ -620,3 +727,158 @@ module.exports = async function (context, req) {
   }
 };
 
+// --- Tool Execution Loop ---
+
+async function executeWithToolLoop(url, apiKey, requestBody, boardMember, context) {
+  const MAX_TOOL_ROUNDS = 2;
+  let currentMessages = [...requestBody.messages];
+  let totalPromptTokens = 0;
+  let totalCompletionTokens = 0;
+  let pendingActionId = null;
+
+  for (let round = 0; round <= MAX_TOOL_ROUNDS; round++) {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), round === 0 ? REQUEST_TIMEOUT_MS : TOOL_CALL_TIMEOUT_MS);
+
+    let data;
+    try {
+      const body = { ...requestBody, messages: currentMessages };
+      if (round > 0) {
+        // Subsequent rounds: keep tools available for the model to finalize
+        body.max_tokens = 1500;
+      }
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'api-key': apiKey },
+        body: JSON.stringify(body),
+        signal: controller.signal
+      });
+
+      if (!response.ok) {
+        context.log.error(`Azure OpenAI error: status=${response.status} round=${round}`);
+        throw createHttpError(502, 'AI service error.');
+      }
+
+      try {
+        data = await response.json();
+      } catch (_) {
+        throw createHttpError(502, 'AI service error.', 'Invalid JSON from Azure OpenAI');
+      }
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    totalPromptTokens += data.usage?.prompt_tokens || 0;
+    totalCompletionTokens += data.usage?.completion_tokens || 0;
+
+    const choice = data.choices?.[0];
+    if (!choice) {
+      return { reply: 'Sorry, I could not generate a response.', usage: { prompt_tokens: totalPromptTokens, completion_tokens: totalCompletionTokens } };
+    }
+
+    const assistantMessage = choice.message;
+
+    // If the model returned content (no tool calls), we're done
+    if (choice.finish_reason !== 'tool_calls' || !assistantMessage.tool_calls || !assistantMessage.tool_calls.length) {
+      const reply = assistantMessage.content || 'Sorry, I could not generate a response.';
+      const result = { reply, usage: { prompt_tokens: totalPromptTokens, completion_tokens: totalCompletionTokens } };
+      if (pendingActionId) {
+        result.pendingAction = pendingActionId;
+      }
+      return result;
+    }
+
+    // Process tool calls
+    if (!boardMember) {
+      // Safety: non-board member should never reach here, but just in case
+      return { reply: 'I can only help with RRROCA community questions.', usage: { prompt_tokens: totalPromptTokens, completion_tokens: totalCompletionTokens } };
+    }
+
+    // Add assistant message with tool_calls to conversation
+    currentMessages.push(assistantMessage);
+
+    // Execute each tool call
+    for (const toolCall of assistantMessage.tool_calls) {
+      const { id: callId, function: fn } = toolCall;
+      let args;
+      try {
+        args = JSON.parse(fn.arguments);
+      } catch (_) {
+        currentMessages.push({ role: 'tool', tool_call_id: callId, content: JSON.stringify({ success: false, error: 'Invalid tool arguments.' }) });
+        continue;
+      }
+
+      const toolResult = await executeTool(fn.name, args, boardMember, context);
+      currentMessages.push({ role: 'tool', tool_call_id: callId, content: JSON.stringify(toolResult) });
+
+      if (toolResult.pendingActionId) {
+        pendingActionId = toolResult.pendingActionId;
+      }
+    }
+  }
+
+  // If we exhausted rounds, return the last content we have
+  return { reply: 'I prepared your request but need a moment. Please try again.', usage: { prompt_tokens: totalPromptTokens, completion_tokens: totalCompletionTokens } };
+}
+
+// --- Tool Execution ---
+
+async function executeTool(toolName, args, user, context) {
+  // Rate limit all write operations
+  if (!enforceWriteRateLimit(user.id)) {
+    return { success: false, error: 'Write rate limit exceeded. You can perform up to 10 write actions per hour.' };
+  }
+
+  try {
+    switch (toolName) {
+      case 'submit_motion':
+        return await executeSubmitMotion(args, user, context);
+      case 'create_content':
+        return await executeCreateContent(args, user, context);
+      case 'update_content':
+        return await executeUpdateContent(args, user, context);
+      default:
+        return { success: false, error: `Unknown tool: ${toolName}` };
+    }
+  } catch (error) {
+    context.log.error(`Tool execution error: tool=${toolName} user=${user.email} error=${sanitizeLog(error.message)}`);
+    // Return a user-friendly error to the model
+    if (error.status && error.status < 500) {
+      return { success: false, error: error.message };
+    }
+    return { success: false, error: 'An unexpected error occurred while performing this action. Please try again.' };
+  }
+}
+
+async function executeSubmitMotion(args, user, context) {
+  context.log.info(`Motion submission: user=${user.email} title="${sanitizeLog(args.title || args.motionText?.slice(0, 50))}"`);
+  const result = await submitMotion(args, user);
+  return {
+    success: true,
+    motionNumber: result.motionNumber,
+    issueNumber: result.issueNumber,
+    message: `Motion ${result.motionNumber} has been submitted successfully! It is now awaiting a second from another board member. Other board members will be notified.`
+  };
+}
+
+async function executeCreateContent(args, user, context) {
+  context.log.info(`Content creation: user=${user.email} type=${args.contentType} title="${sanitizeLog(args.title)}"`);
+  const result = await createContent(args, user);
+  return {
+    success: true,
+    filePath: result.filePath,
+    draft: true,
+    message: result.message
+  };
+}
+
+async function executeUpdateContent(args, user, context) {
+  context.log.info(`Content update: user=${user.email} type=${args.contentType} slug="${sanitizeLog(args.slug)}"`);
+  const result = await updateContent(args, user);
+  return {
+    success: true,
+    filePath: result.filePath,
+    message: result.message
+  };
+}
