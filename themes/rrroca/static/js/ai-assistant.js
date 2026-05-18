@@ -409,6 +409,12 @@ function getApiBase() {
     return '';
   }
 
+  // Local/CI: cross-origin auth won't work due to CORS, return empty
+  // to let auth calls fail gracefully against localhost
+  if (host === 'localhost' || host === '127.0.0.1') {
+    return '';
+  }
+
   return 'https://zealous-wave-07c275a0f.7.azurestaticapps.net';
 }
 
