@@ -3,6 +3,7 @@
   <button type="button" class="ai-fab" id="ai-fab" data-toggle-assistant aria-label="Open AI assistant">
     <span class="ai-fab-icon">🤖</span>
     <span class="ai-fab-pulse"></span>
+    <span class="ai-fab-badge" id="ai-fab-badge" aria-label="Board mode active"></span>
   </button>
   <div class="ai-panel" id="ai-panel">
     <div class="ai-panel-header">
@@ -10,7 +11,7 @@
         <span>🏔️</span>
         <div>
           <strong>RRROCA Assistant</strong>
-          <small>Your community AI helper</small>
+          <small id="ai-panel-subtitle">Your community AI helper</small>
         </div>
       </div>
       <button type="button" class="ai-close" data-toggle-assistant aria-label="Close assistant">✕</button>
@@ -26,6 +27,7 @@
           <li>📝 <strong>RRROCA info</strong> — membership, volunteering, bylaws</li>
         </ul>
         <p>Try asking: <em>"Is Rocky Ridge safe?"</em> or <em>"How do I join RRROCA?"</em></p>
+        <p class="ai-board-hint">Board members: I can also help with motions, content updates, and more.</p>
       </div>
     </div>
     <div class="ai-suggestions" id="ai-suggestions">

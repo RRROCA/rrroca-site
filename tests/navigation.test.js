@@ -67,7 +67,7 @@ describe('Navigation consistency', () => {
     const broken = [];
     footerLinks.forEach((a) => {
       const href = a.getAttribute('href');
-      if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#') || !isInternalUrl(href)) return;
+      if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#') || href.startsWith('/.auth/') || !isInternalUrl(href)) return;
       if (!routeExists(href)) {
         broken.push({ href, text: a.textContent.trim().substring(0, 40) });
       }
