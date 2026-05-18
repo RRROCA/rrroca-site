@@ -180,7 +180,7 @@ const assistantState = {
 
 function getApiBase() {
   const host = window.location.hostname.toLowerCase();
-  if (host === 'rrroca.org' || host === 'www.rrroca.org' || host.includes('azurestaticapps.net')) {
+  if (host === 'rrroca.org' || host === 'www.rrroca.org' || host.endsWith('.azurestaticapps.net')) {
     return '';
   }
 
