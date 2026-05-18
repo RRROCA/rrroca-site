@@ -1,47 +1,47 @@
 ---
 title: "Board of Directors"
 date: 2026-05-09T09:45:00-06:00
-description: "Meet the volunteer leadership team serving Rocky Ridge and Royal Oak."
+description: "How RRROCA's board works — governance structure, portfolios, and how to get involved."
 categories: ["about"]
-tags: ["board", "volunteers", "leadership"]
+tags: ["board", "volunteers", "leadership", "governance"]
 draft: false
 ---
 
 # Board of Directors
 
-RRROCA is led by local volunteers who care deeply about keeping Rocky Ridge and Royal Oak informed, connected, safe, and welcoming. The board works year-round on advocacy, events, planning, communications, and community-building.
+RRROCA is governed by a volunteer board of directors elected at the Annual General Meeting each fall. Board members serve the community year-round across focused portfolio areas.
 
-Interested in serving? Connect through our [volunteer page](/get-involved/volunteer/) or [contact us](/contact/).
+👉 **[Meet the board members →](/about/board-members/)**
 
-## Executive
+## How the board works
 
-- **President:** [Jason Kellock](/about/board-members/jason-kellock/)
-- **Vice President:** *Vacant*
-- **Treasurer:** [Seun Ogunsola](/about/board-members/oluwaseun-ogunsola/)
-- **Secretary (Acting):** [Shahnaz Munir](/about/board-members/shahnaz-munir/)
+- The board meets monthly (typically the first Tuesday) to discuss community issues, approve budgets, and make decisions.
+- Decisions are made through formal motions following Robert's Rules of Order.
+- All residents of Rocky Ridge and Royal Oak are welcome to attend meetings and raise items.
+- The board reports to the membership at the AGM each year.
 
-## Portfolio Directors
+## Portfolios
 
-- **Communications:** *Vacant*
-- **Events:** [Shahnaz Munir](/about/board-members/shahnaz-munir/)
-- **Membership:** *Vacant*
-- **Parks:** *Vacant*
-- **Planning & Development:** [Anurag Agarwal](/about/board-members/anurag-agarwal/)
-- **Programs:** [Megan McDonald](/about/board-members/megan-mcdonald/)
-- **Safety & Security:** [Chad La Fournie](/about/board-members/chad-la-fournie/)
-- **Schools:** [Shaleni Agarwal](/about/board-members/shaleni-agarwal/)
-- **Sponsorship:** [Udit Jariwala](/about/board-members/udit-jariwala/)
-- **Transportation:** *Vacant*
-- **Volunteers:** [Fasih Rehman](/about/board-members/fasih-rehman/)
+| Portfolio | Director |
+|-----------|----------|
+| President | [Jason Kellock](/about/board-members/jason-kellock/) |
+| Treasurer | [Seun Ogunsola](/about/board-members/oluwaseun-ogunsola/) |
+| Secretary (Acting) & Events | [Shahnaz Munir](/about/board-members/shahnaz-munir/) |
+| Planning & Development | [Anurag Agarwal](/about/board-members/anurag-agarwal/) |
+| Safety & Technology | [Chad La Fournie](/about/board-members/chad-la-fournie/) |
+| Programs | [Megan McDonald](/about/board-members/megan-mcdonald/) |
+| Schools | [Shaleni Agarwal](/about/board-members/shaleni-agarwal/) |
+| Sponsorship | [Udit Jariwala](/about/board-members/udit-jariwala/) |
+| Volunteers | [Fasih Rehman](/about/board-members/fasih-rehman/) |
+| Vice President | *Vacant* |
+| Communications | *Vacant* |
+| Membership | *Vacant* |
+| Parks | *Vacant* |
+| Transportation | *Vacant* |
 
-Browse the full [board member directory](/about/board-members/) for profile pages.
+## Get involved
 
-## Open portfolios
+Several portfolios are vacant — if you care about your community and want to make a difference, we'd love to hear from you! No experience required; the board will support you.
 
-Several board positions are currently vacant — if you're interested in volunteering, please [get in touch](/get-involved/volunteer/)!
-
-- Vice President
-- Communications
-- Membership
-- Parks
-- Transportation
+- [Volunteer to serve on the board](/get-involved/volunteer/)
+- [Contact us with questions](/contact/)
