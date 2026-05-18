@@ -30,14 +30,22 @@ function extractFrontMatter(content) {
 }
 
 function cleanMarkdown(text) {
-  return text
+  let result = text
     .replace(/{{<.*?>}}/g, '') // Remove Hugo shortcodes
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Links → text only
     .replace(/!\[.*?\]\(.*?\)/g, '') // Remove images
     .replace(/#{1,6}\s*/g, '') // Remove heading markers
     .replace(/\*\*([^*]+)\*\*/g, '$1') // Bold → plain
-    .replace(/\*([^*]+)\*/g, '$1') // Italic → plain
-    .replace(/<[^>]+>/g, '') // Remove HTML
+    .replace(/\*([^*]+)\*/g, '$1'); // Italic → plain
+
+  // Loop HTML tag removal until stable to prevent nested tag bypass
+  let previous;
+  do {
+    previous = result;
+    result = result.replace(/<[^>]+>/g, '');
+  } while (result !== previous);
+
+  return result
     .replace(/\n{3,}/g, '\n\n') // Collapse blank lines
     .trim();
 }

@@ -10,12 +10,11 @@
         <p class="footer-heading">Quick Links</p>
         <ul>
           <li><a href="{{ "about/" | relURL }}">About Us</a></li>
-          <li><a href="{{ "about/board-of-directors/" | relURL }}">Board of Directors</a></li>
+          <li><a href="{{ "about/board-members/" | relURL }}">Meet the Board</a></li>
           <li><a href="{{ "safety/" | relURL }}">Safety Hub</a></li>
           <li><a href="{{ "news/" | relURL }}">Community News</a></li>
           <li><a href="{{ "events/" | relURL }}">Events & Programs</a></li>
           <li><a href="{{ "community/" | relURL }}">Community</a></li>
-          <li><a href="{{ "sports/" | relURL }}">Sports</a></li>
         </ul>
       </div>
       <div class="footer-col">
@@ -39,15 +38,21 @@
         <p class="footer-heading">Connect With Us</p>
         <div class="social-links">
           {{ with .Site.Params.facebookPage }}
-            <a href="{{ . }}" target="_blank" rel="noopener" aria-label="Facebook Page">📘 Facebook Page</a>
+            <a href="{{ . }}" target="_blank" rel="noopener" aria-label="RRROCA Facebook Page">📘 Facebook Page</a>
           {{ end }}
           {{ with .Site.Params.facebookGroup }}
-            <a href="{{ . }}" target="_blank" rel="noopener" aria-label="Facebook Group">👨‍👩‍👧‍👦 Families Group</a>
+            <a href="{{ . }}" target="_blank" rel="noopener" aria-label="Families Facebook Group">👨‍👩‍👧‍👦 Families Group</a>
+          {{ end }}
+          {{ with .Site.Params.facebookBlockWatch }}
+            <a href="{{ . }}" target="_blank" rel="noopener" aria-label="Block Watch Facebook Group">🛡️ Block Watch</a>
           {{ end }}
           {{ with .Site.Params.email }}
             <a href="mailto:{{ . }}">✉️ {{ . }}</a>
           {{ end }}
         </div>
+        <p class="footer-suggestion-cta">
+          <button type="button" class="footer-suggestion-link" onclick="if(window.RRROCAChatbot){window.RRROCAChatbot.open('I have a suggestion for the community');}">💡 Share an idea with the board</button>
+        </p>
       </div>
     </div>
     {{ partial "newsletter-signup.html" . }}

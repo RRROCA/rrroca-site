@@ -180,7 +180,7 @@ const assistantState = {
 
 function getApiBase() {
   const host = window.location.hostname.toLowerCase();
-  if (host === 'rrroca.org' || host === 'www.rrroca.org' || host.includes('azurestaticapps.net')) {
+  if (host === 'rrroca.org' || host === 'www.rrroca.org' || host.endsWith('.azurestaticapps.net')) {
     return '';
   }
 
@@ -574,4 +574,28 @@ document.addEventListener('keydown', (e) => {
     }
   }
 });
+
+// Public API for programmatic access (e.g., "Share an Idea" links)
+window.RRROCAChatbot = {
+  open: function (prefillMessage) {
+    const panel = document.getElementById('ai-panel');
+    if (!panel) return;
+    if (!panel.classList.contains('open')) {
+      toggleAssistant();
+    }
+    if (prefillMessage) {
+      const input = document.getElementById('ai-input-field');
+      if (input) {
+        input.value = prefillMessage;
+        input.focus();
+      }
+    }
+  },
+  close: function () {
+    const panel = document.getElementById('ai-panel');
+    if (panel && panel.classList.contains('open')) {
+      toggleAssistant();
+    }
+  }
+};
 

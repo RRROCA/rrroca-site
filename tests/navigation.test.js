@@ -80,7 +80,7 @@ describe('Navigation consistency', () => {
     const footerHrefs = footerLinks.map((a) => a.getAttribute('href')).join(' ');
 
     const requiredFooterLinks = [
-      'about/', 'board-of-directors/', 'safety/', 'news/', 'events/',
+      'about/', 'about/board-members/', 'safety/', 'news/', 'events/',
       'community/', 'get-involved/', 'board/', 'business-directory/', 'contact/'
     ];
 
