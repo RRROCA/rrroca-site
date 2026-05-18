@@ -8,16 +8,69 @@
 
 ## Table of Contents
 
-1. [Architecture Overview](#architecture-overview)
-2. [Component Inventory & Ownership](#component-inventory--ownership)
-3. [Minimum Skill Requirements](#minimum-skill-requirements)
-4. [Break-Glass: Emergency Recovery](#break-glass-emergency-recovery)
-5. [Graceful Degradation Layers](#graceful-degradation-layers)
-6. [Microsoft Nonprofit Program — Benefits & Risk Mitigation](#microsoft-nonprofit-program--benefits--risk-mitigation)
-7. [Plan B: Self-Funded](#plan-b-self-funded-if-nonprofit-benefits-unavailable)
-8. [How a Microsoft Employee Can Help](#how-a-microsoft-employee-can-help-without-being-the-customer)
-9. [GitHub Copilot — Costs & Considerations](#github-copilot--costs--considerations)
-10. [Transfer Checklist](#transfer-checklist)
+1. [⛔ Pre-Launch Gate: Subscription Migration](#-pre-launch-gate-subscription-migration)
+2. [Architecture Overview](#architecture-overview)
+3. [Component Inventory & Ownership](#component-inventory--ownership)
+4. [Minimum Skill Requirements](#minimum-skill-requirements)
+5. [Break-Glass: Emergency Recovery](#break-glass-emergency-recovery)
+6. [Graceful Degradation Layers](#graceful-degradation-layers)
+7. [Microsoft Nonprofit Program — Benefits & Risk Mitigation](#microsoft-nonprofit-program--benefits--risk-mitigation)
+8. [Plan B: Self-Funded](#plan-b-self-funded-if-nonprofit-benefits-unavailable)
+9. [How a Microsoft Employee Can Help](#how-a-microsoft-employee-can-help-without-being-the-customer)
+10. [GitHub Copilot — Costs & Considerations](#github-copilot--costs--considerations)
+11. [Transfer Checklist](#transfer-checklist)
+
+---
+
+## ⛔ Pre-Launch Gate: Subscription Migration
+
+> **HARD REQUIREMENT: The RRROCA site MUST NOT go live on rrroca.org while hosted on Chad's Visual Studio Enterprise subscription.**
+
+### Why This Is Non-Negotiable
+
+The VS Enterprise subscription provides $150 USD/month in Azure credits for **individual development and testing only** — not production workloads. Running a live community website serving hundreds of residents on dev/test credits violates the subscription terms.
+
+**As a Microsoft employee, the risk is amplified:**
+- Internal compliance could flag it during an audit as misuse of employee benefits
+- If an incident occurs (outage, data issue, community complaint), the subscription misuse becomes a liability
+- Potential consequences: credits revoked (site goes offline), HR/compliance review, or being asked to reimburse costs
+- Even if well-intentioned, it creates an appearance problem
+
+### Current State (Acceptable)
+
+The SWA is deployed to `zealous-wave-07c275a0f.7.azurestaticapps.net` — a staging/test URL. No DNS cutover to `rrroca.org` has occurred. **This is legitimately dev/test today.** There is time to fix this.
+
+### Before DNS Cutover to rrroca.org
+
+Complete **one** of these migration paths:
+
+| Option | Cost | Who Owns It | Best If... |
+|--------|------|------------|------------|
+| **A: Nonprofit Azure grant** | $0 (if eligible) | RRROCA org | RRROCA qualifies for Microsoft nonprofit program |
+| **B: RRROCA pay-as-you-go** | ~$250 CAD/year | RRROCA org | Board approves small tech budget |
+| **C: Personal pay-as-you-go** | ~$250 CAD/year | Chad (personal) | Interim while evaluating A or B |
+
+**Option A** is ideal (org-owned, free). **Option B** is the self-reliant path. **Option C** is a stopgap — it keeps costs on Chad but on a proper pay-as-you-go subscription, not dev/test credits.
+
+### Migration Steps (same for all options)
+
+```
+1. Create new Azure subscription (pay-as-you-go or nonprofit grant)
+2. Create new SWA resource in the new subscription
+3. Configure SWA settings (custom auth, app settings, environment variables)
+4. Update GitHub secret AZURE_STATIC_WEB_APPS_API_TOKEN to new SWA
+5. Deploy via CI/CD to verify new SWA works
+6. Configure custom domain (rrroca.org) on the new SWA
+7. Delete old SWA resource from VS Enterprise subscription
+```
+
+### Gating the Board Motion
+
+When presenting the SWA platform to the board for approval, the motion should include the subscription migration as a prerequisite to DNS cutover. The board should understand:
+- The staging site (current URL) is for evaluation and testing
+- Going live requires a production-appropriate Azure subscription
+- The annual cost is ~$250 CAD (or $0 if nonprofit grant approved)
+- This is a one-time migration, not an ongoing hassle
 
 ---
 
