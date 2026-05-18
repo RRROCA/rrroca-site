@@ -19,12 +19,13 @@ function normalizeInternalLinks(hrefs, origin) {
   return [...new Set(
     hrefs
       .filter(Boolean)
-      .filter((href) => !/^(mailto:|tel:|javascript:|#|\/\.auth\/)/i.test(href))
+      .filter((href) => !/^(mailto:|tel:|javascript:|#)/i.test(href))
       .map((href) => new URL(href, origin))
       .filter((url) => (
         url.origin === origin
         || ['localhost', '127.0.0.1'].includes(url.hostname)
       ))
+      .filter((url) => !url.pathname.startsWith('/.auth/'))
       .map((url) => `${url.pathname}${url.search}`)
   )];
 }
