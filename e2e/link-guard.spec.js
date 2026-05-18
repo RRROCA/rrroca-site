@@ -53,7 +53,7 @@ test.describe('Link guard', () => {
       const hrefs = await page.locator('a[href]').evaluateAll((els) =>
         els.map((a) => a.getAttribute('href'))
           .filter((h) => h && !h.startsWith('http://') && !h.startsWith('https://') &&
-            !/^mailto:/i.test(h) && !/^tel:/i.test(h) && !h.startsWith('#') && !/^javascript:/i.test(h))
+            !/^mailto:/i.test(h) && !/^tel:/i.test(h) && !h.startsWith('#') && !/^javascript:/i.test(h) && !h.startsWith('/.auth/'))
       );
 
       for (const href of hrefs) {

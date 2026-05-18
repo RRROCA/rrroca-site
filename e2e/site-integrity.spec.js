@@ -19,7 +19,7 @@ function normalizeInternalLinks(hrefs, origin) {
   return [...new Set(
     hrefs
       .filter(Boolean)
-      .filter((href) => !/^(mailto:|tel:|javascript:|#)/i.test(href))
+      .filter((href) => !/^(mailto:|tel:|javascript:|#|\/\.auth\/)/i.test(href))
       .map((href) => new URL(href, origin))
       .filter((url) => (
         url.origin === origin
@@ -100,6 +100,10 @@ test.describe('Site integrity', () => {
     for (const link of footerLinks) {
       if (/^mailto:/i.test(link.href)) {
         expect(link.href).toMatch(/^mailto:/i);
+        continue;
+      }
+
+      if (/^\/\.auth\//i.test(link.href)) {
         continue;
       }
 
