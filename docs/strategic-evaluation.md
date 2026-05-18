@@ -11,7 +11,7 @@ A Frontier CA means:
 - **The website costs nothing** — forever. No hosting fees, no plugin subscriptions, no developer invoices
 - **When a board member moves on, their successor can be productive in one afternoon** — not one quarter
 
-This strategy maps how to get there across 11 technology domains, evaluated against 8 Architecture Principles derived from RRROCA's own Strategic Plan and Business Plan.
+This strategy maps how to get there across 11 technology domains, evaluated against 9 Architecture Principles derived from RRROCA's own Strategic Plan and Business Plan.
 
 ## Executive Summary
 

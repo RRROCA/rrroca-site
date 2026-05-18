@@ -52,6 +52,7 @@
   --color-ridge: #2c6e8a;          /* Rocky Ridge teal */
   --color-ridge-light: #e6f2f7;
   --color-meadow: #4a8c5c;         /* Foothill meadow */
+  --color-evergreen: #2f9e44;      /* Evergreen accent (board mode) */
   --color-sunset: #e8913a;         /* Prairie sunset amber */
   --color-sunset-dark: #c97a2e;
   --color-sunset-light: #fef3e6;
@@ -1053,6 +1054,8 @@ p { margin-bottom: var(--space-md); }
 .footer-suggestion-cta { margin-top: var(--space-md); }
 .footer-suggestion-link { background: none; border: none; padding: 0; color: var(--color-sunset); font-weight: 600; font-size: 0.9rem; cursor: pointer; text-decoration: none; }
 .footer-suggestion-link:hover { text-decoration: underline; }
+.footer-board-login { margin-top: var(--space-xs); }
+.footer-board-login a { opacity: 0.6; font-size: 0.8rem; }
 .footer-bottom {
   border-top: 1px solid rgba(255,255,255,0.1);
   padding-top: var(--space-xl);
@@ -1195,6 +1198,12 @@ p { margin-bottom: var(--space-md); }
   background: var(--color-sunset);
   animation: pulse 2s infinite;
 }
+.ai-fab-badge {
+  display: none; position: absolute; top: -2px; left: -2px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--color-evergreen); border: 2px solid white;
+}
+.ai-fab-badge.active { display: block; }
 
 .ai-panel {
   position: fixed; bottom: 24px; right: 24px;
@@ -1257,6 +1266,18 @@ p { margin-bottom: var(--space-md); }
   cursor: pointer; transition: background 0.2s;
 }
 .ai-suggestions button:hover { background: var(--color-ridge-light); border-color: var(--color-ridge); }
+
+.ai-board-hint {
+  font-size: 0.8rem; opacity: 0.7; font-style: italic; margin-top: var(--space-sm);
+  border-top: 1px solid var(--color-border-light); padding-top: var(--space-sm);
+}
+.ai-signin-btn {
+  display: inline-block; margin-top: var(--space-sm);
+  background: var(--color-ridge); color: white !important; padding: 8px 16px;
+  border-radius: var(--radius); text-decoration: none !important; font-weight: 600;
+  font-size: 0.85rem; transition: background 0.2s;
+}
+.ai-signin-btn:hover { background: var(--color-sky); }
 
 .ai-input {
   display: flex; gap: var(--space-xs);

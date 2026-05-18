@@ -28,7 +28,7 @@ RRROCA is governed by a volunteer board of directors elected at the Annual Gener
 | Treasurer | [Seun Ogunsola](/about/board-members/oluwaseun-ogunsola/) |
 | Secretary (Acting) & Events | [Shahnaz Munir](/about/board-members/shahnaz-munir/) |
 | Planning & Development | [Anurag Agarwal](/about/board-members/anurag-agarwal/) |
-| Safety & Technology | [Chad La Fournie](/about/board-members/chad-la-fournie/) |
+| Safety & Security | [Chad La Fournie](/about/board-members/chad-la-fournie/) |
 | Programs | [Megan McDonald](/about/board-members/megan-mcdonald/) |
 | Schools | [Shaleni Agarwal](/about/board-members/shaleni-agarwal/) |
 | Sponsorship | [Udit Jariwala](/about/board-members/udit-jariwala/) |

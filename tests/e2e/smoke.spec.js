@@ -8,7 +8,7 @@ function appPath(pathname = '/') {
 }
 
 function toInternalPath(href) {
-  if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#')) {
+  if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#') || href.startsWith('/.auth/')) {
     return null;
   }
 

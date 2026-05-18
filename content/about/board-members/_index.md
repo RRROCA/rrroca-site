@@ -20,7 +20,7 @@ RRROCA's board of directors are local volunteers who keep Rocky Ridge and Royal 
 ## Portfolio Directors
 
 - [Anurag Agarwal](/about/board-members/anurag-agarwal/) — Planning & Development
-- [Chad La Fournie](/about/board-members/chad-la-fournie/) — Safety & Technology
+- [Chad La Fournie](/about/board-members/chad-la-fournie/) — Safety & Security
 - [Fasih Rehman](/about/board-members/fasih-rehman/) — Volunteers
 - [Megan McDonald](/about/board-members/megan-mcdonald/) — Programs
 - [Shaleni Agarwal](/about/board-members/shaleni-agarwal/) — Schools

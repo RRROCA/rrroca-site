@@ -168,6 +168,8 @@ The Rocky Ridge Royal Oak Community Association represents ~25,000 residents in 
 
 const BOARD_EMAIL_DOMAIN = '@rrroca.org';
 const BOARD_CONTEXT_TTL_MS = 60000;
+const AUTH_LOGIN_URL = '/.auth/login/google';
+const PENDING_INTENT_KEY = 'rrroca_pending_intent';
 const assistantState = {
   boardUser: null,
   pendingMotions: [],
@@ -335,17 +337,130 @@ async function maybeShowBoardGreeting() {
 
   await initializeBoardAwareness();
 
+  // Update UI based on auth state
+  updateAuthUI();
+
   if (!isBoardMember(assistantState.boardUser) || assistantState.boardGreetingShown) {
     return;
   }
 
   const pendingMotions = await ensureBoardContext();
-  if (!panel.classList.contains('open') || assistantState.boardGreetingShown || !pendingMotions.length) {
+  if (!panel.classList.contains('open') || assistantState.boardGreetingShown) {
     return;
   }
 
-  addMessage(`Welcome back, ${assistantState.boardUser.name}. You have ${pendingMotions.length} motion(s) pending your attention.`, 'bot');
+  const name = assistantState.boardUser.name;
+  let greeting = `Welcome back, ${name}. **Board mode active.**`;
+
+  if (pendingMotions.length > 0) {
+    greeting += ` You have ${pendingMotions.length} motion(s) pending your attention.`;
+  }
+
+  greeting += '\n\nI can help you submit motions, draft content, or report issues. Just ask!';
+
+  addMessage(greeting, 'bot');
+  showBoardActionChips();
   assistantState.boardGreetingShown = true;
+
+  // Check for restored intent from pre-login redirect
+  restorePendingIntent();
+}
+
+function showBoardActionChips() {
+  const suggestions = document.getElementById('ai-suggestions');
+  if (!suggestions) return;
+  suggestions.style.display = 'flex';
+  suggestions.innerHTML = '';
+
+  const chips = [
+    { label: 'Submit a motion', question: 'I want to submit a motion' },
+    { label: 'Draft a post', question: 'I want to draft a news article' },
+    { label: 'Open motions', question: 'What motions are open?' },
+    { label: 'Report an issue', question: 'I want to report a site issue' }
+  ];
+
+  chips.forEach(chip => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = chip.label;
+    btn.setAttribute('data-ai-question', chip.question);
+    btn.addEventListener('click', () => askAI(chip.question));
+    suggestions.appendChild(btn);
+  });
+}
+
+function updateAuthUI() {
+  const badge = document.getElementById('ai-fab-badge');
+  const subtitle = document.getElementById('ai-panel-subtitle');
+  const hint = document.querySelector('.ai-board-hint');
+
+  if (isBoardMember(assistantState.boardUser)) {
+    // Show board mode badge on FAB
+    if (badge) badge.classList.add('active');
+    // Update subtitle
+    if (subtitle) subtitle.textContent = `Board mode · ${assistantState.boardUser.name}`;
+    // Hide the hint since they're already signed in
+    if (hint) hint.style.display = 'none';
+  } else {
+    if (badge) badge.classList.remove('active');
+    if (subtitle) subtitle.textContent = 'Your community AI helper';
+  }
+}
+
+function promptSignIn(intent) {
+  // Store intent for after login
+  if (intent) {
+    try {
+      sessionStorage.setItem(PENDING_INTENT_KEY, JSON.stringify({
+        message: intent,
+        timestamp: Date.now(),
+        returnUrl: window.location.pathname
+      }));
+    } catch (e) { /* sessionStorage unavailable */ }
+  }
+
+  const redirectUri = encodeURIComponent(window.location.pathname + '?chatopen=1');
+  const loginUrl = AUTH_LOGIN_URL + '?post_login_redirect_uri=' + redirectUri;
+
+  const signInHtml = `To do that, I need to verify you're a board member. Please sign in with your RRROCA Google account:
+
+<a href="${loginUrl}" class="ai-signin-btn">Sign in with Google →</a>
+
+Your request will be remembered — I'll pick up right where we left off.`;
+
+  addMessage(signInHtml, 'bot');
+}
+
+function restorePendingIntent() {
+  try {
+    const stored = sessionStorage.getItem(PENDING_INTENT_KEY);
+    if (!stored) return;
+
+    const intent = JSON.parse(stored);
+    sessionStorage.removeItem(PENDING_INTENT_KEY);
+
+    // Only restore if less than 5 minutes old
+    if (Date.now() - intent.timestamp > 300000) return;
+
+    if (intent.message && isBoardMember(assistantState.boardUser)) {
+      addMessage(`I remember you wanted to: "${intent.message}" — let me help with that now.`, 'bot');
+      // Auto-submit the intent
+      setTimeout(() => askAI(intent.message), 500);
+    }
+  } catch (e) { /* ignore parse errors */ }
+}
+
+function shouldPromptSignIn(question) {
+  if (isBoardMember(assistantState.boardUser)) return false;
+  const q = question.toLowerCase();
+  const boardTriggers = [
+    'submit a motion', 'propose a motion', 'new motion', 'create a motion',
+    'draft a post', 'draft an article', 'create content', 'write a post',
+    'update the site', 'edit the site', 'publish',
+    'report an issue', 'report a bug', 'site issue',
+    'i\'m on the board', 'board member', 'board mode'
+  ];
+  return boardTriggers.some(trigger => q.includes(trigger));
 }
 
 function toggleAssistant() {
@@ -376,6 +491,13 @@ function handleAISubmit(e) {
 
   addMessage(question, 'user');
   input.value = '';
+
+  // Check if this is a board action from an unauthenticated user
+  if (shouldPromptSignIn(question)) {
+    promptSignIn(question);
+    return;
+  }
+
   input.disabled = true;
 
   // Hide suggestion buttons after first question
@@ -556,7 +678,21 @@ function bindAssistantControls() {
 
 function initializeAssistant() {
   bindAssistantControls();
-  initializeBoardAwareness().catch(() => {});
+  initializeBoardAwareness().then(() => {
+    updateAuthUI();
+    // Auto-open chatbot if returning from auth redirect
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('chatopen')) {
+      // Clean URL without reload
+      const cleanUrl = window.location.pathname + window.location.hash;
+      window.history.replaceState({}, '', cleanUrl);
+      // Open chatbot
+      const panel = document.getElementById('ai-panel');
+      if (panel && !panel.classList.contains('open')) {
+        toggleAssistant();
+      }
+    }
+  }).catch(() => {});
 }
 
 if (document.readyState === 'loading') {
