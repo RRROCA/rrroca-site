@@ -191,6 +191,22 @@ p { margin-bottom: var(--space-md); }
 }
 
 /* ================================
+   BETA BANNER — removable after launch
+   ================================ */
+.beta-banner {
+  background: var(--color-sunset);
+  color: #fff;
+  text-align: center;
+  padding: 6px var(--space-md);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+}
+.beta-banner strong {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* ================================
    HEADER — clean, sticky
    ================================ */
 .site-header {
