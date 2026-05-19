@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
-const { PUBLIC_DIR, resolveAssetPath, isInternalUrl, resolveRoute } = require('./helpers/site-config');
+const { PUBLIC_DIR, resolveAssetPath, isInternalUrl, isRuntimeRoute, resolveRoute } = require('./helpers/site-config');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 
@@ -326,7 +326,7 @@ describe('Link guard', () => {
           return;
         }
 
-        if (!isInternalUrl(href) || href.startsWith('/.auth/')) {
+        if (!isInternalUrl(href) || isRuntimeRoute(href)) {
           return;
         }
         const cleanHref = href.split('#')[0].split('?')[0];
@@ -383,7 +383,7 @@ describe('Link guard', () => {
     const broken = [];
     navLinks.forEach((a) => {
       const href = a.getAttribute('href');
-      if (!href || /^(#|javascript:)/i.test(href) || !isInternalUrl(href)) return;
+      if (!href || /^(#|javascript:)/i.test(href) || isRuntimeRoute(href) || !isInternalUrl(href)) return;
       if (!routeExists(href)) {
         broken.push({ href, text: a.textContent.trim() });
       }

@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { NAV_LINK_EXCLUDE, isRuntimeRoute } = require('../../e2e/helpers/runtime-routes');
 
 const APP_PREFIX = '/rrroca-site';
 
@@ -8,7 +9,7 @@ function appPath(pathname = '/') {
 }
 
 function toInternalPath(href) {
-  if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#') || href.startsWith('/.auth/')) {
+  if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#') || isRuntimeRoute(href)) {
     return null;
   }
 
@@ -36,7 +37,8 @@ test('homepage loads with RRROCA branding in the title', async ({ page }) => {
 test('header navigation links load real pages', async ({ page }) => {
   await expectPageOk(page, appPath('/'));
 
-  const navLinks = page.locator('.nav-main a[href]:not(.nav-cta)');
+  const navLinks = page.locator(`.nav-main a[href]${NAV_LINK_EXCLUDE}`);
+  // 8 = About, Safety, Events, Get Involved, Community, Governance, Resources, News
   await expect(navLinks).toHaveCount(8);
 
   const links = await navLinks.evaluateAll((anchors) =>

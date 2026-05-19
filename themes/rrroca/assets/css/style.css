@@ -269,6 +269,15 @@ p { margin-bottom: var(--space-md); }
   background: linear-gradient(90deg, var(--color-ridge), var(--color-sunset));
   border-radius: 2px;
 }
+.nav-board-link {
+  font-size: 0.75rem !important;
+  opacity: 0.55;
+  padding: var(--space-xs) var(--space-sm) !important;
+  border-left: 1px solid rgba(0,0,0,0.1);
+  margin-left: var(--space-xs);
+  transition: opacity 0.2s;
+}
+.nav-board-link:hover { opacity: 1 !important; }
 .menu-toggle {
   display: none;
   align-items: center;

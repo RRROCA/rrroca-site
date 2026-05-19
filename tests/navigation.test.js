@@ -9,7 +9,7 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
-const { BASE_PREFIX, CONTENT_DIR, PUBLIC_DIR, SITE_ORIGINS, isInternalUrl, resolveRoute } = require('./helpers/site-config');
+const { BASE_PREFIX, CONTENT_DIR, PUBLIC_DIR, SITE_ORIGINS, isInternalUrl, isRuntimeRoute, resolveRoute } = require('./helpers/site-config');
 
 const REPO_ROOT = path.resolve(__dirname, '..');
 
@@ -56,7 +56,7 @@ describe('Navigation consistency', () => {
 
     // All links must resolve
     const broken = hrefs.filter((h) => {
-      if (!h.href || h.href.startsWith('#') || !isInternalUrl(h.href)) return false;
+      if (!h.href || h.href.startsWith('#') || isRuntimeRoute(h.href) || !isInternalUrl(h.href)) return false;
       return !routeExists(h.href);
     });
     expect(broken).toEqual([]);
@@ -67,7 +67,7 @@ describe('Navigation consistency', () => {
     const broken = [];
     footerLinks.forEach((a) => {
       const href = a.getAttribute('href');
-      if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#') || href.startsWith('/.auth/') || !isInternalUrl(href)) return;
+      if (!href || href.startsWith('mailto:') || href.startsWith('tel:') || href.startsWith('#') || isRuntimeRoute(href) || !isInternalUrl(href)) return;
       if (!routeExists(href)) {
         broken.push({ href, text: a.textContent.trim().substring(0, 40) });
       }
@@ -177,8 +177,7 @@ describe('Built HTML internal link integrity', () => {
         }
         const cleanHref = href.split('#')[0].split('?')[0];
         if (!cleanHref || checked.has(cleanHref)) return;
-        // Skip Azure SWA runtime routes (auth endpoints handled by platform)
-        if (cleanHref.startsWith('/.auth/')) return;
+        if (isRuntimeRoute(cleanHref)) return;
         checked.add(cleanHref);
 
         if (!routeExists(cleanHref)) {
