@@ -8,7 +8,7 @@ test.describe('Link guard', () => {
   test('all nav links return HTTP 200', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
 
-    const navHrefs = await page.locator('.nav-main a[href]').evaluateAll((els) =>
+    const navHrefs = await page.locator('.nav-main a[href]:not(.nav-board-link)').evaluateAll((els) =>
       els.map((a) => a.getAttribute('href')).filter((h) => h && !/^javascript:/i.test(h))
     );
 

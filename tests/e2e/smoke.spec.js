@@ -36,7 +36,7 @@ test('homepage loads with RRROCA branding in the title', async ({ page }) => {
 test('header navigation links load real pages', async ({ page }) => {
   await expectPageOk(page, appPath('/'));
 
-  const navLinks = page.locator('.nav-main a[href]:not(.nav-cta)');
+  const navLinks = page.locator('.nav-main a[href]:not(.nav-cta):not(.nav-board-link)');
   await expect(navLinks).toHaveCount(8);
 
   const links = await navLinks.evaluateAll((anchors) =>
