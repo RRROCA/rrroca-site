@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { NAV_LINK_EXCLUDE, isRuntimeRoute } = require('./helpers/runtime-routes');
 
 const KEY_PAGES = ['/', '/safety/', '/about/', '/news/', '/events/', '/get-involved/',
   '/business-directory/', '/contact/', '/gallery/', '/membership/',
@@ -8,7 +9,7 @@ test.describe('Link guard', () => {
   test('all nav links return HTTP 200', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
 
-    const navHrefs = await page.locator('.nav-main a[href]:not(.nav-board-link)').evaluateAll((els) =>
+    const navHrefs = await page.locator(`.nav-main a[href]${NAV_LINK_EXCLUDE}`).evaluateAll((els) =>
       els.map((a) => a.getAttribute('href')).filter((h) => h && !/^javascript:/i.test(h))
     );
 
@@ -50,11 +51,12 @@ test.describe('Link guard', () => {
         continue;
       }
 
-      const hrefs = await page.locator('a[href]').evaluateAll((els) =>
+      const rawHrefs = await page.locator('a[href]').evaluateAll((els) =>
         els.map((a) => a.getAttribute('href'))
           .filter((h) => h && !h.startsWith('http://') && !h.startsWith('https://') &&
-            !/^mailto:/i.test(h) && !/^tel:/i.test(h) && !h.startsWith('#') && !/^javascript:/i.test(h) && !h.startsWith('/.auth/'))
+            !/^mailto:/i.test(h) && !/^tel:/i.test(h) && !h.startsWith('#') && !/^javascript:/i.test(h))
       );
+      const hrefs = rawHrefs.filter(h => !isRuntimeRoute(h));
 
       for (const href of hrefs) {
         const clean = href.split('#')[0].split('?')[0];

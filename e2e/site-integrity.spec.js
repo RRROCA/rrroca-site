@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { isRuntimeRoute } = require('./helpers/runtime-routes');
 
 const keyPages = [
   '/',
@@ -25,7 +26,7 @@ function normalizeInternalLinks(hrefs, origin) {
         url.origin === origin
         || ['localhost', '127.0.0.1'].includes(url.hostname)
       ))
-      .filter((url) => !url.pathname.startsWith('/.auth/'))
+      .filter((url) => !isRuntimeRoute(url.pathname))
       .map((url) => `${url.pathname}${url.search}`)
   )];
 }
