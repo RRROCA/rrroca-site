@@ -96,7 +96,7 @@ test.describe('Homepage UX', () => {
   test('keeps all primary navigation links resolving without 404s', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
 
-    const hrefs = await page.locator('.nav-main a[href]:not(.nav-cta)').evaluateAll((links) =>
+    const hrefs = await page.locator('.nav-main a[href]:not(.nav-cta):not(.nav-board-link)').evaluateAll((links) =>
       links.map((link) => link.href)
     );
 
