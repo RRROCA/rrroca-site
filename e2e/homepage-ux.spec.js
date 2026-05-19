@@ -39,7 +39,7 @@ test.describe('Homepage UX', () => {
     expect(heroBox).not.toBeNull();
     expect(titleBox).not.toBeNull();
     expect(actionBox).not.toBeNull();
-    expect(heroBox.y).toBeLessThanOrEqual(80);
+    expect(heroBox.y).toBeLessThanOrEqual(110); // allows for beta banner above header
     expect(titleBox.y).toBeLessThan(380);
     expect(actionBox.y + actionBox.height).toBeLessThan(950);
   });
