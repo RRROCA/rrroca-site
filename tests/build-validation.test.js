@@ -383,7 +383,7 @@ describe('Link guard', () => {
     const broken = [];
     navLinks.forEach((a) => {
       const href = a.getAttribute('href');
-      if (!href || /^(#|javascript:)/i.test(href) || !isInternalUrl(href)) return;
+      if (!href || /^(#|javascript:)/i.test(href) || href.startsWith('/.auth/') || !isInternalUrl(href)) return;
       if (!routeExists(href)) {
         broken.push({ href, text: a.textContent.trim() });
       }

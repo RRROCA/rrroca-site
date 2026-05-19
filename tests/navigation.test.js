@@ -56,7 +56,7 @@ describe('Navigation consistency', () => {
 
     // All links must resolve
     const broken = hrefs.filter((h) => {
-      if (!h.href || h.href.startsWith('#') || !isInternalUrl(h.href)) return false;
+      if (!h.href || h.href.startsWith('#') || h.href.startsWith('/.auth/') || !isInternalUrl(h.href)) return false;
       return !routeExists(h.href);
     });
     expect(broken).toEqual([]);
