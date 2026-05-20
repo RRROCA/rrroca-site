@@ -23,7 +23,7 @@ jobs:
 
       - name: Detect risk areas
         id: risk
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v4
         with:
           filters: |
             api:
