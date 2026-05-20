@@ -734,9 +734,10 @@ If someone has an idea, suggestion, or feedback for the RRROCA board, you can he
 1. Ask about their idea — what are they suggesting and why?
 2. Ask who in the community would benefit.
 3. Ask for their name and email so the board can follow up (both required).
-4. Present a clear summary of what will be submitted.
-5. Ask "Shall I send this to the board?" — only call submit_community_suggestion after they confirm.
-6. After submission, thank them and let them know the board will review it.
+4. Let them know: "Your name will appear on the public suggestion. Your email will be kept private and only shared with board members for follow-up."
+5. Present a clear summary of what will be submitted.
+6. Ask "Shall I send this to the board?" — only call submit_community_suggestion after they confirm.
+7. After submission, thank them and let them know the board will review it.
 - Keep the tone encouraging — RRROCA values community input!
 - You can suggest this option if someone seems to have ideas or feedback ("Would you like me to send that suggestion to the board?").
 
@@ -926,9 +927,15 @@ async function executeWithToolLoop(url, apiKey, requestBody, boardMember, contex
     }
 
     // Process tool calls
+    const communityToolNames = new Set(COMMUNITY_TOOLS.map((t) => t.function.name));
     if (!boardMember) {
-      // Safety: non-board member should never reach here, but just in case
-      return { reply: 'I can only help with RRROCA community questions.', usage: { prompt_tokens: totalPromptTokens, completion_tokens: totalCompletionTokens } };
+      // Non-board members may only use community tools (e.g. submit_community_suggestion)
+      const hasNonCommunityTool = assistantMessage.tool_calls.some(
+        (tc) => !communityToolNames.has(tc.function?.name)
+      );
+      if (hasNonCommunityTool) {
+        return { reply: 'I can only help with RRROCA community questions.', usage: { prompt_tokens: totalPromptTokens, completion_tokens: totalCompletionTokens } };
+      }
     }
 
     // Add assistant message with tool_calls to conversation
@@ -1088,6 +1095,13 @@ async function executeReportIssue(args, user, context) {
   };
 }
 
+function maskEmail(email) {
+  const [local, domain] = email.split('@');
+  if (!domain) return '***@***';
+  const visibleLocal = local.length <= 2 ? local[0] + '***' : local.slice(0, 2) + '***';
+  return `${visibleLocal}@${domain}`;
+}
+
 async function executeCommunitySubmission(args, context) {
   const { githubRequest, GITHUB_OWNER, GITHUB_REPO } = require('../shared/github');
 
@@ -1103,10 +1117,13 @@ async function executeCommunitySubmission(args, context) {
   if (!title) return { success: false, error: 'Please provide a short title for your suggestion.' };
   if (!idea) return { success: false, error: 'Please describe your idea or suggestion.' };
 
+  // Public issue body — name is shown but email is masked to protect PII.
+  // Full contact details are logged server-side for board follow-up.
   const bodyParts = [
     '## Community Suggestion',
     '',
-    `**From:** ${name} (${email})`,
+    `**From:** ${name}`,
+    `**Contact:** ${maskEmail(email)} _(full address shared privately with the board)_`,
     `**Category:** ${category}`,
     whobenefits ? `**Who benefits:** ${whobenefits}` : '',
     '',
@@ -1116,10 +1133,11 @@ async function executeCommunitySubmission(args, context) {
     '',
     '---',
     '',
-    '_Submitted by a community member via the RRROCA website chatbot. Board members: please review and discuss at your next meeting._'
+    '_Submitted by a community member via the RRROCA website chatbot. Board members: please review and discuss at your next meeting. Contact details are available in the application logs._'
   ];
 
-  context.log.info(`Community suggestion: name="${sanitizeLog(name)}" title="${sanitizeLog(title)}"`);
+  // Log full contact info server-side only (visible in Application Insights, not in the public issue)
+  context.log.info(`Community suggestion: name="${sanitizeLog(name)}" email="${sanitizeLog(email)}" title="${sanitizeLog(title)}"`);
 
   const issue = await githubRequest(`/repos/${GITHUB_OWNER}/${GITHUB_REPO}/issues`, {
     method: 'POST',
