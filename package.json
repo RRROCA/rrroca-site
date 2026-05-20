@@ -26,7 +26,7 @@
     "@playwright/test": "^1.59.1",
     "@testing-library/jest-dom": "^6.9.1",
     "jest": "^30.4.2",
-    "jsdom": "^22.1.0"
+    "jsdom": "^29.1.1"
   },
   "dependencies": {
     "docx": "^9.6.1",
