@@ -108,7 +108,7 @@ jobs:
           extended: true
       - name: Build for GitHub Pages
         run: hugo --gc --minify --buildFuture --baseURL "https://rrroca.github.io/rrroca-site/"
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: ./public
       - name: Deploy to GitHub Pages
