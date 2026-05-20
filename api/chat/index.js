@@ -3,7 +3,7 @@ const path = require('path');
 const { submitMotion } = require('../shared/motion-service');
 const { createContent, updateContent } = require('../shared/content-service');
 
-const ALLOWED_ORIGINS = new Set(['https://rrroca.github.io', 'https://rrroca.org', 'https://www.rrroca.org', 'https://zealous-wave-07c275a0f.7.azurestaticapps.net']);
+const ALLOWED_ORIGINS = new Set(['https://rrroca.org', 'https://www.rrroca.org', 'https://zealous-wave-07c275a0f.7.azurestaticapps.net']);
 const TRUSTED_IP_HEADERS = ['x-azure-clientip', 'x-ms-client-ip', 'client-ip'];
 const MAX_BODY_BYTES = 16 * 1024;
 const MAX_MESSAGE_LENGTH = 1000;
