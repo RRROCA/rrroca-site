@@ -131,6 +131,9 @@ To add a new trusted author, update:
 | Secret scanning | ✅ 0 alerts — push protection enabled |
 | Branch protection | ✅ Required CI + no direct pushes |
 | Content guardrail | ✅ HTML/design patterns blocked from auto-merge |
+| AI content filters | ✅ DefaultV2 + jailbreak/prompt shields |
+| API isolation | ✅ Managed functions, no independent endpoint |
+| Cost controls | ✅ 10K TPM cap + $50/mo budget alert |
 
 ## Secrets
 
@@ -138,6 +141,11 @@ To add a new trusted author, update:
 |--------|---------|----------|
 | `AZURE_STATIC_WEB_APPS_API_TOKEN` | Azure SWA production deploys | Managed by Azure — no manual rotation |
 | `COPILOT_PAT` | Triggers Copilot coding agent via REST API | Fine-grained PAT, expires **Jun 15, 2026** |
+| `AZURE_OPENAI_KEY` | Chatbot API access to Azure OpenAI (gpt-4o) | Rotate via `az cognitiveservices account keys regenerate` + update SWA appsettings |
+| `AZURE_OPENAI_ENDPOINT` | Azure OpenAI resource URL | Static — no rotation needed |
+| `AZURE_OPENAI_DEPLOYMENT` | Model deployment name (`gpt-4o`) | Static — no rotation needed |
+| `GITHUB_TOKEN` | Chatbot agentic tools (create issues, content) | Fine-grained PAT — ⚠️ **needs scoping to Issues+Contents only** |
+| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Board member OAuth sign-in | Rotate in Google Cloud Console + update SWA appsettings |
 
 ### COPILOT_PAT Permissions (fine-grained)
 - Actions: Read
