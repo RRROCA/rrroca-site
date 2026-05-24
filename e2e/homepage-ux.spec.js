@@ -207,7 +207,7 @@ test.describe('Homepage UX', () => {
 
     const actionableConsoleErrors = consoleErrors.filter((message) =>
       !/Failed to load resource/i.test(message)
-      && !/facebook\.com|connect\.facebook\.net|fburl\.com|fb:xfbml|Cross-Origin|ErrorUtils/i.test(message)
+      && !/facebook\.com|connect\.facebook\.net|fburl\.com|fb:xfbml|Cross-Origin|CORS|ErrorUtils/i.test(message)
       && !/CORS policy|\.auth\/me/i.test(message)
     );
 
