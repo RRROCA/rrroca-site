@@ -9,23 +9,23 @@ draft: false
 
 #### Places to Worship
 
-[The Church of Jesus Christ of Latter-Day Saints](http://www.lds.org/)
+[The Church of Jesus Christ of Latter-Day Saints](https://www.lds.org/)
 81 Royal Elm Drive Northwest Calgary, AB T3G 5P7
 (403) 241-1128
 
-[Calgary Alberta Temple](http://www.ldschurchtemples.com/calgary/)
+[Calgary Alberta Temple](https://www.ldschurchtemples.com/calgary/)
 9802 Rocky Ridge Road NW Calgary, AB  T3G 5H1
 (403) 241-4250
 
-[Royal Oak Victory Church](http://www.rovc.ca)
+[Royal Oak Victory Church](https://www.rovc.ca)
 450 Royal Oak Drive NW Calgary, AB T3G 5J7
 (403) 286-4477
 
-[North West Family Church](http://nwfchurch.com)
+[North West Family Church](https://nwfchurch.com)
 10307 Eamon Rd NW Calgary, AB T3G 5H2
 (403) 241-8822
 
-[Mountain Springs Calvary Chapel](http://www.mountainspringscc.com/)
+[Mountain Springs Calvary Chapel](https://www.mountainspringscc.com/)
 Royal Oak Victory Church building (450 Royal Oak Drive)
 
 
@@ -33,7 +33,7 @@ Royal Oak Victory Church building (450 Royal Oak Drive)
 
 #### Linking Boomers
 
-Do you know of any programs available for Seniors in the Rocky Ridge and Royal Oak area. Please send an email to let us know so we can add it here to share with the communities. [www.calgary.linkingboomers.com](http://calgary.linkingboomers.com/)
+Do you know of any programs available for Seniors in the Rocky Ridge and Royal Oak area. Please send an email to let us know so we can add it here to share with the communities. [www.calgary.linkingboomers.com](https://calgary.linkingboomers.com/)
 
 #### Rocky Ridge Rockers – Senior Group
 

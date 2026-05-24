@@ -37,7 +37,7 @@ To reserve an activity bag for your block party or if you have general questions
 **When planning a block party there are a lot of things to think about. Here are several suggestions you may want to use to make your block party a great success!**
 
 - Use a large driveway, yard, or nearby green space to avoid closing off the street (or plan on obtaining the necessary permits from the City of Calgary).
-- Visit the City of Calgary website ([www.calgary.ca](http://www.calgary.ca/Transportation/Roads/Pages/Traffic/Permits/Block-party-permits.aspx)) or call 3-1-1 for additional information.
+- Visit the City of Calgary website ([www.calgary.ca](https://www.calgary.ca/Transportation/Roads/Pages/Traffic/Permits/Block-party-permits.aspx)) or call 3-1-1 for additional information.
 - Decide what you plan on providing & what your neighbours can bring (lawn chairs, food, drinks)
 - Select a date and time for your party that will work well for you as the host.
 - Prepare activities for the children on your block to play, or delegate this to someone else. SEE IDEA SECTION BELOW!

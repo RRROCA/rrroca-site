@@ -84,15 +84,15 @@ draft: false
 
 #### Rocky Ridge Suburban Journal
 
-[Rocky Ridge Suburban Journal – February 2015](http://suburbanjournals.ca/pdf/RR_1502.pdf)
+[Rocky Ridge Suburban Journal – February 2015](https://suburbanjournals.ca/pdf/RR_1502.pdf)
 
-[Rocky Ridge Suburban Journal – January 2015](http://suburbanjournals.ca/pdf/RR_1501.pdf)
+[Rocky Ridge Suburban Journal – January 2015](https://suburbanjournals.ca/pdf/RR_1501.pdf)
 
 #### Royal Oak Suburban Journal
 
-[Royal Oak Suburban Journal – February 2015](http://suburbanjournals.ca/pdf/RR_1502.pdf)
+[Royal Oak Suburban Journal – February 2015](https://suburbanjournals.ca/pdf/RR_1502.pdf)
 
-[Royal Oak Suburban Journal – January 2015](http://suburbanjournals.ca/pdf/RO_1501.pdf)
+[Royal Oak Suburban Journal – January 2015](https://suburbanjournals.ca/pdf/RO_1501.pdf)
 
 **If you wish to view back issues prior to January 2015, [please contact us for details.](mailto:info@rrroca.org)**
 

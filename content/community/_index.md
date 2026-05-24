@@ -21,8 +21,8 @@ There are several local places of worship in the community; Northwest Family Chu
 
 #### Community Social Statistics
 
-Rocky Ridge – <http://www.calgary.ca/CSPS/CNS/Documents/community_social_statistics/rocky_ridge.pdf>
-Royal Oak – <http://www.calgary.ca/CSPS/CNS/Documents/community_social_statistics/royal_oak.pdf>
+Rocky Ridge – <https://www.calgary.ca/CSPS/CNS/Documents/community_social_statistics/rocky_ridge.pdf>
+Royal Oak – <https://www.calgary.ca/CSPS/CNS/Documents/community_social_statistics/royal_oak.pdf>
 
 [View Larger Map](https://maps.google.com/?ie=UTF8&ll=51.14484,-114.230862&spn=0.025846,0.054932&z=14&source=embed)
 
@@ -50,6 +50,6 @@ If Calgary is to attract and retain young professionals from Canada and around t
 
 #### Useful links
 
-[**Good Neighbour Reference Guide**](http://www.calgary.ca/CSPS/ABS/Documents/good_neighbour_guide.pdf)
-[**City of Calgary By-Laws**](http://www.calgary.ca/CA/city-clerks/Pages/Legislative-services/Bylaws.aspx)
+[**Good Neighbour Reference Guide**](https://www.calgary.ca/CSPS/ABS/Documents/good_neighbour_guide.pdf)
+[**City of Calgary By-Laws**](https://www.calgary.ca/CA/city-clerks/Pages/Legislative-services/Bylaws.aspx)
 [**Community Neighbourhoods Summer Programs**](/en/wp-content/uploads/2016/06/Calgary-Neighbourhoods-Summer-Programs-Northwest.pdf)

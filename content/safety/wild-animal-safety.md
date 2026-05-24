@@ -21,7 +21,7 @@ Material taken from the City of Calgary’s website as well as Alberta Fish and 
 
 Coyotes are common in Calgary, including Rocky Ridge and Royal Oak. Keep your dog leashed at all times, your cat inside as much as possible (especially at night) and pick up children or small dogs if a coyote is spotted. If you are in a remote location and spot a coyote, leave the area immediately.
 
-Never leave food in your yard, even pet food, and avoid hanging bird feeders that contain lard or suet. For more information on coyotes, call the Coyote Hotline at 403-297-7789 or visit the Living with coyotes website at [www.rockies.ca/coyotes](http://www.rockies.ca/coyotes)
+Never leave food in your yard, even pet food, and avoid hanging bird feeders that contain lard or suet. For more information on coyotes, call the Coyote Hotline at 403-297-7789 or visit the Living with coyotes website at [www.rockies.ca/coyotes](https://www.rockies.ca/coyotes)
 
 #### Deer Fawns
 
@@ -81,6 +81,6 @@ Do not try to chase a moose away yourself or make aggressive movements.
 
 Call 911 or Calgary 311 immediately with its location and Fish and Wildlife officers, who are trained in dealing with wildlife, will be dispatched.
 
-For more information on fauna in natural parks, visit the Parks website at [www.calgary.ca](http://www.calgary.ca/CSPS/Parks/Pages/Contact-Parks.aspx)
+For more information on fauna in natural parks, visit the Parks website at [www.calgary.ca](https://www.calgary.ca/CSPS/Parks/Pages/Contact-Parks.aspx)
 
-Another great resource is the Calgary Wildlife Rehabilitation Society at [www.calgarywildlife.org](http://www.calgarywildlife.org)
+Another great resource is the Calgary Wildlife Rehabilitation Society at [www.calgarywildlife.org](https://www.calgarywildlife.org)

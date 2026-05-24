@@ -19,21 +19,21 @@ While this is just the tip of the iceberg with the types of services we offer ou
 
 #### Rocky Ridge Ranch
 
-**Website**: [www.rrrha.ca](http://www.rrrha.ca)
+**Website**: [www.rrrha.ca](https://www.rrrha.ca)
 **Properties Map**: [rrrha.ca/index.php?src=gendocs&ref=Landscape%20Properties&category=Main](https://rrrha.ca/index.php?src=gendocs&ref=Landscape%20Properties&category=Main)
 
 ![RRRHA Logo](/images/uploads/Rocky-Ridge-Ranch-Logo.jpg)![Waterfall](/images/uploads/Rocky-Ridge-Ranch.jpg)
 
 #### The Cascades in Royal Oak Resident Association
 
-**Website**: [www.cascadesroyaloak.camp7.org](http://cascadesroyaloak.camp7.org)
-**Properties Map**: [cascadesroyaloak.camp7.org/community-locations](http://cascadesroyaloak.camp7.org/community-locations)
+**Website**: [www.cascadesroyaloak.camp7.org](https://cascadesroyaloak.camp7.org)
+**Properties Map**: [cascadesroyaloak.camp7.org/community-locations](https://cascadesroyaloak.camp7.org/community-locations)
 
 ![Cascades of Royal Oak Pic](/images/uploads/THE-CASCADES-OF-ROYAL-OAK.jpg)
 
 #### Royal Oak Estates Homeowners Association
 
-**Website**: [www.roeha.ca](http://www.roeha.ca)
+**Website**: [www.roeha.ca](https://www.roeha.ca)
 **Properties Map**: [roeha.ca/wp-content/uploads/2018/04/Map2.pdf](https://www.roeha.ca/wp-content/uploads/2018/04/Map2.pdf)
 
 ![](/images/uploads/ROEHA-logo.jpg)

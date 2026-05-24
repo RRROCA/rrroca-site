@@ -80,7 +80,7 @@ This is non-blocking — runs after merge so it never slows the approval flow. W
 | Suite | Tests | Type | When to Run |
 |---|---|---|---|
 | `build-validation` | 17 | Build artifacts + negative | Always (gatekeeper) |
-| `navigation` | 14 | Link integrity + negative | Content + theme changes |
+| `navigation` | 15 | Link integrity + negative | Content + theme changes |
 | `content-validation` | 6 | Source quality | Content changes |
 | `homepage-ux` | 10 | UX contract | Theme changes |
 | `qa-comprehensive` | 24 | Security/QA + negative | Theme + config changes |
@@ -89,14 +89,16 @@ This is non-blocking — runs after merge so it never slows the approval flow. W
 | `safety-dashboard` | 5 | Unit + DOM | JS + theme changes |
 | `e2e/smoke` | 10 | Playwright + negative | Theme + config changes |
 
-**Total: 96 tests (86 Jest + 10 Playwright)**
+**Total: 97 tests (87 Jest + 10 Playwright)**
+
+> **Note:** The counts above reflect the core suites at time of writing. Run `npx jest --verbose` for the current total (currently 220 tests across 22 suites).
 
 ## Negative Test Categories
 
 | Category | Suite | Tests | What It Catches |
 |---|---|---|---|
 | Build | `build-validation` | 5 | Missing 404, empty content, placeholders, broken images, raw templates |
-| Navigation | `navigation` | 5 | External URLs for internal pages, duplicates, draft links, broken anchors, multiple h1 |
+| Navigation | `navigation` | 6 | External URLs for internal pages, duplicates, draft links, broken anchors, multiple h1, insecure http:// external links |
 | Security | `qa-comprehensive` | 6 | External forms, inline JS, http:// links, raw emails, removed paths, phone formatting |
 | E2E | `e2e/smoke` | 4 | 404 rendering, console errors, mixed content, JS-disabled fallback |
 

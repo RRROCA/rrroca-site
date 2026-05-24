@@ -17,11 +17,11 @@ The Rocky Ridge Royal Oak Community Association encourages our members to lead a
 
 ### Go out for a walk or bike ride and explore our pathway system:
 
-<http://www.calgary.ca/CSPS/Parks/Pages/Pathways/Pathways-in-Calgary.aspx>
+<https://www.calgary.ca/CSPS/Parks/Pages/Pathways/Pathways-in-Calgary.aspx>
 
 ### Go sledding!
 
-<http://www.calgary.ca/CSPS/Parks/Pages/Locations/Tobogganing-and-sledding.aspx>
+<https://www.calgary.ca/CSPS/Parks/Pages/Locations/Tobogganing-and-sledding.aspx>
 
 ### Register in one of our Adult Fitness Classes:
 
@@ -29,12 +29,12 @@ The Rocky Ridge Royal Oak Community Association encourages our members to lead a
 
 ### Go swimming or to the gymnasium at the YMCA to get moving:
 
-<http://www.ymcacalgary.org/program-descriptions/locations/crowfoot/>
+<https://www.ymcacalgary.org/program-descriptions/locations/crowfoot/>
 
 ### Find other recreation opportunities and programs through the City of Calgary Recreation:
 
-<http://www.calgary.ca/CSPS/Recreation/Pages/Home.aspx>
+<https://www.calgary.ca/CSPS/Recreation/Pages/Home.aspx>
 
 ### Get out to the beautiful Rocky Mountains and seek out an adventure!
 
-<http://travelalberta.com/Places%20to%20Go/Regions/Canadian%20Rockies.aspx>
+<https://travelalberta.com/Places%20to%20Go/Regions/Canadian%20Rockies.aspx>

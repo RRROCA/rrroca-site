@@ -381,4 +381,41 @@ describe('negative navigation cases', () => {
 
     expect(violations).toEqual([]);
   });
+
+  it('no external link uses insecure http:// (likely dead or moved)', () => {
+    // Sites that legitimately only serve http:// can be allowlisted here
+    const HTTP_ALLOWLIST = [];
+
+    const violations = [];
+    const seen = new Set();
+
+    allHtmlFiles.forEach((filePath) => {
+      const doc = loadDom(filePath);
+      const anchors = doc.querySelectorAll('a[href^="http://"]');
+
+      anchors.forEach((anchor) => {
+        const href = anchor.getAttribute('href');
+        if (!href) return;
+
+        const url = href.split('#')[0].split('?')[0];
+        if (seen.has(url)) return;
+        seen.add(url);
+
+        try {
+          const hostname = new URL(href).hostname;
+          if (HTTP_ALLOWLIST.includes(hostname)) return;
+        } catch {
+          // malformed URL — still flag it
+        }
+
+        violations.push({
+          file: path.relative(PUBLIC_DIR, filePath),
+          href: url,
+          text: anchor.textContent.trim().substring(0, 50),
+        });
+      });
+    });
+
+    expect(violations).toEqual([]);
+  });
 });

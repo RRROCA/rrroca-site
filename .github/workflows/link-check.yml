@@ -1,0 +1,64 @@
+name: External Link Check
+
+on:
+  schedule:
+    - cron: '0 8 * * 1' # Every Monday at 8 AM UTC
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Hugo
+        run: |
+          curl -sSL https://github.com/gohugoio/hugo/releases/download/v0.161.1/hugo_extended_0.161.1_linux-amd64.tar.gz | tar xz -C /usr/local/bin hugo
+
+      - name: Build site
+        run: hugo --quiet
+
+      - name: Check external links
+        run: node scripts/check-external-links.js
+
+      - name: Create issue if broken links found
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportPath = 'link-check-report.md';
+            if (!fs.existsSync(reportPath)) return;
+            const body = fs.readFileSync(reportPath, 'utf8');
+
+            // Check if an open issue already exists
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'broken-links',
+              per_page: 1,
+            });
+
+            if (issues.length > 0) {
+              // Update existing issue
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                body: body,
+              });
+            } else {
+              // Create new issue
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🔗 Broken external links detected',
+                body: body,
+                labels: ['broken-links', 'content'],
+              });
+            }
