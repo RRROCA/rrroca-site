@@ -29,8 +29,15 @@ const INJECTION_PATTERNS = [
   /reveal\s+(your|the)\s+(system|initial)\s+(prompt|instructions)/i,
   /what\s+(are|is)\s+your\s+(instructions|system\s+prompt|rules)/i,
   /developer\s+mode/i,
-  /bypass\s+(the\s+)?(rules|filters|guardrails)/i,
-  /jailbreak/i
+  /bypass\s+(the\s+)?(rules|filters|guardrails|safety)/i,
+  /jailbreak/i,
+  /do\s+anything\s+now/i,
+  /disregard\s+(all|any|your)\s+(previous|prior|safety)/i,
+  /override\s+(your|all|the)\s+(programming|safet|rules|instructions)/i,
+  /forget\s+(all\s+)?(your\s+)?(previous|prior|rules|instructions|training)/i,
+  /roleplay\s+as\s+/i,
+  /simulation\s+mode/i,
+  /hypothetically?\s+(if|assume|suppose)\s+you\s+(had|have|were)\s+no\s+(restrict|rules|limit)/i
 ];
 const requestLog = new Map();
 let dailyCount = 0;

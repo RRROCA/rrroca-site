@@ -2,7 +2,8 @@ backend:
   name: github
   repo: RRROCA/rrroca-site
   branch: master
-  base_url: https://sveltia-cms-auth.chad752.workers.dev
+  base_url: https://zealous-wave-07c275a0f.7.azurestaticapps.net
+  auth_endpoint: /api/cms-auth
 
 media_folder: "static/images"
 public_folder: "/images"

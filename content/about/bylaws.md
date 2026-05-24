@@ -29,4 +29,4 @@ To view a copy of past Rocky Ridge Royal Oak Community Association bylaws, pleas
 
 [RRROCA Special Resolution | 19 Nov 2008 (PDF)](/en/wp-content/uploads/2014/08/Special-Resolution.pdf)
 
-[Good Neighbour Practices Reference Guide (PDF)](http://calgaryarea.com/content/communities/good_neighbour.pdf)
+[Good Neighbour Practices Reference Guide (PDF)](https://calgaryarea.com/content/communities/good_neighbour.pdf)

@@ -163,6 +163,179 @@ The Rocky Ridge Royal Oak Community Association represents ~25,000 residents in 
 • **403-514-6100** — ENMAX Power Outages
 
 ⚠️ **If in doubt, call 911.**`
+  },
+  contentDrafting: {
+    keywords: ['write', 'draft', 'news post', 'article', 'compose', 'create content', 'write a post', 'publish'],
+    response: `✍️ **Content Drafting Assistant**
+
+I can help you draft content for the RRROCA website! Here's how:
+
+📝 **Tell me what to write about**, and I'll draft it in our community voice. For example:
+• "Write a news post about the June 15 community cleanup"
+• "Draft an event announcement for the summer BBQ"
+• "Write a safety reminder about coyote season"
+
+📋 **I'll format it with:**
+• A clear, engaging title
+• Date and description metadata
+• Friendly, community-focused tone
+• Relevant links and CTAs
+
+🖥️ **Then publish it:**
+1. Go to [Content Manager →](/admin/)
+2. Sign in with your @rrroca.org account
+3. Create a new News/Event post
+4. Paste the draft and hit Save
+
+💡 **Tip:** Just describe what happened or what's coming up, and I'll handle the formatting!`
+  },
+  cms: {
+    keywords: ['cms', 'admin', 'content manager', 'edit website', 'update website', 'publish', 'add page', 'edit page', 'upload'],
+    response: `🖥️ **Content Manager (CMS)**
+
+Board members can update the website directly — no coding needed!
+
+**How to use it:**
+1. Go to [Content Manager →](/admin/)
+2. Sign in with your **@rrroca.org Google account**
+3. Choose a collection (News, Events, Board Members, etc.)
+4. Click "New" to create or select an existing entry to edit
+5. Write/edit using the visual editor
+6. Hit **Save** → changes go live automatically
+
+**What you can manage:**
+• 📰 News posts & announcements
+• 📅 Events
+• 👥 Board member profiles
+• 🏘️ Community pages
+• 🛡️ Safety updates
+
+**Tips:**
+• Use "Draft" toggle to save without publishing
+• Images can be uploaded directly in the editor
+• Changes deploy within ~2 minutes of saving
+
+Need help drafting content? Just ask me — e.g. "write a news post about the AGM results"!`
+  },
+  motionDrafting: {
+    keywords: ['propose', 'propose a motion', 'draft a motion', 'new motion', 'resolution', 'motion about', 'motion for', 'motion to'],
+    response: `📋 **Draft a Board Motion**
+
+I'll help you write a formal motion. Here's the structure:
+
+**Title:** Short, clear name (e.g., "Approve Playground Fence Repair")
+
+**Motion Text:** Starts with "BE IT RESOLVED THAT the Board of Directors..."
+• What exactly is being decided
+• Keep it to one clear action
+
+**Background:** Why this is needed — context for other directors
+
+**Financial Impact:** "$0" or describe costs + funding source
+
+**Example:**
+> BE IT RESOLVED THAT the Board of Directors approve up to $500 from unrestricted funds for replacement of damaged fencing at the Tuscany Hills playground, with work to be coordinated by the Facilities Director.
+
+📝 **Tell me what you want to propose** and I'll draft it in proper format!
+
+👉 Submit via [Board Action Center →](/board/actions/) when ready.`
+  },
+  boardProcess: {
+    keywords: ['quorum', 'how does voting work', 'board process', 'how many votes', 'majority', 'procedure', 'roberts rules', 'alberta societies act', 'seconding process', 'how motions work'],
+    response: `⚖️ **Board Process & Procedures**
+
+**Motion Lifecycle:**
+1. **Propose** — any director fills out the motion form
+2. **Second** — one other director seconds (confirms it's worth discussing)
+3. **Vote** — all directors vote: 👍 For, 👎 Against, or 😐 Abstain
+4. **Result** — simple majority of votes cast determines outcome
+
+**Key Rules (Alberta Societies Act):**
+• Quorum = majority of elected directors
+• Each director gets one vote per motion
+• Abstentions don't count toward the majority
+• Votes are recorded and published for transparency
+• Email/async voting is valid under our bylaws
+
+**Governance Principle:**
+Decisions requiring a board motion: budget >$500, bylaws changes, new partnerships, strategic direction. Day-to-day portfolio decisions stay with the responsible director.
+
+👉 [Board Action Center →](/board/actions/)
+📘 [Full Governance Info →](/board/)`
+  },
+  boardComms: {
+    keywords: ['email residents', 'newsletter', 'communicate', 'announce', 'announcement', 'send email', 'draft email', 'notify members', 'board communication'],
+    response: `📨 **Board Communications**
+
+I'll help you draft communications! Tell me the topic and audience.
+
+**Communication Channels:**
+• 📰 **Website News Post** — for all residents ([use the CMS](/admin/))
+• 📱 **Facebook Group** — quick announcements to 5,000+ members
+• 📧 **Communal Email** — membership-wide notifications
+• 🏘️ **Board-to-Board** — @rrroca.org email for internal coordination
+
+**Tone Guidelines (RRROCA Voice):**
+• Friendly neighbour, not corporate press release
+• Warm, approachable, community-focused
+• Action-oriented — always tell people what to DO
+• Local flavour — reference our parks, streets, community
+
+**Tell me what to draft:**
+• "Draft an email about the community cleanup on June 15"
+• "Write a Facebook post about the new playground equipment"
+• "Help me announce the AGM results"
+
+I'll format it in the right tone for whichever channel you pick!`
+  },
+  principles: {
+    keywords: ['principle', 'architecture principle', 'decision framework', 'why did we', 'zero cost', 'volunteer turnover', 'bus factor', 'portability', 'graceful degradation', 'tech strategy', 'technology strategy'],
+    response: `🏔️ **RRROCA Architecture Principles**
+
+Our 9 principles guide every technology decision:
+
+| # | Principle | One-Liner |
+|---|-----------|-----------|
+| **P0** | Community First | Every feature serves resident engagement |
+| **P1** | Survive Turnover | No single departure breaks the site |
+| **P2** | Zero Cost | Runs at $0 indefinitely |
+| **P3** | Minimal Maintenance | Zero effort to keep lights on |
+| **P4** | Progressive Skill | Content editors → power users → AI → devs |
+| **P5** | Security by Elimination | No server = no attack surface |
+| **P6** | Graceful Degradation | Broken service = reduced, never broken |
+| **P7** | Portability | Standard formats, no lock-in |
+| **P8** | Document Decisions | Next volunteer understands WHY |
+
+**Decision Test:** "If the person who set this up disappeared tomorrow, could the next volunteer figure it out within 30 minutes?"
+
+**Quick links:**
+• 📄 [Full Principles Doc](https://github.com/RRROCA/rrroca-site/blob/master/docs/architecture-principles.md)
+• 📋 [Technology Strategy Motion →](/board/motions/2026-05-integrated-technology-strategy/)`
+  },
+  meetingPrep: {
+    keywords: ['meeting', 'agenda', 'prepare for meeting', 'board meeting', 'what do i need', 'pending items', 'my actions', 'what needs my attention'],
+    response: `📅 **Board Meeting Prep**
+
+Here's how to get ready:
+
+**Before the meeting:**
+1. Check the [Board Action Center →](/board/actions/) for pending items
+2. Review any motions awaiting your second or vote
+3. Check your @rrroca.org email for motion notifications
+
+**During the meeting:**
+• Propose new motions live from your phone/laptop
+• Second and vote in real-time as items come up
+• The AI bot (me!) can help draft motion text on the spot
+
+**After the meeting:**
+• All votes are recorded automatically
+• Approved motions publish to the website immediately
+• No meeting minutes needed for formal decisions — they're on-chain!
+
+**Quick check:** Ask me "what motions are pending?" to see what needs attention right now.
+
+💡 **Tip:** Board members receive email notifications for all motion activity. Check your @rrroca.org inbox!`
   }
 };
 

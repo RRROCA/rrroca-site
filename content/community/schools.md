@@ -18,21 +18,21 @@ RRROCA recognizes and interviews an outstanding child in our community each mont
 ### Schools
 
 **Our main designated *elementary school* for both Royal Oak and Rocky Ridge is**
-**[Royal Oak School (K-3)](http://schools.cbe.ab.ca/b402/)**
+**[Royal Oak School (K-3)](https://schools.cbe.ab.ca/b402/)**
 9100 Royal Birch Blvd NW
 Ph: 403-777-6279
 
-**[Belvedere-Parkway School](http://schools.cbe.ab.ca/b110/)**
+**[Belvedere-Parkway School](https://schools.cbe.ab.ca/b110/)**
 4631 – 85 Street NW
 Ph: 403-777-6010
 
 **Grades 4 to 9 may attend
-[William D. Pratt School](http://school.cbe.ab.ca/school/williamdpratt/Pages/default.aspx)**
+[William D. Pratt School](https://school.cbe.ab.ca/school/williamdpratt/Pages/default.aspx)**
 9850 Royal Oak Way NW
 Ph: 403-817-3520
 
 **Grades 5 to 9 students may attend
-[Simon Fraser School](http://schools.cbe.ab.ca/b646/)**
+[Simon Fraser School](https://schools.cbe.ab.ca/b646/)**
 5215—33 Street NW
 Ph: 403-777-7290
 
@@ -54,7 +54,7 @@ Ph: 403-777-8060
 Ph: 403-777-7540
 
 **High School
-[William Aberhart](http://school.cbe.ab.ca/school/williamaberhart/)**
+[William Aberhart](https://school.cbe.ab.ca/school/williamaberhart/)**
 3009 Morley Trail NW
 Ph: 403-289-2551
 
@@ -96,7 +96,7 @@ Crescent Heights**
 Ph: 403-276-5521
 
 **For other alternative schools endorsed by the CBE, please see:**
-[www.cbe.ab.ca/programs/program-options](http://www.cbe.ab.ca/programs/program-options/)
+[www.cbe.ab.ca/programs/program-options](https://www.cbe.ab.ca/programs/program-options/)
 
 #### Catholic Schools:
 

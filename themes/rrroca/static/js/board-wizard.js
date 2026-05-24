@@ -337,6 +337,62 @@
     }
   }
 
+  // --- Dashboard ---
+
+  async function updateDashboard(root) {
+    var dashboard = root.querySelector('[data-board-dashboard]');
+    var itemsContainer = root.querySelector('[data-dashboard-items]');
+    if (!dashboard || !itemsContainer) return;
+
+    if (!currentUser) {
+      dashboard.classList.add('board-wizard-hidden');
+      return;
+    }
+
+    dashboard.classList.remove('board-wizard-hidden');
+
+    try {
+      var data = await requestJson(root, 'list');
+      var motions = Array.isArray(data.motions) ? data.motions : [];
+      var needsSecond = motions.filter(function (m) { return m.status === 'awaiting_second'; });
+      var needsVote = motions.filter(function (m) { return m.status === 'open'; });
+
+      if (needsSecond.length === 0 && needsVote.length === 0) {
+        itemsContainer.innerHTML = '<p class="board-dashboard-clear">✅ You\'re all caught up — no pending items.</p>';
+        return;
+      }
+
+      var html = '';
+      if (needsSecond.length > 0) {
+        html += '<div class="board-dashboard-group">';
+        html += '<h3>✋ Needs a Second (' + needsSecond.length + ')</h3>';
+        needsSecond.forEach(function (m) {
+          html += '<div class="board-dashboard-item board-dashboard-item--second">';
+          html += '<strong>' + escapeHtml(m.title) + '</strong>';
+          html += ' <button type="button" class="btn btn-secondary btn-sm" onclick="document.querySelector(\'[data-tab-trigger=second]\').click()">Review →</button>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+
+      if (needsVote.length > 0) {
+        html += '<div class="board-dashboard-group">';
+        html += '<h3>🗳️ Open for Voting (' + needsVote.length + ')</h3>';
+        needsVote.forEach(function (m) {
+          html += '<div class="board-dashboard-item board-dashboard-item--vote">';
+          html += '<strong>' + escapeHtml(m.title) + '</strong>';
+          html += ' <button type="button" class="btn btn-secondary btn-sm" onclick="document.querySelector(\'[data-tab-trigger=vote]\').click()">Vote →</button>';
+          html += '</div>';
+        });
+        html += '</div>';
+      }
+
+      itemsContainer.innerHTML = html;
+    } catch (error) {
+      itemsContainer.innerHTML = '<p class="board-dashboard-clear">Unable to load pending items.</p>';
+    }
+  }
+
   // --- Tab Navigation ---
 
   function switchTab(root, key) {
@@ -567,6 +623,7 @@
     fetchAuthStatus().then(function (user) {
       currentUser = user;
       updateAuthUI(root);
+      updateDashboard(root);
       refreshMotions(root);
     });
 

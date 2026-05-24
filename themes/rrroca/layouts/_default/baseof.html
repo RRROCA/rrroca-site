@@ -11,6 +11,9 @@
   <meta property="og:site_name" content="{{ .Site.Title }}">
   <meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
   <link rel="canonical" href="{{ .Permalink }}">
+  <link rel="manifest" href="{{ "manifest.json" | relURL }}">
+  <meta name="theme-color" content="#1a3a5c">
+  <link rel="apple-touch-icon" href="{{ "images/rrroca-logo.png" | relURL }}">
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin="anonymous">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
   <link rel="preload" href="{{ "fonts/inter-400.woff2" | relURL }}" as="font" type="font/woff2" crossorigin="anonymous">
