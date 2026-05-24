@@ -188,6 +188,34 @@ I can help you draft content for the RRROCA website! Here's how:
 4. Paste the draft and hit Save
 
 💡 **Tip:** Just describe what happened or what's coming up, and I'll handle the formatting!`
+  },
+  cms: {
+    keywords: ['cms', 'admin', 'content manager', 'edit website', 'update website', 'publish', 'add page', 'edit page', 'upload'],
+    response: `🖥️ **Content Manager (CMS)**
+
+Board members can update the website directly — no coding needed!
+
+**How to use it:**
+1. Go to [Content Manager →](/admin/)
+2. Sign in with your **@rrroca.org Google account**
+3. Choose a collection (News, Events, Board Members, etc.)
+4. Click "New" to create or select an existing entry to edit
+5. Write/edit using the visual editor
+6. Hit **Save** → changes go live automatically
+
+**What you can manage:**
+• 📰 News posts & announcements
+• 📅 Events
+• 👥 Board member profiles
+• 🏘️ Community pages
+• 🛡️ Safety updates
+
+**Tips:**
+• Use "Draft" toggle to save without publishing
+• Images can be uploaded directly in the editor
+• Changes deploy within ~2 minutes of saving
+
+Need help drafting content? Just ask me — e.g. "write a news post about the AGM results"!`
   }
 };
 
