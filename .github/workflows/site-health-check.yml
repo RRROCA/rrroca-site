@@ -111,7 +111,7 @@ jobs:
 
       - name: Open issue on failure
         if: steps.build.outputs.status == 'fail' || steps.tests.outputs.status == 'fail'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const title = '🏥 Weekly health check failed';
@@ -174,7 +174,7 @@ jobs:
 
       - name: Close issue on success
         if: steps.build.outputs.status == 'pass' && steps.tests.outputs.status == 'pass'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const { data: issues } = await github.rest.issues.listForRepo({
@@ -201,7 +201,7 @@ jobs:
 
       - name: Post drift warnings
         if: steps.drift.outputs.has_warnings == 'true' && steps.build.outputs.status == 'pass' && steps.tests.outputs.status == 'pass'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const title = '⚠️ Site health drift warnings';
