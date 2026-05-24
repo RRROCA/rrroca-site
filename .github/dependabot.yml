@@ -22,6 +22,10 @@ updates:
       production-dependencies:
         dependency-type: "production"
         update-types: ["minor", "patch"]
+    ignore:
+      # jsdom 25+ uses ESM-only transitive deps incompatible with our CJS Jest tests
+      - dependency-name: "jsdom"
+        versions: [">=25"]
 
   # API function dependencies
   - package-ecosystem: "npm"
