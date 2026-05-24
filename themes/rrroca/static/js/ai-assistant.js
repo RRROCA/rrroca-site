@@ -163,6 +163,31 @@ The Rocky Ridge Royal Oak Community Association represents ~25,000 residents in 
 • **403-514-6100** — ENMAX Power Outages
 
 ⚠️ **If in doubt, call 911.**`
+  },
+  contentDrafting: {
+    keywords: ['write', 'draft', 'news post', 'article', 'compose', 'create content', 'write a post', 'publish'],
+    response: `✍️ **Content Drafting Assistant**
+
+I can help you draft content for the RRROCA website! Here's how:
+
+📝 **Tell me what to write about**, and I'll draft it in our community voice. For example:
+• "Write a news post about the June 15 community cleanup"
+• "Draft an event announcement for the summer BBQ"
+• "Write a safety reminder about coyote season"
+
+📋 **I'll format it with:**
+• A clear, engaging title
+• Date and description metadata
+• Friendly, community-focused tone
+• Relevant links and CTAs
+
+🖥️ **Then publish it:**
+1. Go to [Content Manager →](/admin/)
+2. Sign in with your @rrroca.org account
+3. Create a new News/Event post
+4. Paste the draft and hit Save
+
+💡 **Tip:** Just describe what happened or what's coming up, and I'll handle the formatting!`
   }
 };
 

@@ -30,6 +30,16 @@
       {{ end }}
 
       <div class="board-wizard" data-board-wizard data-swa-origin="https://zealous-wave-07c275a0f.7.azurestaticapps.net">
+        <!-- Pending items dashboard (shows after auth) -->
+        <div class="board-dashboard board-wizard-hidden" data-board-dashboard>
+          <div class="board-dashboard-header">
+            <h2>📋 Your Pending Items</h2>
+          </div>
+          <div class="board-dashboard-items" data-dashboard-items>
+            <p class="board-dashboard-loading">Checking for items that need your attention…</p>
+          </div>
+        </div>
+
         <!-- Auth status bar -->
         <div class="board-auth-bar" data-auth-bar>
           <div class="board-auth-signed-out" data-auth-signed-out>

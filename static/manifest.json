@@ -1,0 +1,37 @@
+{
+  "name": "RRROCA",
+  "short_name": "RRROCA",
+  "description": "Rocky Ridge Royal Oak Community Association — Your Community. Your Voice.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#1a3a5c",
+  "icons": [
+    {
+      "src": "/images/rrroca-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Board Action Center",
+      "short_name": "Board",
+      "url": "/board/actions/",
+      "description": "Propose, second, and vote on board motions"
+    },
+    {
+      "name": "Safety",
+      "url": "/safety/",
+      "description": "Safety resources and alerts"
+    },
+    {
+      "name": "Events",
+      "url": "/events/",
+      "description": "Community events calendar"
+    }
+  ],
+  "categories": ["community", "government"]
+}
