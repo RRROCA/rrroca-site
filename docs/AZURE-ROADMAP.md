@@ -13,6 +13,26 @@ This roadmap documents a conservative, additive use of Azure services for the RR
 
 ### Phase 1: Foundation (Current)
 
+#### Azure Static Web Apps
+
+Azure Static Web Apps hosts the production site (rrroca.org) with integrated managed functions for the AI chatbot API. Replaces the original GitHub Pages hosting for production while retaining GitHub Pages as a staging mirror.
+
+- **Current role:** Production hosting + serverless API (chatbot, motions)
+- **Free tier:** 100 GB bandwidth, custom domain, SSL, 2 managed functions
+- **Principles:** P2 (free), P1 (standard platform, well-documented), P6 (static site works even if API is down)
+- **L64 evidence:** Azure SWA architecture, managed functions, Easy Auth integration
+
+#### Azure OpenAI Service (AI Chatbot)
+
+Azure OpenAI powers the community AI assistant chatbot. Deployed on a Visual Studio Enterprise subscription as beta, pending RRROCA nonprofit licensing.
+
+- **Current role:** GPT-4o backs the community chatbot (knowledge-based Q&A, community suggestion submission, board governance tools)
+- **Cost controls:** 10K TPM quota cap, $50/month budget alert to safety@rrroca.org, 200 requests/day application-level limit
+- **Security:** DefaultV2 content filters + jailbreak/prompt shields, server-side prompt injection detection, three-layer tool-gating, PII masking in public outputs
+- **Graceful degradation:** If Azure OpenAI is unavailable, the client-side bot falls back to a zero-cost keyword matcher
+- **Principles:** P0 (community engagement), P2 (VS subscription covers cost for now), P6 (fallback to client-side), P8 (all config in code/docs)
+- **L64 evidence:** Azure OpenAI integration, responsible AI implementation, serverless architecture, security hardening, cost governance
+
 #### Cloudflare Workers
 
 Cloudflare Workers is not an Azure service, but it belongs in the roadmap because it is already deployed as the OAuth authenticator for the CMS. It establishes the pattern RRROCA will follow for future cloud enhancements: small, low-cost, low-maintenance services wrapped around a static site rather than replacing it.

@@ -1,0 +1,233 @@
+name: Weekly Site Health Check
+
+on:
+  schedule:
+    # Every Monday at 9:00 AM MST (15:00 UTC)
+    - cron: '0 15 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Hugo
+        run: |
+          curl -sSL https://github.com/gohugoio/hugo/releases/download/v0.161.1/hugo_extended_0.161.1_linux-amd64.tar.gz | tar xz -C /usr/local/bin hugo
+          hugo version
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        id: build
+        run: |
+          if hugo --quiet 2>&1; then
+            echo "status=pass" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=fail" >> "$GITHUB_OUTPUT"
+            echo "error<<EOF" >> "$GITHUB_OUTPUT"
+            hugo 2>&1 | tail -20 >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run tests
+        id: tests
+        run: |
+          if npx jest --ci --runInBand 2>&1 | tee /tmp/test-output.txt; then
+            echo "status=pass" >> "$GITHUB_OUTPUT"
+            echo "summary=$(tail -3 /tmp/test-output.txt | head -1)" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=fail" >> "$GITHUB_OUTPUT"
+            echo "error<<EOF" >> "$GITHUB_OUTPUT"
+            grep -A 5 "FAIL\|●" /tmp/test-output.txt | head -30 >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check for drift indicators
+        id: drift
+        run: |
+          warnings=""
+
+          # Check if Hugo version in CI matches this workflow
+          ci_hugo=$(grep -oP 'hugo_extended_\K[0-9.]+' .github/workflows/ci.yml | head -1)
+          health_hugo="0.161.1"
+          if [ "$ci_hugo" != "$health_hugo" ]; then
+            warnings="${warnings}⚠️ Hugo version mismatch: CI uses ${ci_hugo}, health check uses ${health_hugo}\n"
+          fi
+
+          # Check if node version matches
+          ci_node=$(grep -oP "node-version: '\K[0-9]+" .github/workflows/ci.yml | head -1)
+          if [ "$ci_node" != "20" ]; then
+            warnings="${warnings}⚠️ Node version mismatch: CI uses ${ci_node}, health check uses 20\n"
+          fi
+
+          # Check for npm audit vulnerabilities (high/critical only)
+          audit_output=$(npm audit --audit-level=high 2>&1 || true)
+          if echo "$audit_output" | grep -q "found.*vulnerabilit"; then
+            vuln_count=$(echo "$audit_output" | grep -oP '\d+ vulnerabilit' | head -1)
+            warnings="${warnings}⚠️ npm audit: ${vuln_count}ies (high/critical)\n"
+          fi
+
+          # Credential rotation reminder (90-day cycle)
+          # Check if CREDENTIAL_ROTATION_DATE secret/var is set and overdue
+          rotation_date="${{ vars.CREDENTIAL_ROTATION_DATE || '' }}"
+          if [ -n "$rotation_date" ]; then
+            rotation_epoch=$(date -d "$rotation_date" +%s 2>/dev/null || echo "0")
+            now_epoch=$(date +%s)
+            days_since=$(( (now_epoch - rotation_epoch) / 86400 ))
+            if [ "$days_since" -gt 90 ]; then
+              warnings="${warnings}⚠️ Credential rotation overdue: last rotated ${days_since} days ago (90-day policy). Rotate Azure OpenAI key and GitHub PAT.\n"
+            elif [ "$days_since" -gt 75 ]; then
+              warnings="${warnings}⚠️ Credential rotation due soon: ${days_since}/90 days since last rotation.\n"
+            fi
+          else
+            warnings="${warnings}⚠️ No CREDENTIAL_ROTATION_DATE variable set. Add it to track key rotation schedule.\n"
+          fi
+
+          if [ -n "$warnings" ]; then
+            echo "has_warnings=true" >> "$GITHUB_OUTPUT"
+            echo "warnings<<EOF" >> "$GITHUB_OUTPUT"
+            echo -e "$warnings" >> "$GITHUB_OUTPUT"
+            echo "EOF" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_warnings=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open issue on failure
+        if: steps.build.outputs.status == 'fail' || steps.tests.outputs.status == 'fail'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '🏥 Weekly health check failed';
+            const label = 'site-health';
+
+            // Check for existing open issue to avoid duplicates
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: label,
+              state: 'open',
+            });
+
+            const buildStatus = '${{ steps.build.outputs.status }}';
+            const testStatus = '${{ steps.tests.outputs.status }}';
+            const buildError = `${{ steps.build.outputs.error }}`;
+            const testError = `${{ steps.tests.outputs.error }}`;
+
+            let body = `## Weekly Site Health Check — FAILED\n\n`;
+            body += `**Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}\n\n`;
+
+            if (buildStatus === 'fail') {
+              body += `### ❌ Hugo Build Failed\n\`\`\`\n${buildError}\n\`\`\`\n\n`;
+              body += `**Likely cause:** Hugo template error, missing content file, or config issue.\n`;
+              body += `**Action:** Run \`hugo\` locally to reproduce and fix.\n\n`;
+            }
+
+            if (testStatus === 'fail') {
+              body += `### ❌ Tests Failed\n\`\`\`\n${testError}\n\`\`\`\n\n`;
+              body += `**Likely cause:** Content/template change broke an assertion, or dependency drift.\n`;
+              body += `**Action:** Run \`npx jest --verbose\` locally to reproduce.\n\n`;
+            }
+
+            body += `---\n*This issue was auto-created by [site-health-check.yml](.github/workflows/site-health-check.yml). It will auto-close when the next health check passes.*`;
+
+            if (issues.length > 0) {
+              // Update existing issue
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                body: body,
+              });
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issues[0].number,
+                body: `Health check still failing as of ${new Date().toISOString().split('T')[0]}. See updated issue body.`,
+              });
+            } else {
+              // Create new issue
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: [label],
+              });
+            }
+
+      - name: Close issue on success
+        if: steps.build.outputs.status == 'pass' && steps.tests.outputs.status == 'pass'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'site-health',
+              state: 'open',
+            });
+
+            for (const issue of issues) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `✅ Health check passed on ${new Date().toISOString().split('T')[0]}. Auto-closing.`,
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+              });
+            }
+
+      - name: Post drift warnings
+        if: steps.drift.outputs.has_warnings == 'true' && steps.build.outputs.status == 'pass' && steps.tests.outputs.status == 'pass'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '⚠️ Site health drift warnings';
+            const label = 'site-health';
+            const warnings = `${{ steps.drift.outputs.warnings }}`;
+
+            // Only create if there's no open drift issue
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: label,
+              state: 'open',
+            });
+
+            if (issues.length === 0) {
+              let body = `## Weekly Health Check — Drift Warnings\n\n`;
+              body += `Build and tests pass, but these drift indicators were detected:\n\n`;
+              body += warnings + '\n';
+              body += `**Run:** ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}\n\n`;
+              body += `---\n*Auto-created by [site-health-check.yml](.github/workflows/site-health-check.yml). Close manually once addressed.*`;
+
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: [label],
+              });
+            }

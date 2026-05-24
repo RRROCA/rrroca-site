@@ -1,5 +1,6 @@
 const { test, expect } = require('@playwright/test');
 const { contrastAudit, countUniqueColumnStarts } = require('./helpers');
+const { NAV_LINK_EXCLUDE, isRuntimeRoute } = require('./helpers/runtime-routes');
 
 async function collectConsoleErrors(page, run) {
   const consoleErrors = [];
@@ -38,7 +39,7 @@ test.describe('Homepage UX', () => {
     expect(heroBox).not.toBeNull();
     expect(titleBox).not.toBeNull();
     expect(actionBox).not.toBeNull();
-    expect(heroBox.y).toBeLessThanOrEqual(80);
+    expect(heroBox.y).toBeLessThanOrEqual(110); // allows for beta banner above header
     expect(titleBox.y).toBeLessThan(380);
     expect(actionBox.y + actionBox.height).toBeLessThan(950);
   });
@@ -96,7 +97,7 @@ test.describe('Homepage UX', () => {
   test('keeps all primary navigation links resolving without 404s', async ({ page }) => {
     await page.goto('/', { waitUntil: 'load' });
 
-    const hrefs = await page.locator('.nav-main a[href]:not(.nav-cta)').evaluateAll((links) =>
+    const hrefs = await page.locator(`.nav-main a[href]${NAV_LINK_EXCLUDE}`).evaluateAll((links) =>
       links.map((link) => link.href)
     );
 
@@ -207,6 +208,7 @@ test.describe('Homepage UX', () => {
     const actionableConsoleErrors = consoleErrors.filter((message) =>
       !/Failed to load resource/i.test(message)
       && !/facebook\.com|connect\.facebook\.net|fburl\.com|fb:xfbml|Cross-Origin|CORS|ErrorUtils/i.test(message)
+      && !/CORS policy|\.auth\/me/i.test(message)
     );
 
     expect(actionableConsoleErrors).toEqual([]);

@@ -1,4 +1,5 @@
 const { test, expect } = require('@playwright/test');
+const { isRuntimeRoute } = require('./helpers/runtime-routes');
 
 const keyPages = [
   '/',
@@ -25,6 +26,7 @@ function normalizeInternalLinks(hrefs, origin) {
         url.origin === origin
         || ['localhost', '127.0.0.1'].includes(url.hostname)
       ))
+      .filter((url) => !isRuntimeRoute(url.pathname))
       .map((url) => `${url.pathname}${url.search}`)
   )];
 }
@@ -100,6 +102,10 @@ test.describe('Site integrity', () => {
     for (const link of footerLinks) {
       if (/^mailto:/i.test(link.href)) {
         expect(link.href).toMatch(/^mailto:/i);
+        continue;
+      }
+
+      if (/^\/\.auth\//i.test(link.href)) {
         continue;
       }
 

@@ -90,11 +90,31 @@ function resolveRoute(href) {
   ) || null;
 }
 
+/**
+ * Routes that only exist at runtime on Azure Static Web Apps.
+ * These are not served by Hugo's static build and will 404 in tests.
+ * Add new runtime-only route prefixes here — all link-checking tests
+ * use this list, so new routes only need to be added once.
+ */
+const RUNTIME_ROUTE_PREFIXES = ['/.auth/'];
+
+/**
+ * Returns true if the href points to a runtime-only route (e.g. Azure SWA auth).
+ * Use this in all link validation tests to skip routes that won't resolve locally.
+ */
+function isRuntimeRoute(href) {
+  if (!href) return false;
+  const clean = href.split('?')[0].split('#')[0];
+  return RUNTIME_ROUTE_PREFIXES.some(prefix => clean.startsWith(prefix));
+}
+
 module.exports = {
   BASE_PREFIX,
   SITE_ORIGINS,
   PUBLIC_DIR,
   CONTENT_DIR,
+  RUNTIME_ROUTE_PREFIXES,
+  isRuntimeRoute,
   resolveAssetPath,
   isInternalUrl,
   resolveRoute,

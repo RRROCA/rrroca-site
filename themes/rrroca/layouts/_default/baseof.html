@@ -23,6 +23,9 @@
   {{ hugo.Generator }}
 </head>
 <body>
+  <div class="beta-banner" role="status">
+    🚧 <strong>Beta</strong> — This site is under active development. Official launch pending board approval.
+  </div>
   {{ partial "header.html" . }}
   <main>
     {{ block "main" . }}{{ end }}

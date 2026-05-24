@@ -216,7 +216,7 @@ describe('Error Handling', () => {
 });
 
 describe('CORS headers', () => {
-  const allowedOrigin = ['https://', 'rrroca.github.io'].join('');
+  const allowedOrigin = ['https://', 'rrroca.org'].join('');
 
   test('returns CORS headers for allowed origins', async () => {
     const ctx = createContext();
