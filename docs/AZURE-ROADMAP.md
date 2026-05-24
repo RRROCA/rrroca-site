@@ -1,11 +1,11 @@
 # RRROCA Azure Services Roadmap
 
-This roadmap documents a conservative, additive use of Azure services for the RRROCA website. The website's core platform remains Hugo on GitHub Pages: free, simple, portable, and resilient to volunteer turnover. Azure services are planned only as optional enhancements that improve forms, notifications, monitoring, or identity without becoming hard dependencies. It also creates a practical roadmap for work led by Chad La Fournie in his RRROCA role as Safety & Technology Director and, professionally, as a Microsoft Azure Technical Specialist (L64).
+This roadmap documents RRROCA's use of Azure services for the community website. The website's core platform is Hugo on Azure Static Web Apps (free tier): simple, portable, and resilient to volunteer turnover. Additional Azure services are planned as optional enhancements that improve forms, notifications, monitoring, or identity without becoming hard dependencies. It also creates a practical roadmap for work led by Chad La Fournie in his RRROCA role as Safety & Technology Director and, professionally, as a Microsoft Azure Technical Specialist (L64).
 
 ## Philosophy
 
-- **GitHub Pages remains the host** for the public website, aligned to **P1 Survive Turnover** and **P2 Zero Cost by Default**.
-- **Azure services are optional enhancements**, not prerequisites. If any service fails or is removed, the public site still works, consistent with **P6 Graceful Degradation**.
+- **Azure Static Web Apps is the production host** for the public website, aligned to **P1 Survive Turnover** (standard platform, auto-deploy from GitHub), **P2 Zero Cost by Default** (free tier), and **P6 Graceful Degradation** (static site works even if API functions are down).
+- **Azure services beyond hosting are optional enhancements**, not prerequisites. If any enhancement service fails or is removed, the public site still works, consistent with **P6 Graceful Degradation**.
 - **Each service must satisfy two tests:** it must map cleanly to RRROCA architecture principles, and it must provide credible **L64 Azure Technical Specialist (ATS)** evidence through real design and implementation work.
 - **All planned services are constrained to free tiers or included free usage.** If a service cannot stay free, it should not become part of the core design.
 
@@ -104,10 +104,17 @@ The table below maps each planned service to the most relevant questions in RRRO
 
 ## What We Won't Do
 
-- **Move hosting from GitHub Pages to Azure Static Web Apps.** That would violate **P1** by increasing bus-factor risk and making the public site more dependent on Azure-specific operational knowledge.
+- ~~Move hosting from GitHub Pages to Azure Static Web Apps.~~ **DONE (May 2026).** SWA is now the production host — GitHub Pages was removed. This was the right call: SWA provides managed functions (AI chatbot API), integrated auth, custom domain with SSL, and PR preview environments — all on the free tier.
 - **Use Azure SQL or Cosmos DB for the website.** That would violate **P5** by adding unnecessary state, operational burden, and attack surface to a site designed to stay static-first.
 - **Build custom authentication before RRROCA actually needs it.** That would violate **YAGNI** and add complexity before the Association has a clear operational reason to carry it.
 
 ## Recommendation
 
-RRROCA should continue treating Azure as an enhancement layer, not a hosting strategy. The right sequence is: keep the public site static and durable, add Azure Functions and Azure Communication Services only when they replace manual work, add observability when there is enough traffic to learn from, and defer identity modernization until a broader Microsoft 365 decision exists.
+RRROCA should continue treating Azure as an enhancement layer on top of a static, durable public site. The current state:
+
+- ✅ **Phase 1 (Foundation)** — COMPLETE: Azure SWA hosts production, Azure OpenAI powers the chatbot
+- 🔜 **Phase 2 (Forms & Communication)** — NEXT: Azure Functions replaces Formspree, ACS adds email alerts
+- 📅 **Phase 3 (Intelligence)** — PLANNED: Application Insights for observability
+- 🔮 **Phase 4 (Identity)** — FUTURE: Only if RRROCA adopts Microsoft 365
+
+The right sequence remains: keep the public site static and durable, add Azure Functions and Azure Communication Services only when they replace manual work, add observability when there is enough traffic to learn from, and defer identity modernization until a broader Microsoft 365 decision exists.

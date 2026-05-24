@@ -23,7 +23,7 @@ All drips go to the existing board WhatsApp group. Short, casual, one thing at a
 
 > Hey board! 🎉 I've been working on something — check out the new RRROCA website prototype:
 >
-> 👉 https://rrroca.github.io/rrroca-site/
+> 👉 https://zealous-wave-07c275a0f.7.azurestaticapps.net/
 >
 > Still a work in progress but it's live and functional. Built on zero-cost infrastructure — no hosting fees, no WordPress renewal. Take a look and let me know what you think!
 
@@ -34,7 +34,7 @@ All drips go to the existing board WhatsApp group. Short, casual, one thing at a
 
 > Quick update on the new site — your board bios are already live! Check yours out:
 >
-> 👉 https://rrroca.github.io/rrroca-site/about/board-of-directors/
+> 👉 https://zealous-wave-07c275a0f.7.azurestaticapps.net/about/board-of-directors/
 >
 > If anything needs updating (photo, bio text, title), just let me know. Or once we're ready, you'll be able to edit it yourself through the CMS! 📝
 
@@ -56,8 +56,8 @@ All drips go to the existing board WhatsApp group. Short, casual, one thing at a
 
 > Two features I'm really excited about on the new site:
 >
-> 📅 Events calendar: https://rrroca.github.io/rrroca-site/events/
-> 🚨 Safety alerts: https://rrroca.github.io/rrroca-site/safety/
+> 📅 Events calendar: https://zealous-wave-07c275a0f.7.azurestaticapps.net/events/
+> 🚨 Safety alerts: https://zealous-wave-07c275a0f.7.azurestaticapps.net/safety/
 >
 > Imagine posting a safety alert from your phone and it's live on the site in 2 minutes. That's what the CMS will let us do. No coding needed.
 
@@ -68,7 +68,7 @@ All drips go to the existing board WhatsApp group. Short, casual, one thing at a
 
 > Want to see how easy it is to edit the website? Check out the CMS:
 >
-> 👉 https://rrroca.github.io/rrroca-site/admin/
+> 👉 https://zealous-wave-07c275a0f.7.azurestaticapps.net/admin/
 >
 > Sign in with your GitHub account and you can create news articles, events, and update board bios — all through a simple editor. No code, no technical skills needed.
 >
@@ -87,7 +87,28 @@ All drips go to the existing board WhatsApp group. Short, casual, one thing at a
 
 ---
 
-### Drip 7: May 25 (Meeting) — "Ratification"
+### Drip 7: May 24 (Saturday) — "Tomorrow's the vote"
+**Goal:** Final reminder. Build confidence. Remove uncertainty about what's being voted on.
+
+> Hey team 👋 Quick reminder — at tomorrow's meeting (May 25) we have one key vote:
+>
+> 📋 **Motion: Adopt the Integrated Technology Strategy**
+>
+> This is NOT a vote to spend money or commit to specific tools. It's adopting a decision-making framework — the 9 principles we'll use to evaluate future technology choices.
+>
+> What it means in practice:
+> • A shared vocabulary for "is this the right tool?" decisions
+> • Clear rules on what needs a board vote vs. what the Safety & Tech Director can action
+> • A living document that evolves as needs change
+>
+> The motion text + supporting docs are here if you want a refresher:
+> 👉 https://zealous-wave-07c275a0f.7.azurestaticapps.net/board/motions/2026-05-integrated-technology-strategy/
+>
+> I'll do a quick 5-min walkthrough at the start of the meeting, then we vote. Should be straightforward since you've all seen the site in action over the past two weeks. 🙏
+
+---
+
+### Drip 8: May 25 (Meeting) — "Ratification"
 **Goal:** Board has already seen everything. Meeting is a formality.
 
 **Agenda items:**
