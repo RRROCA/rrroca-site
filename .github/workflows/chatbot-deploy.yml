@@ -1,0 +1,87 @@
+name: Deploy Chatbot to Cloud Run
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'cloud-run/chatbot/**'
+      - 'content/**'
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: rrroca-site
+  REGION: us-central1
+  SERVICE: rrroca-chatbot
+  IMAGE: us-central1-docker.pkg.dev/rrroca-site/chatbot/rrroca-chatbot
+
+jobs:
+  deploy:
+    name: Build and Deploy Chatbot
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Build knowledge base
+        run: node scripts/build-knowledge-base.js
+
+      - name: Copy knowledge base to chatbot
+        run: cp api/chat/knowledge-base.json cloud-run/chatbot/data/knowledge-base.json
+
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
+
+      - name: Configure Docker
+        run: gcloud auth configure-docker ${REGION}-docker.pkg.dev --quiet
+
+      - name: Build Docker image
+        working-directory: cloud-run/chatbot
+        run: |
+          docker build \
+            --tag "${IMAGE}:${{ github.sha }}" \
+            --tag "${IMAGE}:latest" \
+            .
+
+      - name: Push Docker image
+        run: |
+          docker push "${IMAGE}:${{ github.sha }}"
+          docker push "${IMAGE}:latest"
+
+      - name: Deploy to Cloud Run
+        id: deploy
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: ${{ env.SERVICE }}
+          region: ${{ env.REGION }}
+          image: ${{ env.IMAGE }}:${{ github.sha }}
+          flags: >-
+            --memory=512Mi
+            --cpu=1
+            --concurrency=80
+            --min-instances=0
+            --max-instances=10
+            --timeout=60s
+            --allow-unauthenticated
+          env_vars: |
+            NODE_ENV=production
+            GEMINI_MODEL=gemini-2.0-flash
+            ALLOWED_ORIGINS=https://rrroca-site.web.app,https://rrroca.org,https://www.rrroca.org
+          secrets: |
+            GEMINI_API_KEY=gemini-api-key:latest
+            GITHUB_TOKEN=github-bot-token:latest
+
+      - name: Show deployed URL
+        run: echo "Deployed to ${{ steps.deploy.outputs.url }}"
