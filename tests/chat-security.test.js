@@ -1,6 +1,10 @@
 /**
  * Chat API security guardrails tests
  * Tests: input validation, rate limiting, prompt injection, history sanitization
+ *
+ * NOTE: These tests validate the LEGACY Azure Functions chatbot (api/chat/index.js).
+ * The new Cloud Run + Gemini chatbot is at cloud-run/chatbot/ with its own tests.
+ * These tests remain valid until the Azure API is fully decommissioned.
  */
 
 const { SITE_ORIGINS } = require('./helpers/site-config');

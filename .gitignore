@@ -29,6 +29,7 @@ playwright-report/
 
 # Generated at build time
 api/chat/knowledge-base.json
+cloud-run/chatbot/data/knowledge-base.json
 
 # Migration scripts (not needed in prod)
 scripts/__pycache__/

@@ -1,19 +1,22 @@
-# Production deployment to rrroca.org via Azure Static Web Apps
-name: Azure Static Web Apps CI/CD
+# DEPRECATED: Azure Static Web Apps deployment (replaced by Firebase Hosting)
+# This workflow is disabled. See .github/workflows/firebase-deploy.yml
+# Kept for reference until migration is fully validated.
+name: Azure Static Web Apps CI/CD (DISABLED)
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - master
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
-      - closed
-    branches:
-      - master
+  # Disabled automatic triggers — Firebase is now the production deploy path
+  # push:
+  #   branches:
+  #     - master
+  # pull_request:
+  #   types:
+  #     - opened
+  #     - synchronize
+  #     - reopened
+  #     - closed
+  #   branches:
+  #     - master
 
 permissions:
   contents: read

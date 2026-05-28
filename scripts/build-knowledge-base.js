@@ -12,6 +12,7 @@ const path = require('path');
 
 const CONTENT_DIR = path.join(__dirname, '..', 'content');
 const OUTPUT_FILE = path.join(__dirname, '..', 'api', 'chat', 'knowledge-base.json');
+const CLOUD_RUN_OUTPUT = path.join(__dirname, '..', 'cloud-run', 'chatbot', 'data', 'knowledge-base.json');
 
 function extractFrontMatter(content) {
   const match = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
@@ -107,7 +108,12 @@ function buildKnowledgeBase() {
 
   fs.mkdirSync(path.dirname(OUTPUT_FILE), { recursive: true });
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(kb, null, 2));
-  console.log(`Knowledge base built: ${pages.length} pages → ${OUTPUT_FILE}`);
+
+  // Also write to Cloud Run chatbot data directory
+  fs.mkdirSync(path.dirname(CLOUD_RUN_OUTPUT), { recursive: true });
+  fs.writeFileSync(CLOUD_RUN_OUTPUT, JSON.stringify(kb, null, 2));
+
+  console.log(`Knowledge base built: ${pages.length} pages → ${OUTPUT_FILE} + ${CLOUD_RUN_OUTPUT}`);
 }
 
 buildKnowledgeBase();

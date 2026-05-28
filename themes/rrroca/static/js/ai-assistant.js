@@ -390,7 +390,8 @@ function showVolunteerOpportunity(opportunity) {
 
 const BOARD_EMAIL_DOMAIN = '@rrroca.org';
 const BOARD_CONTEXT_TTL_MS = 60000;
-const AUTH_LOGIN_URL = '/.auth/login/google';
+// FUTURE: Implement board auth via Google Identity Platform and restore sign-in flow.
+// const AUTH_LOGIN_URL = '/.auth/login/google';
 const PENDING_INTENT_KEY = 'rrroca_pending_intent';
 const assistantState = {
   boardUser: null,
@@ -405,17 +406,18 @@ const assistantState = {
 
 function getApiBase() {
   const host = window.location.hostname.toLowerCase();
-  if (host === 'rrroca.org' || host === 'www.rrroca.org' || host.endsWith('.azurestaticapps.net')) {
+  if (
+    host === 'rrroca.org' ||
+    host === 'www.rrroca.org' ||
+    host.endsWith('.web.app') ||
+    host.endsWith('.firebaseapp.com') ||
+    host === 'localhost' ||
+    host === '127.0.0.1'
+  ) {
     return '';
   }
 
-  // Local/CI: cross-origin auth won't work due to CORS, return empty
-  // to let auth calls fail gracefully against localhost
-  if (host === 'localhost' || host === '127.0.0.1') {
-    return '';
-  }
-
-  return 'https://zealous-wave-07c275a0f.7.azurestaticapps.net';
+  return '';
 }
 
 function formatBoardMemberName(email) {
@@ -455,29 +457,9 @@ async function fetchBoardAuthStatus() {
     return null;
   }
 
-  try {
-    const response = await fetch(getApiBase() + '/.auth/me', { credentials: 'include' });
-    if (!response.ok) {
-      return null;
-    }
-
-    const data = await response.json();
-    const principal = data && data.clientPrincipal;
-    if (!principal || !principal.userDetails) {
-      return null;
-    }
-
-    const email = String(principal.userDetails || '').toLowerCase();
-    return {
-      id: principal.userId,
-      email,
-      name: formatBoardMemberName(email),
-      provider: principal.identityProvider,
-      roles: Array.isArray(principal.userRoles) ? principal.userRoles : []
-    };
-  } catch (error) {
-    return null;
-  }
+  // FUTURE: Implement board auth via Google Identity Platform (replaces Azure SWA /.auth/me)
+  // Board auth is now handled via Google Identity and will be wired up in a future PR.
+  return null;
 }
 
 async function fetchPendingMotions() {
@@ -648,14 +630,10 @@ function promptSignIn(intent) {
     } catch (e) { /* sessionStorage unavailable */ }
   }
 
-  const redirectUri = encodeURIComponent(window.location.pathname + '?chatopen=1');
-  const loginUrl = AUTH_LOGIN_URL + '?post_login_redirect_uri=' + redirectUri;
+  // FUTURE: Implement board auth via Google Identity Platform and restore Google sign-in CTA.
+  const signInHtml = `Board-only features are temporarily unavailable while Google Identity sign-in is being migrated for Firebase Hosting.
 
-  const signInHtml = `To do that, I need to verify you're a board member. Please sign in with your RRROCA Google account:
-
-<a href="${loginUrl}" class="ai-signin-btn">Sign in with Google →</a>
-
-Your request will be remembered — I'll pick up right where we left off.`;
+Your request will be remembered once board authentication is restored in a future update.`;
 
   addMessage(signInHtml, 'bot');
 }
@@ -788,7 +766,6 @@ async function askAIAPI(question) {
 
   const response = await fetch(getApiBase() + '/api/chat', {
     method: 'POST',
-    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       message: question,

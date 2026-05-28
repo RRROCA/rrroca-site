@@ -13,7 +13,7 @@
 ```
 ┌─────────────────────────────────────────────────────┐
 │                   rrroca.org                        │
-│              Azure Static Web Apps                  │
+│                 Firebase Hosting                    │
 │         (auto-deployed from master branch)          │
 └──────────────────────┬──────────────────────────────┘
                        │ Hugo build
@@ -26,21 +26,22 @@
 │  │ (markdown)  │  │ rrroca/      │  │ admin/    │  │
 │  └─────────────┘  └──────────────┘  └───────────┘  │
 └──────────────────────┬──────────────────────────────┘
-                       │ Sveltia CMS
+                       │ Sveltia CMS + /api/chat
 ┌──────────────────────┴──────────────────────────────┐
-│          Content Management System                  │
+│      Content Management System + Chatbot API        │
 │     rrroca.org/admin/ (browser-based editor)        │
-│     Auth via Cloudflare Worker (GitHub OAuth)       │
+│             Auth via GitHub PKCE                    │
+│        /api/chat → Cloud Run → Gemini              │
 └─────────────────────────────────────────────────────┘
 ```
 
-**Stack**: Hugo static site generator → GitHub (source) → Azure Static Web Apps (hosting)
+**Stack**: Hugo static site generator → GitHub (source) → Firebase Hosting (hosting) + Cloud Run (chatbot API)
 
 **How content flows**:
 1. Board member edits content at `rrroca.org/admin/` (content management system)
 2. Sveltia CMS commits the change directly to the `master` branch on GitHub
 3. GitHub Actions runs CI (build + tests)
-4. Azure Static Web Apps auto-deploys the new build to production
+4. Firebase Hosting auto-deploys the new build to production
 
 ---
 
@@ -49,9 +50,10 @@
 | Service | Purpose | URL / Location | Owner |
 |---------|---------|---------------|-------|
 | **GitHub repo** | Source code & CI/CD | github.com/RRROCA/rrroca-site | RRROCA org |
-| **Azure Static Web Apps** | Production hosting | rrroca.org | RRROCA Azure subscription |
+| **Firebase Hosting** | Production hosting | rrroca-site.web.app | Firebase project rrroca-site |
 | **Domain registrar** | rrroca.org domain | _See credentials vault_ | RRROCA board |
-| **Cloudflare Worker** | CMS authentication (OAuth) | sveltia-cms-auth.chad752.workers.dev | _See credentials vault_ |
+| **Cloud Run** | AI chatbot API | rrroca-chatbot.us-central1.run.app | Firebase project rrroca-site |
+| **Gemini API** | AI model for chatbot | aistudio.google.com | Google AI Studio |
 | **Communal** | Membership management | rrroca.getcommunal.com | RRROCA board |
 | **Facebook Page** | Social media | facebook.com/rrroca.org | RRROCA board |
 | **Facebook Group** | Community group | facebook.com/groups/royaloakrockyridgefamilies | RRROCA board |
@@ -71,11 +73,12 @@ Access to the credentials vault is granted to: **President + VP (minimum two peo
 | Credential | What it's for | Who needs it |
 |-----------|--------------|-------------|
 | GitHub org owner credentials | Managing repo settings, branch protection, Actions secrets | Technical maintainer |
-| Azure portal login | Azure Static Web Apps configuration, custom domain, SSL | Technical maintainer |
+| Firebase / Google Cloud console login | Firebase Hosting, Cloud Run, custom domain, SSL | Technical maintainer |
 | Domain registrar login | DNS records, domain renewal | President or VP |
-| Cloudflare account | CMS auth worker (OAuth proxy) | Technical maintainer |
+| Google AI Studio / Gemini access | Chatbot model access and API key management | Technical maintainer |
 | Communal admin | Membership portal configuration | Membership Director |
-| `AZURE_STATIC_WEB_APPS_API_TOKEN` | GitHub Actions secret for deployment | Set in GitHub repo settings |
+| `FIREBASE_SERVICE_ACCOUNT` | GitHub Actions secret for Firebase Hosting deployment | Set in GitHub repo settings |
+| `WIF_PROVIDER` + `WIF_SERVICE_ACCOUNT` | GitHub Actions auth for Cloud Run deployment | Set in GitHub repo settings |
 
 ### GitHub repository access
 
@@ -116,7 +119,7 @@ The repo lives under the **RRROCA** GitHub organization. To add a new maintainer
 - **Lead time**: Renew at least 30 days before expiry
 
 ### SSL certificate
-- **Managed by**: Azure Static Web Apps (automatic)
+- **Managed by**: Firebase Hosting (automatic)
 - **Action needed**: None — auto-renews as long as DNS is correct
 
 ### Dependency updates
@@ -129,7 +132,7 @@ The repo lives under the **RRROCA** GitHub organization. To add a new maintainer
 - [ ] Domain renewed
 - [ ] Board member pages updated after AGM
 - [ ] Meeting schedule updated for new year
-- [ ] Verify CMS login still works (GitHub OAuth)
+- [ ] Verify CMS login still works (GitHub PKCE)
 - [ ] Review and rotate any API tokens/secrets
 - [ ] Confirm at least 2 people have credentials vault access
 
@@ -138,22 +141,28 @@ The repo lives under the **RRROCA** GitHub organization. To add a new maintainer
 ## 6. Incident Response
 
 ### Site is down
-1. Check [Azure Status](https://status.azure.com/) — is Azure Static Web Apps healthy?
+1. Check [Google Cloud Service Health](https://status.cloud.google.com/) — are Firebase Hosting and Cloud Run healthy?
 2. Check DNS: `nslookup rrroca.org` — does it resolve?
 3. Check GitHub Actions: is the latest build green?
 4. If DNS is wrong → log into domain registrar, verify records
 5. If build is broken → revert the last commit on `master`
 
 ### CMS login not working
-1. Check if Cloudflare Worker is running: visit `sveltia-cms-auth.chad752.workers.dev`
-2. If worker is down → log into Cloudflare dashboard, check worker status
+1. Check `rrroca.org/admin/` — does the GitHub sign-in flow load correctly?
+2. If sign-in fails → review the GitHub PKCE configuration in the Firebase / GCP console and `static/admin/config.yml`
 3. Fallback: edit content files directly on GitHub (no CMS needed)
+
+### Chatbot not working
+1. Check Cloud Run service health for `rrroca-chatbot`
+2. Check GitHub Actions: did `chatbot-deploy.yml` succeed?
+3. Verify Gemini API access, quotas, and secrets in Google AI Studio / Google Cloud
+4. Fallback: the public site still works even if the chatbot is temporarily unavailable
 
 ### Site shows old content
 1. Check GitHub Actions — did the build succeed?
-2. Azure SWA may take 2-5 minutes to propagate
+2. Firebase Hosting may take 1-2 minutes to propagate
 3. Try hard-refresh (Ctrl+Shift+R) or incognito window
-4. If stuck → trigger manual redeploy from Azure portal
+4. If stuck → trigger manual redeploy from GitHub Actions or the Firebase console
 
 ### Accidental bad content published
 1. Go to GitHub → repository → find the bad commit
@@ -168,7 +177,8 @@ The repo lives under the **RRROCA** GitHub organization. To add a new maintainer
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
 | `ci.yml` | Push/PR to master | Build Hugo site, run Jest tests, deploy to GitHub Pages (staging) |
-| `azure-swa.yml` | Push to master | Deploy to Azure Static Web Apps (production) |
+| `firebase-deploy.yml` | Push/PR to master | Deploy to Firebase Hosting (production + preview channels) |
+| `chatbot-deploy.yml` | Push to master (chatbot/content changes) | Deploy the Cloud Run chatbot API |
 | `auto-merge-content.yml` | PR from Sveltia CMS | Auto-merge content-only PRs from the CMS |
 | `merge-on-approve.yml` | PR approval | Auto-merge approved PRs (mobile-friendly approval flow) |
 | `motion-publish.yml` | Issue closed with "motion" label | Auto-publish board motions from GitHub Issues |
@@ -196,8 +206,9 @@ npx jest --verbose        # Run all tests
 | File | Purpose |
 |------|---------|
 | `hugo.toml` | Site configuration (title, menus, params) |
-| `staticwebapp.config.json` | Azure SWA routing, caching, security headers (CSP) |
+| `firebase.json` | Firebase Hosting rewrites, caching, and security headers |
 | `static/admin/config.yml` | Content management system collections and fields |
+| `cloud-run/chatbot/` | Cloud Run chatbot service and Gemini integration |
 | `themes/rrroca/layouts/` | HTML templates (Hugo) |
 | `themes/rrroca/assets/css/style.css` | Stylesheet (processed by Hugo Pipes) |
 | `themes/rrroca/static/js/` | JavaScript files |
@@ -227,20 +238,20 @@ If the current maintainer is leaving the board:
 ### Before departure (2-week minimum lead time)
 1. **Credentials**: Ensure all items in Section 3 are in the shared vault
 2. **GitHub**: Transfer org ownership or add new admin
-3. **Azure**: Add new maintainer as co-admin on Azure subscription
-4. **Cloudflare**: Transfer worker ownership or share account access
+3. **Firebase / GCP**: Add new maintainer as admin on the `rrroca-site` project
+4. **Google AI**: Ensure Gemini API access and Cloud Run deployment access are shared
 5. **Domain**: Verify registrar account is accessible by at least one other board member
 6. **Walkthrough**: 1-hour session covering Sections 4-6 of this document
 
 ### If maintainer is suddenly unavailable
 1. **Content updates**: Any board member with GitHub access can edit files directly on github.com — no technical skills needed for simple text changes
-2. **Site stays running**: Azure SWA and DNS continue without intervention
-3. **CMS keeps working**: As long as Cloudflare Worker and GitHub OAuth remain active
+2. **Site stays running**: Firebase Hosting, Cloud Run, and DNS continue without intervention
+3. **CMS keeps working**: As long as GitHub PKCE auth remains active
 4. **Find help**: Contact a local tech volunteer or post in [Calgary tech community groups]
 5. **Fallback maintainer**: [INSERT PRE-APPROVED CONTACT — ideally a tech-savvy community member who has agreed to help in emergencies]
 
 ### What will NOT break without a maintainer
-- ✅ Site stays online (Azure SWA is fully managed)
+- ✅ Site stays online (Firebase Hosting is fully managed)
 - ✅ SSL certificates auto-renew
 - ✅ Existing content remains accessible
 - ✅ CMS continues working for edits
@@ -249,7 +260,7 @@ If the current maintainer is leaving the board:
 - ⚠️ Domain renewal (annual)
 - ⚠️ Dependency updates (security patches)
 - ⚠️ GitHub Actions workflow changes (if GitHub changes CI features)
-- ⚠️ Cloudflare Worker — free tier limits or account expiry
+- ⚠️ Cloud Run / Gemini quotas, secrets, or project access drift
 
 ---
 
@@ -261,7 +272,7 @@ If the current maintainer is leaving the board:
 | Board President | _[Name]_ | president@rrroca.org |
 | Fallback technical contact | _[To be appointed]_ | _[Contact]_ |
 | Domain registrar support | _[Registrar name]_ | _[Support URL]_ |
-| Azure support | Microsoft | portal.azure.com |
+| Firebase / Google Cloud support | Google | console.firebase.google.com |
 
 ---
 
