@@ -1,180 +1,150 @@
 # ALM / CI/CD Architecture
 
+**Status:** Target Phase 0 delivery architecture  
+**Last updated:** June 2026  
+**Related:** See `TARGET-ARCHITECTURE.md` for the broader RRROCA digital operating model.
+
 ## Overview
 
-RRROCA uses a fully automated ALM pipeline: issues drive code changes, CI validates them, and deployments happen without manual intervention for trusted content changes.
+RRROCA uses a Git-based publishing pipeline for a Hugo static website. GitHub stores the source and approved public content, CI validates changes, and Firebase Hosting serves the generated static files at `rrroca.org`.
 
-## Deployment Targets
+The production website has no application database, custom authentication, public API, or runtime AI dependency.
 
-| Environment | URL | Platform | Trigger |
-|-------------|-----|----------|---------|
-| **Production** | https://rrroca.org | Azure Static Web Apps | Push to `master` |
-| **Staging** | https://rrroca.github.io/rrroca-site/ | GitHub Pages | Push to `master` |
-| **PR Preview** | Auto-generated | Azure SWA preview | Pull request |
+## Deployment targets
 
-## Pipeline Flow
+| Environment | Platform | Purpose |
+|---|---|---|
+| **Production** | Firebase Hosting | Serve the static Hugo output at `rrroca.org` |
+| **Pull-request validation** | GitHub Actions | Build and test proposed changes |
+| **Preview** | Firebase preview channel when enabled | Visual review of selected pull requests |
+| **Recovery option** | GitHub Pages or another static host | Documented portability path, not an active parallel production target |
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        ISSUE INTAKE                              │
-├─────────────────────────────────────────────────────────────────┤
-│  content-fix issue    →  Auto-assign Copilot (board members)    │
-│  motion issue         →  Auto-publish markdown + commit         │
-│  bug/feature issue    →  Manual triage                          │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      CODE CHANGE (PR)                            │
-├─────────────────────────────────────────────────────────────────┤
-│  Copilot agent opens PR  │  Human opens PR  │  Motion auto-push │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                    CI VALIDATION (ci.yml)                        │
-├─────────────────────────────────────────────────────────────────┤
-│  1. Hugo build (Extended 0.161.1)                               │
-│  2. Jest unit tests + coverage                                  │
-│  3. htmltest — internal link validation                         │
-│  4. Playwright e2e smoke tests (content/theme/JS changes)       │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                     MERGE POLICY                                 │
-├─────────────────────────────────────────────────────────────────┤
-│  Content-only + trusted author  →  Auto-merge (no review)       │
-│  Any PR + human approval        →  Auto-merge after CI          │
-│  Other PRs                      →  Require review + CI          │
-└──────────────────────────────┬──────────────────────────────────┘
-                               │
-                               ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      DEPLOYMENT                                  │
-├─────────────────────────────────────────────────────────────────┤
-│  azure-swa.yml  →  Production (rrroca.org)                      │
-│  ci.yml         →  Staging (GitHub Pages)                       │
-└─────────────────────────────────────────────────────────────────┘
+There must be one active production deployment path. Azure Static Web Apps and Cloud Run are not part of the Phase 0 target architecture.
+
+## Pipeline
+
+```text
+Content editor or technical maintainer
+        ↓
+CMS commit or pull request
+        ↓
+GitHub Actions
+  1. Hugo build
+  2. Unit and content tests
+  3. Link validation
+  4. End-to-end smoke tests when applicable
+        ↓
+Human approval where required
+        ↓
+Merge to master
+        ↓
+Static deploy to Firebase Hosting
 ```
 
-## Branch Protection
+## Change paths
 
-Enforced via GitHub repository ruleset on `master`:
+### Content editing
 
-- **Required status check:** `build-and-test` (CI workflow job)
-- **No direct pushes:** All changes must go through PRs
-- **No force pushes or deletions**
+Non-technical editors use the browser CMS. Approved content is stored as Markdown and images in the repository, then passes through the same validation and deployment pipeline as technical changes.
 
-## Workflows
+### Website requests
 
-### `ci.yml` — Build & Test
-- **Trigger:** PR to master, push to master, manual dispatch
-- **Steps:** Hugo build → Jest → htmltest → Playwright (conditional)
-- **Also:** Deploys to GitHub Pages staging on push
+GitHub Issues may be used for:
 
-### `azure-swa.yml` — Production Deploy
-- **Trigger:** Push to master, PR (for previews)
-- **Steps:** Hugo build → Azure SWA deploy
-- **Secret:** `AZURE_STATIC_WEB_APPS_API_TOKEN`
+- content corrections;
+- broken links;
+- website bugs;
+- accessibility problems;
+- feature requests;
+- technical maintenance.
 
-### `content-auto-merge.yml` — Merge Automation
-- **Content PRs:** Auto-merge from Copilot/board when files only touch `content/` or `static/images/`
-- **Design guardrail:** Scans content diffs for HTML/design patterns (raw tags, CSS classes, inline styles). If detected, blocks auto-merge, adds `design-change` label, and comments on the PR.
-- **Approved PRs:** Enable auto-merge after any approval (waits for CI)
+GitHub is not the default system for confidential board records, member information, full meeting transcripts, financial records, or general board voting.
 
-### `content-fix-assign.yml` — Issue Triage
-- **Trigger:** Issue labeled `content-fix`
-- **Trusted authors** (CanChad, SeunOgunsola): Assign to Copilot
-- **Others:** Add `needs-review` label
+### Technical changes
 
-### `motion-publish.yml` — Governance Motions
-- **Trigger:** Issue with `motion` label
-- **Action:** Parse form fields, generate motion markdown, commit, deploy
+Design, template, configuration, workflow, and application-code changes require a pull request and review. AI coding tools may assist, but a person remains responsible for understanding and approving the change.
 
-### `test-coverage.yml` — Coverage Follow-up
-- **Trigger:** Push to master
-- **Skips:** Content-only changes (`content/`, `static/images/`), docs, config
-- **Action:** Analyze changed files, open issue if test coverage may need updating
+## Branch protection
 
-## Testing Strategy
+The `master` branch should enforce:
 
-| Layer | Tool | Scope | When |
-|-------|------|-------|------|
-| Unit | Jest | Build validation, content, JS, UX contracts | Every PR |
-| Links | htmltest | Internal link integrity | Every PR |
-| E2E | Playwright | Navigation, page loads, console errors | Content/theme/JS changes |
-| Manual | Azure SWA preview | Visual review | PR preview URL |
+- required build and test checks;
+- pull requests for non-trivial technical changes;
+- no force pushes or branch deletion;
+- human review for workflow, template, JavaScript, configuration, and infrastructure changes;
+- no direct runtime service credentials in source.
 
-## Trusted Authors (Auto-merge)
+Content-only auto-merge may be retained only where the author is trusted, the changed paths are tightly constrained, and CI verifies the result.
 
-Board members and maintainers who can trigger zero-touch content deployments:
-- `CanChad` (Chad La Fournie — President)
-- `SeunOgunsola` (Seun Ogunsola — Treasurer)
+## Testing strategy
 
-To add a new trusted author, update:
-1. `.github/workflows/content-auto-merge.yml` (auto-merge condition)
-2. `.github/workflows/content-fix-assign.yml` (auto-assign list)
+| Layer | Purpose | Expected cadence |
+|---|---|---|
+| Hugo build | Validate templates, content, and configuration | Every pull request and production deployment |
+| Jest/unit tests | Validate JavaScript and repository contracts | Every relevant pull request |
+| Link validation | Detect broken internal links | Every pull request |
+| Playwright/smoke tests | Validate navigation, rendering, and browser behaviour | Theme, layout, or JavaScript changes |
+| Preview review | Validate visual and content quality | Material design or content changes |
+| Production smoke test | Confirm critical resident journeys after deployment | Every production release |
 
-## Resiliency Notes
+## Hosting configuration
 
-- **If moving away from Microsoft employee benefits:** Add Copilot Business subscription to RRROCA org ($19/user/month) to retain Copilot coding agent capability.
-- **Azure SWA free tier** covers the production site (100GB bandwidth, custom domain, SSL).
-- **GitHub Pages** provides a free staging fallback if Azure SWA is unavailable.
+Firebase Hosting is limited to static delivery in Phase 0:
 
-## Security Posture
+- custom domain and managed HTTPS;
+- permanent redirects from legacy WordPress URLs;
+- custom security headers;
+- sensible cache policies;
+- static 404 and error pages;
+- optional preview channels.
 
-| Category | Status |
-|----------|--------|
-| CodeQL | ✅ 0 alerts — scans on every PR |
-| Dependabot | ✅ 0 alerts — auto-updates enabled |
-| Secret scanning | ✅ 0 alerts — push protection enabled |
-| Branch protection | ✅ Required CI + no direct pushes |
-| Content guardrail | ✅ HTML/design patterns blocked from auto-merge |
-| AI content filters | ✅ DefaultV2 + jailbreak/prompt shields |
-| API isolation | ✅ Managed functions, no independent endpoint |
-| Cost controls | ✅ 10K TPM cap + $50/mo budget alert |
+It must not contain or route to:
+
+- Cloud Run or Cloud Functions;
+- Firebase Authentication;
+- Firestore;
+- Gemini or other LLM APIs;
+- board action or voting APIs;
+- GitHub write credentials;
+- resident or board personal data.
 
 ## Secrets
 
-| Secret | Purpose | Rotation |
-|--------|---------|----------|
-| `AZURE_STATIC_WEB_APPS_API_TOKEN` | Azure SWA production deploys | Managed by Azure — no manual rotation |
-| `COPILOT_PAT` | Triggers Copilot coding agent via REST API | Fine-grained PAT, expires **Jun 15, 2026** |
-| `AZURE_OPENAI_KEY` | Chatbot API access to Azure OpenAI (gpt-4o) | Rotate via `az cognitiveservices account keys regenerate` + update SWA appsettings |
-| `AZURE_OPENAI_ENDPOINT` | Azure OpenAI resource URL | Static — no rotation needed |
-| `AZURE_OPENAI_DEPLOYMENT` | Model deployment name (`gpt-4o`) | Static — no rotation needed |
-| `GITHUB_TOKEN` | Chatbot agentic tools (create issues, content) | Fine-grained PAT — ⚠️ **needs scoping to Issues+Contents only** |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Board member OAuth sign-in | Rotate in Google Cloud Console + update SWA appsettings |
+The static site should require only deployment credentials needed by GitHub Actions. Credentials must be organization-owned and stored in GitHub repository or environment secrets.
 
-### COPILOT_PAT Permissions (fine-grained)
-- Actions: Read
-- Contents: Read + Write
-- Issues: Read + Write
-- Metadata: Read
-- Pull requests: Read + Write
-- Scoped to: RRROCA org repos
+Remove or decommission obsolete secrets after their related services are disabled, including Azure Static Web Apps, Azure OpenAI, Cloud Run chatbot, and custom board-authentication credentials.
 
-### PAT Rotation
-When `COPILOT_PAT` expires, the content-fix auto-assign workflow will silently fail. To renew:
-1. GitHub → Settings → Developer settings → Fine-grained tokens → Generate new
-2. Same permissions as above, scope to RRROCA org
-3. Repo → Settings → Secrets → Update `COPILOT_PAT`
+## Operational ownership
 
-## Copilot Coding Agent
+- The repository belongs to the RRROCA GitHub organization.
+- The Firebase project belongs to RRROCA, not an individual volunteer.
+- At least two named people have appropriate GitHub and Firebase administrative access.
+- MFA is required for administrators.
+- A maintainer other than the original implementer must successfully perform a test deployment or recovery exercise.
 
-The Copilot agent (`copilot-swe-agent[bot]`) handles content-fix issues automatically.
+## Recovery
 
-**How it works:**
-1. Board member creates issue with `content-fix` label
-2. `content-fix-assign.yml` calls GitHub REST API with `agent_assignment` payload
-3. Agent creates a PR with `Fixes #N` in the description
-4. CI validates → auto-merge if content-only and pure markdown
-5. Issue auto-closes on merge
+The recovery objective is to redeploy the generated static website to another host within a few hours.
 
-**Key constraints (enforced via `.github/copilot-instructions.md`):**
-- No raw HTML in content files — markdown only
-- Only link to verified GetCommunal URLs (allowlist in instructions)
-- Always include `Fixes #N` to auto-close the originating issue
-- No `[WIP]` prefixes — use draft PRs if incomplete
-- Cannot use Playwright/browsers in sandbox — Jest + Hugo build only
+Required recovery assets:
+
+- GitHub repository and full history;
+- domain registrar access;
+- Hugo version and build instructions;
+- Firebase project access;
+- redirect and header configuration;
+- documented process for deploying to GitHub Pages or another static host;
+- secure archive of the retired WordPress site during the agreed retention period.
+
+## Deferred capabilities
+
+The following are not part of Phase 0 ALM:
+
+- resident AI chatbot;
+- authenticated board assistant;
+- agent-created GitHub issues or commits;
+- automated motion creation or voting;
+- automated publication of AI-generated content;
+- transcript-to-publication automation without human approval.
+
+These may be reconsidered after the static site, board document model, meeting-intelligence process, and human publishing workflow are operating reliably.
