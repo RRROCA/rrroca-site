@@ -1,113 +1,67 @@
-# RRROCA Azure Services Roadmap
+# Azure Roadmap — Historical Reference
 
-This roadmap documents a conservative, additive use of Azure services for the RRROCA website. The website's core platform remains Hugo on GitHub Pages: free, simple, portable, and resilient to volunteer turnover. Azure services are planned only as optional enhancements that improve forms, notifications, monitoring, or identity without becoming hard dependencies. It also creates a practical roadmap for work led by Chad La Fournie in his RRROCA role as Safety & Technology Director and, professionally, as a Microsoft Azure Technical Specialist (L64).
+**Status:** Superseded in June 2026  
+**Current reference:** See `TARGET-ARCHITECTURE.md` and `ALM-ARCHITECTURE.md`.
 
-## Philosophy
+## Decision
 
-- **GitHub Pages remains the host** for the public website, aligned to **P1 Survive Turnover** and **P2 Zero Cost by Default**.
-- **Azure services are optional enhancements**, not prerequisites. If any service fails or is removed, the public site still works, consistent with **P6 Graceful Degradation**.
-- **Each service must satisfy two tests:** it must map cleanly to RRROCA architecture principles, and it must provide credible **L64 Azure Technical Specialist (ATS)** evidence through real design and implementation work.
-- **All planned services are constrained to free tiers or included free usage.** If a service cannot stay free, it should not become part of the core design.
+Azure Static Web Apps, Azure Functions, Azure OpenAI, Azure Communication Services, Application Insights, and Entra-based website identity are not part of RRROCA's Phase 0 target architecture.
 
-## Planned Services
+The Phase 0 website is:
 
-### Phase 1: Foundation (Current)
+- built with Hugo;
+- stored and reviewed in GitHub;
+- deployed as static output to Firebase Hosting;
+- independent of any application database, custom authentication layer, serverless API, or runtime AI service.
 
-#### Azure Static Web Apps
+Google Workspace remains RRROCA's private operating environment for email, documents, meetings, collaboration, and future Gemini-enabled board workflows.
 
-Azure Static Web Apps hosts the production site (rrroca.org) with integrated managed functions for the AI chatbot API. Replaces the original GitHub Pages hosting for production while retaining GitHub Pages as a staging mirror.
+## Why this roadmap was retired
 
-- **Current role:** Production hosting + serverless API (chatbot, motions)
-- **Free tier:** 100 GB bandwidth, custom domain, SSL, 2 managed functions
-- **Principles:** P2 (free), P1 (standard platform, well-documented), P6 (static site works even if API is down)
-- **L64 evidence:** Azure SWA architecture, managed functions, Easy Auth integration
+The Azure roadmap was created while the project was exploring a public chatbot, authenticated board tools, motion workflows, and serverless form processing. Those capabilities expanded the operating model before the public website, board document structure, and core publishing process were established.
 
-#### Azure OpenAI Service (AI Chatbot)
+The revised strategy keeps the Frontier Community Association vision but sequences the work differently:
 
-Azure OpenAI powers the community AI assistant chatbot. Deployed on a Visual Studio Enterprise subscription as beta, pending RRROCA nonprofit licensing.
+1. launch a secure, static, resident-focused website;
+2. organize private board records and workflows in Google Workspace;
+3. pilot Google Meet recording, transcription, and AI-generated draft notes;
+4. build institutional memory and communication workflows;
+5. consider custom AI services only after a validated need and explicit board approval.
 
-- **Current role:** GPT-4o backs the community chatbot (knowledge-based Q&A, community suggestion submission, board governance tools)
-- **Cost controls:** 10K TPM quota cap, $50/month budget alert to safety@rrroca.org, 200 requests/day application-level limit
-- **Security:** DefaultV2 content filters + jailbreak/prompt shields, server-side prompt injection detection, three-layer tool-gating, PII masking in public outputs
-- **Graceful degradation:** If Azure OpenAI is unavailable, the client-side bot falls back to a zero-cost keyword matcher
-- **Principles:** P0 (community engagement), P2 (VS subscription covers cost for now), P6 (fallback to client-side), P8 (all config in code/docs)
-- **L64 evidence:** Azure OpenAI integration, responsible AI implementation, serverless architecture, security hardening, cost governance
+## Historical value
 
-#### Cloudflare Workers
+The prior Azure work remains useful as research and proof of concept. It demonstrated:
 
-Cloudflare Workers is not an Azure service, but it belongs in the roadmap because it is already deployed as the OAuth authenticator for the CMS. It establishes the pattern RRROCA will follow for future cloud enhancements: small, low-cost, low-maintenance services wrapped around a static site rather than replacing it.
+- static-site deployment patterns;
+- optional enhancement layers;
+- chatbot and agent concepts;
+- identity and authorization requirements;
+- cost and security controls;
+- the operational complexity introduced by runtime AI and write-capable services.
 
-- **Current role:** OAuth authenticator for CMS access
-- **Why it matters:** proves RRROCA can add cloud capabilities without changing the core hosting model
-- **Principles:** P1 (survives turnover when documented and shared), P3 (minimal maintenance), P6 (public site remains available even if CMS auth is unavailable)
-- **L64 evidence:** edge authentication design, OAuth integration, lightweight cloud service deployment
+It should not be treated as the current implementation plan.
 
-### Phase 2: Forms & Communication
+## Reconsideration criteria
 
-#### Azure Functions
+An Azure service may be reconsidered in the future only when:
 
-Azure Functions is the preferred path for serverless form processing once RRROCA is ready to replace third-party form handlers.
+- it solves a measured operational or resident problem;
+- Google Workspace, GitHub, Firebase static hosting, Communal, or a managed third-party service cannot meet the need more simply;
+- the board approves any material cost, privacy, identity, or governance implications;
+- at least two people can administer it;
+- it has a manual fallback and documented recovery path;
+- it does not make the public website dependent on a custom backend.
 
-- **Use case:** contact, volunteer, and safety report forms
-- **Free tier:** **1 million executions/month**
-- **Replaces:** Formspree or similar third-party form handler
-- **Why it fits RRROCA:** keeps the website static while enabling lightweight server-side workflows only where needed
-- **Principles:** **P2** (free), **P5** (no database required), **P6** (forms degrade to `mailto:` links if unavailable)
-- **L64 evidence:** serverless architecture, API design, Azure Functions deployment, secure input handling
+## Current platform boundary
 
-#### Azure Communication Services
+| Need | Current strategic platform |
+|---|---|
+| Private board work and knowledge | Google Workspace |
+| Meetings, recordings, transcripts, AI notes | Google Meet and Gemini, subject to licensing and policy |
+| Public website source and approved content | GitHub and Hugo |
+| Public static delivery | Firebase Hosting |
+| Memberships and program transactions | Communal |
+| Finance | QuickBooks, Communal, and Stripe |
+| Website and technical work tracking | GitHub Issues and Projects |
 
-Azure Communication Services adds optional outbound email for time-sensitive community notifications.
-
-- **Use case:** when a safety alert is published on the site, email subscribers automatically
-- **Free tier:** **100 emails/day**
-- **Why it fits RRROCA:** residents who rely on email get faster notification, while the website remains the source of truth
-- **Principles:** **P0** (community safety), **P2** (free tier), **P6** (site works without email delivery)
-- **L64 evidence:** event-driven architecture, Azure Communication Services integration, notification workflow design
-
-### Phase 3: Intelligence
-
-#### Azure Monitor / Application Insights
-
-Azure Monitor and Application Insights provide basic observability without introducing operational complexity to the public site.
-
-- **Use case:** understand which pages residents use most and detect broken links or degraded user journeys
-- **Free tier:** **5 GB/month data ingestion**
-- **Why it fits RRROCA:** supports better decisions about resident information needs without affecting the site's core reliability
-- **Principles:** **P0** (improve engagement through data), **P2** (free), **P3** (low maintenance)
-- **L64 evidence:** observability design, monitoring strategy, telemetry interpretation
-
-### Phase 4: Identity (Future — if Google → Microsoft migration)
-
-#### Entra External ID
-
-Entra External ID is a future option only if RRROCA chooses to move board operations from Google to Microsoft 365. It is not required for the public website and should not be introduced early.
-
-- **Use case:** single sign-on for board members across CMS, email, Teams, and related internal tools
-- **Replaces:** individual GitHub-account-only authentication patterns for board workflows
-- **Why it fits RRROCA:** simplifies internal access only when the surrounding Microsoft identity estate exists
-- **Principles:** **P4** (simplified login), **P5** (centralized identity), **P6** (public site remains unaffected if identity is unavailable)
-- **L64 evidence:** identity architecture, Entra External ID design, B2C-style access patterns
-- **Timeline:** only when and if RRROCA migrates to Microsoft 365
-
-## Decision Framework Alignment
-
-The table below maps each planned service to the most relevant questions in RRROCA's 10-question decision framework.
-
-| Service | Q0 Engagement | Q1 Disappears | Q2 Cost | Q3 Maintenance | Q6 Requires Chad | Q9 AI-assistable |
-|---|---|---|---|---|---|---|
-| Cloudflare Workers | Indirectly yes — enables secure CMS publishing | **Yes** — CMS auth may be unavailable, but public site still works | **$0** on free tier | Low | **No**, if documented with shared admin access | **Yes** — small text-based service |
-| Azure Functions | **Yes** — improves contact, volunteer, and safety reporting | **Yes** — forms fall back to `mailto:` links | **$0** within free tier | Low | **No**, if deployed in a shared Azure environment with documentation | **Yes** — standard serverless code and config |
-| Azure Communication Services | **Yes** — faster safety communication to residents | **Yes** — alerts still publish on the website | **$0** within free quota | Low | **No**, if configuration and runbooks are shared | **Yes** — straightforward event + email workflow |
-| Azure Monitor / Application Insights | Indirectly yes — improves site usefulness over time | **Yes** — monitoring loss does not affect visitors | **$0** within free tier | Low | **No** — shared dashboard access is sufficient | **Yes** — telemetry and configuration are AI-friendly |
-| Entra External ID | Indirectly yes — improves board operations, not resident-facing content | **Yes** — only internal sign-in is affected; public site remains up | **$0** only if kept within free/included usage under a future M365 path | Medium | **No**, if tenant ownership is organizational rather than personal | **Yes** — identity flows are well-documented and AI-assistable |
-
-## What We Won't Do
-
-- **Move hosting from GitHub Pages to Azure Static Web Apps.** That would violate **P1** by increasing bus-factor risk and making the public site more dependent on Azure-specific operational knowledge.
-- **Use Azure SQL or Cosmos DB for the website.** That would violate **P5** by adding unnecessary state, operational burden, and attack surface to a site designed to stay static-first.
-- **Build custom authentication before RRROCA actually needs it.** That would violate **YAGNI** and add complexity before the Association has a clear operational reason to carry it.
-
-## Recommendation
-
-RRROCA should continue treating Azure as an enhancement layer, not a hosting strategy. The right sequence is: keep the public site static and durable, add Azure Functions and Azure Communication Services only when they replace manual work, add observability when there is enough traffic to learn from, and defer identity modernization until a broader Microsoft 365 decision exists.
+This file is retained so that future maintainers understand why Azure was evaluated and why it is not currently part of the target architecture.
