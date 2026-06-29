@@ -18,15 +18,7 @@
         ]
       }
     ],
-    "rewrites": [
-      {
-        "source": "/api/chat",
-        "run": {
-          "serviceId": "rrroca-chatbot",
-          "region": "us-central1"
-        }
-      }
-    ],
+    "rewrites": [],
     "cleanUrls": true,
     "trailingSlash": false
   }

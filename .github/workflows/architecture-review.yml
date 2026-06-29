@@ -5,7 +5,6 @@ on:
     types: [opened]
     branches: [master]
     paths:
-      - 'api/**'
       - 'staticwebapp.config.json'
       - 'hugo.toml'
       - '.github/workflows/**'
@@ -26,8 +25,6 @@ jobs:
         uses: dorny/paths-filter@v4
         with:
           filters: |
-            api:
-              - 'api/**'
             swa_config:
               - 'staticwebapp.config.json'
             site_config:
@@ -44,15 +41,9 @@ jobs:
             // Build context-aware checklist based on what changed
             let items = [];
 
-            if ('${{ steps.risk.outputs.api }}' === 'true') {
-              items.push('- [ ] **Security**: Auth guards intact, no new secrets in logs, rate limiting preserved');
-              items.push('- [ ] **Cost**: Azure OpenAI usage impact assessed (TPM, token volume)');
-              items.push('- [ ] **Degradation**: Site loads gracefully if API is unavailable');
-            }
-
             if ('${{ steps.risk.outputs.swa_config }}' === 'true') {
               items.push('- [ ] **CSP/Headers**: No security regressions in Content-Security-Policy or auth config');
-              items.push('- [ ] **Routing**: Auth providers and route guards unchanged or intentionally modified');
+              items.push('- [ ] **Routing**: Static route and security header behavior unchanged or intentionally modified');
             }
 
             if ('${{ steps.risk.outputs.site_config }}' === 'true') {

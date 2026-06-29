@@ -4,6 +4,8 @@
 
 *Last updated: May 2026*
 
+> **Phase 1 status:** Active production journeys are public informational browsing and content publishing workflows. Any chatbot, board-authenticated automation, or motion workflow references in this document are future-phase concepts, not active Phase 1 behavior.
+
 ---
 
 ## Why Journeys Matter

@@ -185,13 +185,6 @@ describeIfBuild('Legacy Link Detection', () => {
 });
 
 describeIfBuild('Content Quality', () => {
-  test('no stale 2024 safety statistics', () => {
-    const aiJs = jsFiles.find(f => f.path.includes('ai-assistant'));
-    if (aiJs) {
-      expect(aiJs.content).not.toMatch(/Latest Stats \(2024\)/);
-    }
-  });
-
   test('safety dashboard references current year data', () => {
     const safetyPages = htmlFiles.filter(f => f.path.includes('safety'));
     const hasCurrentData = safetyPages.some(f =>
@@ -267,8 +260,8 @@ describeIfBuild('negative security cases', () => {
         ...main.matchAll(/\b(onclick|onload|onerror)\s*=\s*[^"'\s>]+/gi),
       ];
 
-      // Allow known AI assistant and search interactive handlers
-      const allowedHandlers = /askAI\(|toggleAssistant\(|openSearch\(|closeSearch\(/i;
+      // Allow known search handlers
+      const allowedHandlers = /openSearch\(|closeSearch\(/i;
 
       handlerMatches.forEach((match) => {
         if (allowedHandlers.test(match[0])) return;

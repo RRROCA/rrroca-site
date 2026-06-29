@@ -2,6 +2,8 @@
 
 > **Purpose**: Everything a new maintainer needs to keep rrroca.org running.
 > If you're reading this because the previous maintainer is unavailable — don't panic. This site is designed to run with minimal intervention.
+>  
+> **Phase 1 status:** Active production operations are documented in `docs/RUNBOOK.md`. References here to chatbot runtime, motion automation, or board-auth workflows are historical context and not part of the current Phase 1 stack.
 
 **Last updated**: May 2026
 **Current maintainer**: Chad LaFournie (VP / ATS)

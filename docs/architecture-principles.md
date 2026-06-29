@@ -2,6 +2,8 @@
 
 *Living document — review at each AGM. Last updated: May 2026.*
 
+> **Phase 1 implementation note (current):** The active production architecture is static-first public website delivery only. Chatbot runtime, board auth, motion automation, and custom API features are deferred/out of scope for Phase 1.
+
 ---
 
 ## Why This Document Exists
