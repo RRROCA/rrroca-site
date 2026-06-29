@@ -1,0 +1,20 @@
+{
+  "name": "rrroca-chatbot",
+  "version": "1.0.0",
+  "description": "RRROCA Community Assistant — Cloud Run + Gemini",
+  "type": "module",
+  "main": "src/server.js",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "build-kb": "node scripts/build-knowledge-base.js"
+  },
+  "dependencies": {
+    "@google/genai": "^1.0.0",
+    "express": "^4.21.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.0"
+  }
+}

@@ -5,6 +5,10 @@
  * - Security: tools only available to board members
  * - Rate limiting on write operations
  * - Input validation for tool arguments
+ *
+ * NOTE: These tests validate the LEGACY Azure Functions chatbot (api/chat/).
+ * The new Cloud Run + Gemini chatbot is at cloud-run/chatbot/ with its own tests.
+ * These tests remain valid until the Azure API is fully decommissioned.
  */
 
 const path = require('path');
