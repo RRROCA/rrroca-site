@@ -1,16 +1,16 @@
 ---
 title: "Board Action Center"
 date: 2026-05-17
-description: "A plain-language workflow for RRROCA board members to propose motions, second motions, and cast votes — powered by GitHub."
+description: "Board governance links and published records for RRROCA."
 type: "board"
 layout: "actions"
 draft: false
 ---
 
-Use this page to move board business forward in plain language.
+Use this page as a central governance reference.
 
-- **Propose** a new motion with the key facts the board needs.
-- **Second** pending motions so voting can open.
-- **Vote** for, against, or abstain using your `@rrroca.org` board email.
+- **Review** current and past governance records.
+- **Access** the motion proposal form in GitHub.
+- **Share** governance updates with residents transparently.
 
-All motions are stored and managed in GitHub — the same platform trusted by millions of organizations for transparent, auditable governance.
+Phase 1 keeps governance content transparent and static-first while reducing operational complexity.
