@@ -1,5 +1,7 @@
 # RRROCA Azure Services Roadmap
 
+> **Phase 1 status:** RRROCA currently runs a static-first public site on Azure Static Web Apps. Runtime AI/chat, board auth, motion automation, and custom API services are not part of the active Phase 1 production stack.
+
 This roadmap documents a conservative, additive use of Azure services for the RRROCA website. The website's core platform remains Hugo on GitHub Pages: free, simple, portable, and resilient to volunteer turnover. Azure services are planned only as optional enhancements that improve forms, notifications, monitoring, or identity without becoming hard dependencies. It also creates a practical roadmap for work led by Chad La Fournie in his RRROCA role as Safety & Technology Director and, professionally, as a Microsoft Azure Technical Specialist (L64).
 
 ## Philosophy
