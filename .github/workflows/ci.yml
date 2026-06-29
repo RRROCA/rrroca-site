@@ -45,14 +45,10 @@ jobs:
               - 'static/**'
               - 'themes/**'
               - 'hugo.toml'
-              - 'api/**'
-              - 'scripts/**'
               - 'tests/**'
-              - 'e2e/**'
               - 'package.json'
               - 'package-lock.json'
               - 'staticwebapp.config.json'
-              - 'playwright.config.js'
               - 'jest.config.js'
 
       - name: Docs-only shortcut
@@ -89,21 +85,5 @@ jobs:
         run: |
           curl -sSL https://github.com/wjdp/htmltest/releases/download/v0.17.0/htmltest_0.17.0_linux_amd64.tar.gz | tar -xz
           ./htmltest
-
-      - name: Install Playwright browsers
-        if: (steps.changes.outputs.content == 'true' || steps.changes.outputs.theme == 'true' || steps.changes.outputs.js == 'true' || github.event_name == 'push') && steps.changes.outputs.site == 'true'
-        run: npx playwright install --with-deps chromium
-
-      - name: Run Playwright e2e smoke tests
-        if: (steps.changes.outputs.content == 'true' || steps.changes.outputs.theme == 'true' || steps.changes.outputs.js == 'true' || github.event_name == 'push') && steps.changes.outputs.site == 'true'
-        run: npx playwright test --project=chromium
-
-      - name: Upload test artifacts
-        if: failure()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report
-          path: test-results/
-          retention-days: 7
 
   # GitHub Pages deployment removed — SWA is the sole deployment target

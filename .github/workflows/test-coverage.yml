@@ -67,7 +67,6 @@ jobs:
                 'security.test.js',
               ],
               'themes/rrroca/static/js/': [
-                'ai-assistant.test.js',
                 'search.test.js',
                 'safety-dashboard.test.js',
                 'safety-dashboard.partial.test.js',

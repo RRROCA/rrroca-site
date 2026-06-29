@@ -92,7 +92,7 @@ jobs:
             now_epoch=$(date +%s)
             days_since=$(( (now_epoch - rotation_epoch) / 86400 ))
             if [ "$days_since" -gt 90 ]; then
-              warnings="${warnings}⚠️ Credential rotation overdue: last rotated ${days_since} days ago (90-day policy). Rotate Azure OpenAI key and GitHub PAT.\n"
+              warnings="${warnings}⚠️ Credential rotation overdue: last rotated ${days_since} days ago (90-day policy). Rotate Azure SWA deploy token and GitHub PAT.\n"
             elif [ "$days_since" -gt 75 ]; then
               warnings="${warnings}⚠️ Credential rotation due soon: ${days_since}/90 days since last rotation.\n"
             fi
