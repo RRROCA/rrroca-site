@@ -362,29 +362,26 @@ When evaluating any new service, tool, or feature for the RRROCA site, run it th
 | P2 (Zero cost) | GitHub Actions is free for public repos. Google Group included in Workspace. |
 | P3 (Minimal maintenance) | Self-contained workflow triggers on issue events. Board membership managed in Google Groups. |
 | P5 (Security by elimination) | No email API keys in application code. SMTP secrets in GitHub repository secrets. |
-| P6 (Graceful degradation) | If email fails → Board Action Center page and AI assistant still show all pending motions. |
+| P6 (Graceful degradation) | If email fails → Board governance pages still show the public record. |
 | P7 (Portability) | Google Group today → M365 Group tomorrow. SMTP is standard protocol. |
 
-**Decided:** GitHub Actions workflow (`board-notify.yml`) sends email to `board@rrroca.org` (Google Group) when motions are proposed, seconded, or voted on. The workflow triggers on GitHub Issue events with the `motion` label. Board members receive email, click a link to `rrroca.org/board/actions/`, sign in, and act.
+**Decided:** Governance updates are published as public records on `rrroca.org/board/`, with optional email notifications for awareness. The board no longer depends on a separate action center or custom runtime workflow.
 
-**Why not GitHub @mentions:** Requires board members to have GitHub accounts (fails P4 — onboarding friction). Why not SendGrid/ACS in the Azure Function: adds API keys to the app (fails P5 — unnecessary attack surface). GitHub Actions + Google Group is zero new infrastructure — both already exist.
+**Why not GitHub @mentions:** Requires board members to have GitHub accounts (fails P4 — onboarding friction). GitHub content workflows keep the public record portable and easy to maintain.
 
 ### AI Community Assistant (Chatbot)
 
 | Principle | Implication |
 |-----------|------------|
-| P0 (Community First) | Residents get instant answers. Board members get a "board secretary." |
+| P0 (Community First) | Residents get instant answers. Board records remain public and easy to find. |
 | P2 (Zero cost) | Azure OpenAI via existing Azure subscription. No per-query cost at CA volume. |
 | P3 (Minimal maintenance) | System prompt is text. Knowledge base auto-builds from site content. |
 | P4 (Progressive skill) | Conversational interface — the most accessible possible UI |
-| P5 (Security by elimination) | Strict system prompt guardrails. Board features gated by auth. |
-| P6 (Graceful degradation) | If chatbot fails → search bar, navigation, and static pages still work |
+| P5 (Security by elimination) | Static public site with no runtime board action surface. |
+| P6 (Graceful degradation) | If optional extras fail → search, navigation, and static pages still work |
 | P7 (Portability) | System prompt is plain text. Swappable to any LLM provider. |
 
-**Decided:** Single chatbot with progressive capabilities based on authentication state:
-
-- **Public visitors:** Community Q&A from site knowledge base. Events, safety, programs, facilities.
-- **Authenticated board members:** All public capabilities PLUS board context — pending motions, vote status, meeting awareness. Can help draft motions and communications. Directs to Board Action Center for official actions (propose/second/vote).
+**Decided:** Public site content stays focused on resident information and published governance records. Board-specific workflows live outside the public-facing experience.
 
 **Note:** This supersedes the earlier anti-pattern "Don't build an AI chatbot." The original concern was valid (paid chatbot services at $50-100/month violate P2 and P6). The implementation uses Azure OpenAI at zero incremental cost on the existing Azure subscription, with graceful degradation to static content if the service is unavailable. The chatbot is an enhancement layer, never a dependency.
 

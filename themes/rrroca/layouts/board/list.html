@@ -25,12 +25,12 @@
     </div>
     <h1>🏛️ {{ .Title }}</h1>
     <p class="page-description">
-      {{ with .Description }}{{ . }}{{ else }}Formal motions, resolutions, and governance records for the RRROCA Board of Directors.{{ end }}
+      {{ with .Description }}{{ . }}{{ else }}Public governance documents, board records, and approved decisions.{{ end }}
     </p>
     <div class="motion-summary-bar">
       <div class="motion-summary-stats">
         <span class="motion-summary-stat motion-summary-stat--active">
-          <strong>{{ len $activeMotions }}</strong> Active {{ if eq (len $activeMotions) 1 }}Motion{{ else }}Motions{{ end }}
+          <strong>{{ len $activeMotions }}</strong> Active {{ if eq (len $activeMotions) 1 }}Record{{ else }}Records{{ end }}
         </span>
         <span class="motion-summary-stat">
           <strong>{{ len $pastMotions }}</strong> Resolved
@@ -39,14 +39,6 @@
           <strong>{{ len $allMotions }}</strong> Total
         </span>
       </div>
-      {{ with $.Params.github_motion_url }}
-      <div class="motion-propose-cta">
-        <a href="{{ . }}" target="_blank" rel="noopener" class="btn btn-primary btn-sm">
-          ✏️ Propose a Motion
-        </a>
-        <span class="motion-propose-note">Board members: create a new motion in seconds</span>
-      </div>
-      {{ end }}
     </div>
   </div>
 </section>
@@ -63,7 +55,7 @@
       {{ if gt (len $activeMotions) 0 }}
       <div class="motion-section">
         <div class="motion-section-header">
-          <h2>🗳️ Active Motions</h2>
+          <h2>🗳️ Active Records</h2>
           <span class="motion-count-badge motion-count-badge--active">{{ len $activeMotions }} open</span>
         </div>
 
@@ -72,7 +64,7 @@
           <article class="motion-card motion-card--active">
             <div class="motion-card-header">
               <span class="motion-number">#{{ .Params.motion_number }}</span>
-              <span class="motion-status motion-status--open">🗳️ Open for Voting</span>
+              <span class="motion-status motion-status--open">🗳️ Public Record</span>
             </div>
             <h3 class="motion-card-title">
               <a href="{{ .RelPermalink }}">{{ .Title }}</a>
@@ -108,7 +100,7 @@
                 <span class="vote-count vote-count--abstain">{{ $abstain }} Abstain</span>
                 <span class="vote-count vote-count--quorum">{{ $total }}/{{ $quorum }} quorum</span>
               </div>
-              <a href="{{ .RelPermalink }}" class="btn btn-primary btn-sm">Review Motion →</a>
+              <a href="{{ .RelPermalink }}" class="btn btn-primary btn-sm">View Record →</a>
             </div>
           </article>
           {{ end }}
@@ -119,7 +111,7 @@
       {{ if gt (len $pastMotions) 0 }}
       <div class="motion-section">
         <div class="motion-section-header">
-          <h2>📁 Past Motions</h2>
+          <h2>📁 Resolved Records</h2>
           <span class="motion-count-badge">{{ len $pastMotions }} resolved</span>
         </div>
 
@@ -159,7 +151,7 @@
 
       {{ if and (eq (len $activeMotions) 0) (eq (len $pastMotions) 0) }}
       <div class="motion-empty">
-        <p>No motions have been posted yet. Check back after the next board meeting.</p>
+        <p>No governance records have been posted yet. Check back after the next board meeting.</p>
       </div>
       {{ end }}
     </div>

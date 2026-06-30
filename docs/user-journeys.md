@@ -86,14 +86,12 @@ Resident visits /board/ or /board/actions/
 
 ```
 Board member receives email at their @rrroca.org address
-    ← GitHub Actions workflow sent notification when motion was proposed
-    → Email says: "New motion: [title]. Review and vote: rrroca.org/board/actions/"
+    ← GitHub Actions workflow sent notification when a governance update was published
+    → Email says: "New governance update: [title]. Review: rrroca.org/board/"
     → Board member clicks link
-    → Lands on Board Action Center
-    → Clicks "Sign in with Google" → authenticates with @rrroca.org account
-    → AI assistant greets: "Welcome back, [name]. You have 1 motion pending your vote."
-    → Board member reviews motion, votes through conversation or UI
-    → Done — never touched GitHub, never left rrroca.org
+    → Lands on Board Governance
+    → Reviews the public record
+    → Done — no sign-in, no hidden workflow
 ```
 
 **Principles at work:** P0 (faster governance → better community outcomes), P4 (conversational interface — maximum accessibility), P1 (any board member can do this — no special skills)
@@ -101,18 +99,10 @@ Board member receives email at their @rrroca.org address
 ### 2B. "I want to propose a motion" (board secretary experience)
 
 ```
-Board member visits rrroca.org/board/actions/
-    → Signs in with Google (or is already signed in)
-    → Opens the AI assistant
-    → Says: "I want to propose we allocate $500 for playground fence repair"
-    → Agent drafts the motion:
-        - Formats the title and description
-        - Identifies the relevant category
-        - Shows preview: "Here's the draft. Submit?"
-    → Board member confirms
-    → Motion created (GitHub Issue, invisible to board member)
-    → Email notification sent to all board members via board@rrroca.org
-    → Agent confirms: "Motion submitted. Board members have been notified."
+Board member visits rrroca.org/board/
+    → Reviews published governance documents
+    → Drafts updates in GitHub when needed
+    → Publishes through the normal content workflow
 ```
 
 **Principles at work:** P4 (natural language is the most accessible interface), P3 (zero learning curve), P5 (auth-gated, only @rrroca.org accounts)
@@ -121,15 +111,9 @@ Board member visits rrroca.org/board/actions/
 
 ```
 Board member visits rrroca.org (any page)
-    → Signs in with Google
-    → Opens the AI assistant
-    → Agent automatically knows their board context:
-        "Good morning, [name]. Here's what needs attention:
-         • 1 motion awaiting your vote: [title]
-         • 1 motion needs a second: [title]
-         • The technology strategy motion has been open 12 days."
-    → Board member can act immediately through conversation
-    → Or navigates to /board/actions/ for the full list
+    → Opens the board governance pages
+    → Reviews published records at their own pace
+    → Navigates to /board/ for the public archive
 ```
 
 **Principles at work:** P0 (governance doesn't stall), P4 (proactive, not reactive), P6 (if agent fails, action center page still works)
@@ -139,14 +123,10 @@ Board member visits rrroca.org (any page)
 ```
 New board member is elected or appointed
     → Receives welcome email with one link: rrroca.org/board/
-    → Clicks "Sign in with Google" — uses existing @rrroca.org account
-    → That's it — they can:
-        - Read all motions
-        - Propose, second, vote
-        - Ask the AI assistant any question about board process
-    → No GitHub account needed
+    → Opens the governance archive
+    → Reviews published board records and approved decisions
     → No special software to install
-    → No training session required — the interface is conversational
+    → No training session required
 ```
 
 **Principles at work:** P1 (survives turnover — zero onboarding friction), P4 (conversational = self-explanatory), P2 (zero cost per board member)
@@ -250,11 +230,9 @@ Every enhanced experience has a fallback:
 
 | Feature | Primary experience | If it fails |
 |---|---|---|
-| AI chatbot | Conversational Q&A + board context | Search bar, navigation, static FAQ |
-| Board agent awareness | "You have 1 pending vote" | Board Action Center page shows all motions |
-| Email notifications | board@rrroca.org gets notified | Board members check /board/actions/ directly |
-| Google sign-in | One-click SSO | Board Action Center is read-only (motions visible, can't act) |
-| Motion creation | Conversational via agent | Form-based via Board Action Center UI |
-| Vote recording | Through agent or UI | Manual recording at board meeting |
+| Governance pages | Public records and decisions | Board archive pages show the published record |
+| Email notifications | board@rrroca.org gets notified | Board members check /board/ directly |
+| Content updates | GitHub content workflow | Markdown files in the repository |
+| CMS editing | Browser CMS at /admin/ | Direct GitHub edit of content files |
 
 **P6 in action:** The site never breaks. Features gracefully reduce to simpler alternatives.
