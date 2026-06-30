@@ -4,7 +4,7 @@ This guide is for board members and volunteers who publish website information.
 
 ## CMS Access
 
-- **CMS URL:** `https://rrroca.org/admin/`
+- **CMS URL:** the current Azure Static Web Apps hostname at `/admin/` (use the deployed SWA URL until DNS moves to `rrroca.org`)
 - Sign in with the approved GitHub account for content editing
 - Use the CMS only for content you are authorized to edit
 
@@ -27,7 +27,7 @@ This guide is for board members and volunteers who publish website information.
 ## How to Publish Updates
 
 ### Option A: Browser-based CMS
-1. Open `https://rrroca.org/admin/`.
+1. Open the deployed SWA hostname at `/admin/`.
 2. Edit the content entry (news, event, page, or board content).
 3. Save and publish.
 4. Confirm the related pull request/checks complete.

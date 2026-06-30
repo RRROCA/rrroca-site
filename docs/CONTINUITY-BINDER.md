@@ -39,7 +39,7 @@
 **Stack**: Hugo static site generator → GitHub (source) → Azure Static Web Apps (hosting)
 
 **How content flows**:
-1. Board member edits content at `rrroca.org/admin/` (content management system)
+1. Board member edits content at the deployed SWA hostname at `/admin/` (content management system)
 2. Sveltia CMS commits the change directly to the `master` branch on GitHub
 3. GitHub Actions runs CI (build + tests)
 4. Azure Static Web Apps auto-deploys the new build to production
@@ -91,14 +91,14 @@ The repo lives under the **RRROCA** GitHub organization. To add a new maintainer
 ## 4. Day-to-Day Operations
 
 ### Adding news or events (non-technical)
-1. Go to `rrroca.org/admin/`
+1. Go to the deployed SWA hostname at `/admin/`
 2. Log in with GitHub
 3. Select the collection (News, Events, etc.)
 4. Click "New" and fill in the fields
 5. Save — the site updates automatically in ~2 minutes
 
 ### Updating a board member
-1. Go to `rrroca.org/admin/` → Board Members
+1. Go to the deployed SWA hostname at `/admin/` → Board Members
 2. Edit the entry or create a new one
 3. To add a photo: upload to `static/images/board/` and reference in the bio
 
