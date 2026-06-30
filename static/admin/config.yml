@@ -2,8 +2,7 @@ backend:
   name: github
   repo: RRROCA/rrroca-site
   branch: master
-  auth_type: pkce
-  app_id: "" # TODO: Set to GitHub OAuth App Client ID once created
+  base_url: https://sveltia-cms-auth.chad752.workers.dev
 
 media_folder: "static/images"
 public_folder: "/images"
