@@ -9,7 +9,7 @@ const RUNTIME_ROUTE_PREFIXES = ['/.auth/'];
  * CSS selector to exclude runtime-only nav links from link validation.
  * Use in Playwright locators: `.nav-main a[href]${NAV_LINK_EXCLUDE}`
  */
-const NAV_LINK_EXCLUDE = ':not(.nav-cta):not(.nav-board-link)';
+const NAV_LINK_EXCLUDE = ':not(.nav-cta)';
 
 /**
  * Returns true if href points to a runtime-only route.

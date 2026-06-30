@@ -165,7 +165,7 @@ describe('Hugo build validation', () => {
       },
       {
         file: path.join('public', 'board', 'actions', 'index.html'),
-        heading: 'Board Action Center'
+        heading: 'Governance Reference'
       }
     ];
 

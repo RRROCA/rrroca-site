@@ -8,7 +8,7 @@
     </div>
     <h1>⚖️ {{ .Title }}</h1>
     <p class="page-description">
-      {{ with .Description }}{{ . }}{{ else }}Board governance in Phase 1 is published as static, transparent records.{{ end }}
+      {{ with .Description }}{{ . }}{{ else }}Public governance records and board documents for RRROCA.{{ end }}
     </p>
   </div>
 </section>
@@ -19,11 +19,10 @@
       {{ .Content }}
 
       <h2>Governance Records</h2>
-      <p>For Phase 1 launch, the website provides public governance information and published records.</p>
+      <p>The public site provides governance documents, approved decisions, and archives.</p>
       <ul>
         <li><a href="{{ "board/motions/" | relURL }}">View published motions</a></li>
         <li><a href="{{ "board/decisions/" | relURL }}">View approved decisions</a></li>
-        <li><a href="https://github.com/RRROCA/rrroca-site/issues/new?template=board-motion.yml" target="_blank" rel="noopener">Propose a board motion (GitHub issue form)</a></li>
       </ul>
     </div>
 
