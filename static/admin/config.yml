@@ -2,7 +2,7 @@ backend:
   name: github
   repo: RRROCA/rrroca-site
   branch: master
-  base_url: https://sveltia-cms-auth.chad752.workers.dev
+  base_url: https://sveltia-cms-auth.safety-2b7.workers.dev
 
 media_folder: "static/images"
 public_folder: "/images"
