@@ -4151,6 +4151,19 @@ p { margin-bottom: var(--space-md); }
   align-items: end;
 }
 
+.inner-hero--list {
+  padding: clamp(4.25rem, 7.5vw, 5.5rem) 0 clamp(3.1rem, 5.5vw, 4.25rem);
+}
+
+.inner-hero--list .inner-hero-grid {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+}
+
+.inner-hero--list .inner-hero-copy {
+  max-width: 960px;
+}
+
 .inner-hero-copy {
   max-width: 760px;
 }
@@ -4189,6 +4202,10 @@ p { margin-bottom: var(--space-md); }
   color: rgba(255,255,255,0.88);
 }
 
+.inner-hero--list .inner-hero-description {
+  max-width: 62ch;
+}
+
 .inner-hero-meta,
 .inner-hero-pill-row,
 .inner-hero-actions {
@@ -4225,6 +4242,39 @@ p { margin-bottom: var(--space-md); }
 .inner-hero-actions .btn-outline {
   background: rgba(255,255,255,0.12);
   border-color: rgba(255,255,255,0.34);
+}
+
+.inner-hero-task-block {
+  margin-top: var(--space-lg);
+  display: grid;
+  gap: 0.8rem;
+}
+
+.inner-hero-task-label {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--inner-accent) 56%, white);
+}
+
+.inner-hero-actions--tasks {
+  margin-top: 0;
+}
+
+.inner-hero-actions--tasks .btn {
+  min-height: 48px;
+}
+
+.inner-hero-actions--tasks .btn-outline {
+  background: rgba(255,255,255,0.08);
+  border-color: rgba(255,255,255,0.24);
+}
+
+.inner-hero-actions--tasks .btn-outline:hover {
+  border-color: rgba(255,255,255,0.44);
+  background: rgba(255,255,255,0.16);
 }
 
 .inner-hero-panel {
