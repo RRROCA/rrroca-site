@@ -38,8 +38,8 @@ test('header navigation links load real pages', async ({ page }) => {
   await expectPageOk(page, appPath('/'));
 
   const navLinks = page.locator(`.nav-main a[href]${NAV_LINK_EXCLUDE}`);
-  // 8 = About, Safety, Events, Get Involved, Community, Governance, Resources, News
-  await expect(navLinks).toHaveCount(8);
+  // 6 = Events, Programs & Sports, Safety, Neighbourhood, Get Involved, About
+  await expect(navLinks).toHaveCount(6);
 
   const links = await navLinks.evaluateAll((anchors) =>
     anchors.map((anchor) => ({

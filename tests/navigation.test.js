@@ -47,7 +47,7 @@ describe('Navigation consistency', () => {
     }));
 
     // Must include these sections at minimum
-    const requiredSections = ['About', 'Safety', 'Events', 'Get Involved', 'Community', 'Governance', 'Resources', 'News'];
+    const requiredSections = ['Events', 'Programs & Sports', 'Safety', 'Neighbourhood', 'Get Involved', 'About'];
     requiredSections.forEach((section) => {
       expect(
         hrefs.some((h) => h.text.toLowerCase().includes(section.toLowerCase()))
@@ -220,7 +220,7 @@ describe('Hugo config menu validation', () => {
       return { name, url };
     }).filter((item) => item.url);
 
-    expect(menuItems.length).toBeGreaterThanOrEqual(8);
+    expect(menuItems.length).toBeGreaterThanOrEqual(6);
 
     const broken = menuItems.filter((item) => !routeExists(item.url));
     expect(broken).toEqual([]);
