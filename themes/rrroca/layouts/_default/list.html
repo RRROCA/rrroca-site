@@ -8,6 +8,58 @@
 {{ end }}
 {{ $pages := .Pages.ByDate.Reverse }}
 {{ $paginator := .Paginate $pages }}
+{{ $membershipURL := .Site.Params.membershipURL | default "https://rrroca.getcommunal.com/memberships" }}
+{{ $eventsURL := .Site.Params.eventsURL | default "https://rrroca.getcommunal.com/events" }}
+{{ $facilitiesURL := .Site.Params.facilitiesURL | default "https://rrroca.getcommunal.com/facilities" }}
+{{ $facebookGroupURL := .Site.Params.facebookGroup | default "https://www.facebook.com/groups/royaloakrockyridgefamilies" }}
+{{ $actions := slice
+  (dict "label" "Become a Member" "url" $membershipURL "external" true "primary" true)
+  (dict "label" "See Upcoming Events" "url" "/events/" "external" false "primary" false)
+  (dict "label" "Contact RRROCA" "url" "/contact/" "external" false "primary" false)
+}}
+{{ if eq $sectionKey "events" }}
+  {{ $actions = slice
+    (dict "label" "Register for Events" "url" $eventsURL "external" true "primary" true)
+    (dict "label" "Book Facilities" "url" $facilitiesURL "external" true "primary" false)
+    (dict "label" "Become a Member" "url" $membershipURL "external" true "primary" false)
+  }}
+{{ else if eq $sectionKey "community" }}
+  {{ $actions = slice
+    (dict "label" "Explore Schools" "url" "/community/schools/" "external" false "primary" true)
+    (dict "label" "View Programs & Sports" "url" "/sports/" "external" false "primary" false)
+    (dict "label" "Join Families Facebook Group" "url" $facebookGroupURL "external" true "primary" false)
+  }}
+{{ else if eq $sectionKey "news" }}
+  {{ $actions = slice
+    (dict "label" "Read Latest News" "url" "/news/" "external" false "primary" true)
+    (dict "label" "See Upcoming Events" "url" "/events/" "external" false "primary" false)
+    (dict "label" "Become a Member" "url" $membershipURL "external" true "primary" false)
+  }}
+{{ else if eq $sectionKey "get-involved" }}
+  {{ $actions = slice
+    (dict "label" "Volunteer with RRROCA" "url" "/get-involved/volunteer/" "external" false "primary" true)
+    (dict "label" "Become a Member" "url" $membershipURL "external" true "primary" false)
+    (dict "label" "Support as a Sponsor" "url" "/get-involved/sponsorship/" "external" false "primary" false)
+  }}
+{{ else if eq $sectionKey "about" }}
+  {{ $actions = slice
+    (dict "label" "Meet the Board" "url" "/about/board-members/" "external" false "primary" true)
+    (dict "label" "View Governance Records" "url" "/board/" "external" false "primary" false)
+    (dict "label" "Contact RRROCA" "url" "/contact/" "external" false "primary" false)
+  }}
+{{ else if eq $sectionKey "business-directory" }}
+  {{ $actions = slice
+    (dict "label" "Browse Local Businesses" "url" "/business-directory/" "external" false "primary" true)
+    (dict "label" "Support as a Sponsor" "url" "/get-involved/sponsorship/" "external" false "primary" false)
+    (dict "label" "Book Facilities" "url" $facilitiesURL "external" true "primary" false)
+  }}
+{{ else if eq $sectionKey "sports" }}
+  {{ $actions = slice
+    (dict "label" "Explore Sports Programs" "url" "/sports/" "external" false "primary" true)
+    (dict "label" "See Upcoming Events" "url" "/events/" "external" false "primary" false)
+    (dict "label" "Become a Member" "url" $membershipURL "external" true "primary" false)
+  }}
+{{ end }}
 
 <section class="inner-hero inner-hero--list" data-accent="{{ $sectionKey }}">
   <div class="inner-hero-scenery" aria-hidden="true">
@@ -30,23 +82,27 @@
         <h1>{{ .Title }}</h1>
         {{ with $heroSummary }}<p class="inner-hero-description">{{ . }}</p>{{ end }}
         <div class="inner-hero-meta">
-          <span>{{ len $pages }} stories</span>
+          <span>{{ len $pages }} resources</span>
           {{ if gt $paginator.TotalPages 1 }}<span>{{ $paginator.TotalPages }} pages</span>{{ end }}
-          <span>Made for quick community updates</span>
+          {{ if gt (len $pages) 0 }}
+          <span>Updated {{ (index $pages 0).Date.Format "Jan 2006" }}</span>
+          {{ else }}
+          <span>Community-run updates</span>
+          {{ end }}
         </div>
-      </div>
-
-      <aside class="inner-hero-panel reveal-on-scroll" aria-label="Section overview">
-        <div class="inner-hero-panel-card">
-          <p class="inner-hero-panel-label">Why this page matters</p>
-          <p class="inner-hero-panel-copy">Stay connected to community updates, resident information, and the latest local activity in one place.</p>
-          <div class="inner-hero-pill-row">
-            <span class="inner-hero-pill">Fast to scan</span>
-            <span class="inner-hero-pill">Community first</span>
-            <span class="inner-hero-pill">Built for trust</span>
+        <div class="inner-hero-task-block">
+          <p class="inner-hero-task-label">Do this now</p>
+          <div class="inner-hero-actions inner-hero-actions--tasks">
+            {{ range $actions }}
+            <a href="{{ if .external }}{{ .url }}{{ else }}{{ .url | relURL }}{{ end }}"
+               class="btn {{ if .primary }}btn-primary{{ else }}btn-outline{{ end }}"
+               {{ if .external }}target="_blank" rel="noopener"{{ end }}>
+              {{ .label }}
+            </a>
+            {{ end }}
           </div>
         </div>
-      </aside>
+      </div>
     </div>
   </div>
 </section>
