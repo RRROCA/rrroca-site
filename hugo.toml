@@ -18,6 +18,8 @@ buildFuture = true
   phone = "(403) 879-2820"
   address = "Rocky Ridge / Royal Oak, Calgary, AB"
   membershipURL = "https://rrroca.getcommunal.com/memberships"
+  eventsURL = "https://rrroca.getcommunal.com/events"
+  facilitiesURL = "https://rrroca.getcommunal.com/facilities"
 
   # Social proof
   facebookGroupMembers = "5,000+"
@@ -29,37 +31,29 @@ buildFuture = true
 
 [menus]
   [[menus.main]]
-    name = "About"
-    url = "/about/"
+    name = "Events"
+    url = "/events/"
     weight = 1
+  [[menus.main]]
+    name = "Programs & Sports"
+    url = "/sports/"
+    weight = 2
   [[menus.main]]
     name = "Safety"
     url = "/safety/"
-    weight = 2
-  [[menus.main]]
-    name = "Events"
-    url = "/events/"
     weight = 3
+  [[menus.main]]
+    name = "Neighbourhood"
+    url = "/community/"
+    weight = 4
   [[menus.main]]
     name = "Get Involved"
     url = "/get-involved/"
-    weight = 4
-  [[menus.main]]
-    name = "Community"
-    url = "/community/"
     weight = 5
   [[menus.main]]
-    name = "Governance"
-    url = "/board/"
+    name = "About"
+    url = "/about/"
     weight = 6
-  [[menus.main]]
-    name = "Resources"
-    url = "/resources/"
-    weight = 7
-  [[menus.main]]
-    name = "News"
-    url = "/news/"
-    weight = 8
 
 [markup]
   [markup.goldmark]

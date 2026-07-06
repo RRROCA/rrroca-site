@@ -57,7 +57,7 @@ describe('Hugo build validation', () => {
       [...document.querySelectorAll('.site-header a.btn')]
         .some((link) => /membership/.test(link.getAttribute('href') || ''))
     ).toBe(true);
-    expect(document.querySelectorAll('.nav-main a').length).toBeGreaterThanOrEqual(7);
+    expect(document.querySelectorAll('.nav-main a').length).toBeGreaterThanOrEqual(6);
 
     expect(document.querySelector('#hero.hero')).not.toBeNull();
     expect(document.querySelectorAll('.community-strip .strip-track:not([aria-hidden="true"]) .strip-item')).toHaveLength(4);
@@ -221,7 +221,7 @@ describe('Hugo build validation', () => {
 
     ctaPages.forEach(({ file, href, text }) => {
       const document = loadDocument(file);
-      const link = [...document.querySelectorAll('a[href]')].find(
+      const link = [...document.querySelectorAll('main a[href]')].find(
         (anchor) => anchor.getAttribute('href') === href
       );
 
@@ -376,7 +376,7 @@ describe('Link guard', () => {
     const dom = new JSDOM(indexHtml);
     const navLinks = dom.window.document.querySelectorAll('.nav-main a[href]');
 
-    expect(navLinks.length).toBeGreaterThanOrEqual(8);
+    expect(navLinks.length).toBeGreaterThanOrEqual(6);
 
     const broken = [];
     navLinks.forEach((a) => {

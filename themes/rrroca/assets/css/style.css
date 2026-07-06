@@ -285,6 +285,18 @@ p { margin-bottom: var(--space-md); }
   background: linear-gradient(90deg, var(--color-ridge), var(--color-sunset));
   border-radius: 2px;
 }
+.nav-main .nav-cta {
+  min-height: 40px;
+}
+.nav-main .nav-cta-secondary {
+  background: transparent;
+  border-color: rgba(44,110,138,0.32);
+  color: var(--color-ridge);
+}
+.nav-main .nav-cta-secondary:hover {
+  border-color: var(--color-ridge);
+  background: rgba(44,110,138,0.08);
+}
 .nav-board-link {
   font-size: 0.75rem !important;
   opacity: 0.55;
@@ -1182,6 +1194,12 @@ p { margin-bottom: var(--space-md); }
   .fb-group-cta-inner { flex-direction: column; text-align: center; }
   .safety-banner-inner { flex-direction: column; text-align: center; }
   .newsletter-form { flex-direction: column; }
+}
+
+@media (max-width: 1320px) {
+  .nav-main .nav-cta-secondary {
+    display: none;
+  }
 }
 
 @media (max-width: 480px) {
