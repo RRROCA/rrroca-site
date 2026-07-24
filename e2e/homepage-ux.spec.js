@@ -101,7 +101,7 @@ test.describe('Homepage UX', () => {
       links.map((link) => link.href)
     );
 
-    expect(hrefs.length).toBeGreaterThanOrEqual(8);
+    expect(hrefs).toHaveLength(6);
     for (const href of hrefs) {
       const response = await page.request.get(href);
       expect(response.status(), href).toBeLessThan(400);

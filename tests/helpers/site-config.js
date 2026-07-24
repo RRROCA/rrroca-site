@@ -42,6 +42,7 @@ function isInternalUrl(href) {
     const url = new URL(trimmed, SITE_ORIGINS[0]);
     if (!/^https?:$/i.test(url.protocol)) return true;
     if (SITE_ORIGINS.includes(url.origin)) return true;
+    if (url.hostname === 'localhost' || url.hostname === '127.0.0.1') return true;
     return url.hostname === 'rrroca.org' || url.hostname.endsWith('.rrroca.org');
   } catch {
     return false;

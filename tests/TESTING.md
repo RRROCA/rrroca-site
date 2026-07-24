@@ -5,6 +5,7 @@
 ```bash
 hugo --quiet
 npx jest --verbose
+npm run test:ui
 ```
 
 ## Current Test Files
@@ -28,6 +29,7 @@ npx jest --verbose
 | `feed.test.js` | RSS/feed output correctness |
 | `security.test.js` | Security-focused static checks |
 | `cross-platform.test.js` | Path and environment compatibility |
+| `e2e/*.spec.js` | Browser-based UI, navigation, responsiveness, and interaction coverage |
 
 ## Testing Rules
 
@@ -35,3 +37,4 @@ npx jest --verbose
 - Keep tests additive (new pages/content should not fail existing tests)
 - Use `path.join()` for file paths
 - Keep tests deterministic and offline
+- UI tests run Playwright against the built local site and default to the installed Microsoft Edge browser on Windows

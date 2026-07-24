@@ -43,7 +43,7 @@ test.describe('Site integrity', () => {
       }))
     );
 
-    const expectedLabels = ['About', 'Safety', 'Events', 'Get Involved', 'Community', 'Governance', 'Resources', 'News'];
+    const expectedLabels = ['Events', 'Programs & Sports', 'Safety', 'Neighbourhood', 'Get Involved', 'About'];
     const matchedLinks = expectedLabels.map((label) => navLinks.find((link) => link.text === label));
 
     expect(matchedLinks.every(Boolean)).toBeTruthy();
@@ -191,10 +191,19 @@ test.describe('Site integrity', () => {
     await expect(nav).not.toHaveClass(/open/);
   });
 
-  test('header keeps the Join button visible', async ({ page }) => {
+  test('header keeps the resident action buttons visible', async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const header = page.locator('.site-header .nav-main');
+    const registerCta = header.locator('a.nav-cta-secondary').filter({ hasText: /^Register$/ });
+    const facilitiesCta = header.locator('a.nav-cta-secondary').filter({ hasText: /^Book Facilities$/ });
+    const joinCta = header.locator('a.nav-cta').filter({ hasText: /^Join$/ });
 
-    await expect(page.locator('.site-header a.btn.btn-primary.btn-sm')).toBeVisible();
-    await expect(page.locator('.site-header .nav-cta')).toHaveAttribute('href', /rrroca\.getcommunal\.com\/memberships/);
+    await expect(registerCta).toBeVisible();
+    await expect(facilitiesCta).toBeVisible();
+    await expect(joinCta).toBeVisible();
+    await expect(registerCta).toHaveAttribute('href', /rrroca\.getcommunal\.com\/events/);
+    await expect(facilitiesCta).toHaveAttribute('href', /rrroca\.getcommunal\.com\/facilities/);
+    await expect(joinCta).toHaveAttribute('href', /rrroca\.getcommunal\.com\/memberships/);
   });
 });

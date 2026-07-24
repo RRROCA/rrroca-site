@@ -13,7 +13,7 @@ test.describe('Link guard', () => {
       els.map((a) => a.getAttribute('href')).filter((h) => h && !/^javascript:/i.test(h))
     );
 
-    expect(navHrefs.length).toBeGreaterThanOrEqual(8);
+    expect(navHrefs).toHaveLength(6);
 
     const broken = [];
     for (const href of navHrefs) {

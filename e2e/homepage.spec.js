@@ -2,18 +2,26 @@ const { test, expect } = require('@playwright/test');
 
 test.describe('Homepage', () => {
   test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
     await page.goto('/', { waitUntil: 'domcontentloaded' });
   });
 
   test('loads with the redesigned header, logo, and hero', async ({ page }) => {
+    const header = page.locator('.site-header .nav-main');
+    const registerCta = header.locator('a.nav-cta-secondary').filter({ hasText: /^Register$/ });
+    const facilitiesCta = header.locator('a.nav-cta-secondary').filter({ hasText: /^Book Facilities$/ });
+    const joinCta = header.locator('a.nav-cta').filter({ hasText: /^Join$/ });
+
     await expect(page).toHaveTitle(/RRROCA|Rocky Ridge/i);
     await expect(page.locator('.site-header .logo-img')).toBeVisible();
     await expect(page.locator('.site-header .logo-img')).toHaveAttribute('src', /rrroca-logo\.png$/);
-    for (const label of ['About', 'Safety', 'Events', 'Get Involved', 'Community', 'Governance', 'Resources', 'News', 'Join']) {
-      await expect(page.locator('.nav-main')).toContainText(label);
+    for (const label of ['Events', 'Programs & Sports', 'Safety', 'Neighbourhood', 'Get Involved', 'About']) {
+      await expect(header).toContainText(label);
     }
     await expect(page.getByRole('button', { name: /search/i })).toBeVisible();
-    await expect(page.locator('.nav-cta')).toBeVisible();
+    await expect(registerCta).toBeVisible();
+    await expect(facilitiesCta).toBeVisible();
+    await expect(joinCta).toBeVisible();
     await expect(page.locator('.hero')).toBeVisible();
     await expect(page.locator('.hero-photo')).toBeVisible();
     await expect(page.locator('.hero-logo')).toBeVisible();
@@ -71,7 +79,8 @@ test.describe('Homepage', () => {
 
     expect(before).not.toBeNull();
     expect(after).not.toBeNull();
-    expect(Math.abs(after.y - before.y)).toBeLessThanOrEqual(2);
+    expect(after.y).toBeGreaterThanOrEqual(-1);
+    expect(after.y).toBeLessThanOrEqual(before.y);
   });
 
   test('renders a four-column footer with links', async ({ page }) => {

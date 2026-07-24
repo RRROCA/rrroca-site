@@ -16,6 +16,7 @@ module.exports = defineConfig({
       use: {
         ...devices['Desktop Chrome'],
         browserName: 'chromium',
+        channel: process.env.PLAYWRIGHT_CHANNEL || 'msedge',
       },
     },
   ],

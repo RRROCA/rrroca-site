@@ -29,7 +29,7 @@ The Rocky Ridge Royal Oak Community Association encourages our members to lead a
 
 ### Go swimming or to the gymnasium at the YMCA to get moving:
 
-<http://www.ymcacalgary.org/program-descriptions/locations/crowfoot/>
+<https://www.ymcacalgary.org/locations/shane-homes-ymca-rocky-ridge>
 
 ### Find other recreation opportunities and programs through the City of Calgary Recreation:
 

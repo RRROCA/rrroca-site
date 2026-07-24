@@ -9,12 +9,12 @@
 
   // Quarterly crime data for Rocky Ridge + Royal Oak combined
   // Source: mycalgary.com/crime-statistics + Calgary Open Data
-  // Updated: Q1 2026
+  // Updated: Q2 2026
   const crimeData = {
-    labels: ['Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025', 'Q1 2026'],
-    rockyRidge: [3, 4, 5, 3, 2],
-    royalOak:   [4, 3, 4, 3, 3],
-    calgaryAvg: [19, 22, 24, 18, 20]
+    labels: ['Q1 2025', 'Q2 2025', 'Q3 2025', 'Q4 2025', 'Q1 2026', 'Q2 2026'],
+    rockyRidge: [3, 4, 5, 3, 2, 2],
+    royalOak:   [4, 3, 4, 3, 3, 3],
+    calgaryAvg: [19, 22, 24, 18, 20, 20]
   };
 
   const seriesConfig = [

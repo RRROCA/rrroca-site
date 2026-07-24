@@ -17,10 +17,12 @@ This strategy maps how to get there across 11 technology domains, evaluated agai
 
 This document maps RRROCA's complete technology landscape — 11 strategic domains covering everything the Association uses to serve residents, run the board, communicate with the community, and manage operations. Each domain is evaluated against the Architecture Principles (see `architecture-principles.md`) and assigned a governance level: **board motion**, **portfolio authority** (Safety & Technology Director), or **no change needed**.
 
+**Current-scope note:** The active production scope is static-first website delivery and CMS editing. Board-auth automation and PR-based governance workflows are out of current production scope and evaluated as future options only.
+
 **Key recommendations for Board approval:**
 1. **Public website:** Hugo + GitHub Pages replaces WordPress ($0 cost, zero maintenance, maximum security)
 2. **Membership & programs:** Ratify Communal as the Association's membership platform (already adopted Feb 2026, replacing SportSoft)
-3. **Board governance:** Formal motion tracker with authenticated voting replaces informal WhatsApp approvals
+3. **Board governance:** Standardize formal motion/decision publishing on `/board/` and keep final approvals in board-governed channels (meeting resolutions and official records)
 
 **Under portfolio authority (no board vote required):**
 - Newsletter tooling (Mailchimp or Communal integration)
@@ -42,7 +44,7 @@ This document maps RRROCA's complete technology landscape — 11 strategic domai
 | A | Public Website | WordPress (rrroca.org) → Hugo | 🔄 Board motion | **Board vote** |
 | B | Membership & Programs | Communal (replaced SportSoft Feb '26) | ✅ Adopted | **Board ratification** |
 | C | Board Operations | Google Workspace (Drive, Docs, Calendar, Gmail) | ✅ Working | No change |
-| D | Board Communications | WhatsApp + GitHub PR voting for motions | ⚠️ → ✅ Motion tracker implemented | Portfolio authority |
+| D | Board Communications | WhatsApp + website motion/decision publishing (`/board/`) | ⚠️ Transition in progress | Portfolio authority |
 | E | Community Engagement | Facebook (RRROCA page, Safety page, Families group) | ⚠️ Fragmented | Portfolio authority |
 | F | Safety & Block Watch | Facebook group (Visioneers program) + Safety page | ⚠️ Needs activation | Portfolio authority |
 | G | Newsletter & Email | Manual email blasts, printed RRRO View | ⚠️ No dedicated tool | Portfolio authority |
@@ -74,9 +76,9 @@ Each platform scored against the 10-question checklist from `architecture-princi
 | **Q1** | Site survives if service disappears? | ✅ Markdown content → deploy anywhere in 1 hour | ❌ Locked to WordPress hosting; export is messy | ⚠️ Locked to nonprofit grant program | ❌ Proprietary format, not portable |
 | **Q2** | Cost? | ✅ $0 forever | ❌ $84-120/yr — site dies if payment lapses | ✅ $0 via nonprofit grant | ✅ $0 via nonprofit grant |
 | **Q3** | Needs ongoing maintenance? | ✅ Zero — static HTML, no updates needed | ❌ WordPress core + plugins + PHP + database = constant patching | ✅ Fully managed | ✅ Fully managed |
-| **Q4** | Non-technical board member can use it? | ✅ Decap CMS for content; power users edit Markdown on GitHub | ✅ WordPress admin is familiar | ✅ Built-in page editor | ✅ Best score — anyone can edit |
+| **Q4** | Non-technical board member can use it? | ✅ CMS editor at `/admin` for content; power users edit Markdown on GitHub | ✅ WordPress admin is familiar | ✅ Built-in page editor | ✅ Best score — anyone can edit |
 | **Q5** | Creates vendor lock-in? | ✅ No — Markdown + HTML, deploy to any static host | ⚠️ WordPress is portable-ish but plugins are not | ⚠️ Tied to nonprofit grant program | ❌ Proprietary content format |
-| **Q6** | Requires Chad (or any single person)? | ✅ No — org account, Decap CMS, documented. Bus factor ≥ 2 | ⚠️ Someone must handle updates and plugin conflicts | ✅ Org-owned tenant, any admin can manage | ✅ Any board member can edit |
+| **Q6** | Requires Chad (or any single person)? | ✅ No — org account, CMS editor, documented. Bus factor ≥ 2 | ⚠️ Someone must handle updates and plugin conflicts | ✅ Org-owned tenant, any admin can manage | ✅ Any board member can edit |
 | **Q7** | Increases attack surface? | ✅ No — pure static HTML, no server code | ❌ PHP + MySQL + plugins = #1 hacked CMS globally | ✅ Managed security | ✅ Managed security |
 | **Q8** | Documented? | ✅ Docs in repo + board-accessible location | ⚠️ Plugin configs scattered, tribal knowledge | ⚠️ Platform docs exist but config is GUI-based | ⚠️ Google's docs, not ours |
 | **Q9** | AI-assistable? | ✅ Text-based codebase — AI can read, modify, debug everything | ⚠️ PHP readable but plugin conflicts are opaque to AI | ⚠️ Framework-specific, requires platform expertise | ❌ No code access, proprietary templates |
@@ -89,7 +91,7 @@ Each platform scored against the 10-question checklist from `architecture-princi
 - Zero hard fails. Zero caveats. Passes every question cleanly.
 - Only platform where AI-assisted volunteers can maintain the full stack (Tier 2.5).
 - Only platform with truly portable content (Markdown → any static host).
-- Prototype already built, tested (59 Jest + 68 Playwright tests), and deployed for board review.
+- Prototype already built, covered by the full automated Jest + Playwright suite, and deployed for board review.
 
 **Option B: WordPress / 10Web — NOT RECOMMENDED**
 - Hard fails on Q1 (portability) and Q2 (cost). Site goes offline if payment lapses.
@@ -223,29 +225,15 @@ WhatsApp passes Q2 (free), Q4 (everyone knows it), and Q6 (no single person depe
 
 **Keep WhatsApp for quick coordination, but move formal decisions to a proper governance process:**
 
-#### Board Motion Tracker (implemented)
+#### Board Governance Publishing (current)
 
-A formal motion system is now built into the website at `/board/`. When a board member wants to propose a motion:
+The website now supports a formal motion/decision library at `/board/`. For each motion:
 
-1. The motion is created as a page on the website (text, cost, rationale, supporting documents)
-2. A **GitHub pull request** is opened for the motion — this is the voting mechanism
-3. Board members receive an **automatic email notification** when a motion is posted
-4. Directors vote by **approving or requesting changes** on the pull request
-5. Once quorum is reached, the motion is merged and the website updates with the result
+1. The motion is published as a page (text, cost, rationale, supporting documents)
+2. Board approval is recorded through official board channels (meeting resolution and minutes)
+3. The approved outcome is published back to `/board/` for transparency and institutional memory
 
-**Why pull request voting instead of Google Forms or email?**
-
-| Concern | How PR Voting Addresses It |
-|---------|---------------------------|
-| **"Who voted and when?"** | Every approval is timestamped and tied to a named GitHub account — permanent, immutable audit trail |
-| **"Is this what I voted on?"** | The exact motion wording is locked in the PR. No one can claim the text changed after they voted |
-| **"I didn't see the motion"** | GitHub sends automatic email notifications to all repo collaborators. No more "I missed it in WhatsApp" |
-| **"How do I vote?"** | Click the email link → read the motion → click Approve or Request Changes. Works on phone, tablet, laptop — takes 30 seconds |
-| **"What did the board decide?"** | Approved motions publish automatically to the public website at `/board/` — full transparency for the community |
-| **"What if someone disputes a decision?"** | The complete vote record is in git history forever — legally defensible under the Alberta Societies Act |
-| **"Does this cost anything?"** | GitHub accounts are free. No new subscriptions, no new vendors |
-
-**The one ask:** each board member creates a free GitHub account and is added as a collaborator on the website repository. They don't need to know git or code — they just click "Approve" on a pull request.
+This keeps governance clear for residents without forcing board operations into a developer workflow.
 
 #### WhatsApp Governance
 
@@ -480,14 +468,14 @@ The Business Plan identifies volunteer continuity as the Association's core orga
 
 | Scenario | Website (Hugo) | Memberships (Communal) | Board Ops (Google) | Comms (WhatsApp) |
 |----------|---------------|----------------------|-------------------|-----------------|
-| **Chad leaves** | ✅ Runs forever, Decap CMS for editing | ✅ Any admin manages | ✅ Any admin manages | ✅ Groups persist |
-| **No tech board members** | ✅ Decap CMS + AI-assisted volunteer | ✅ Designed for non-technical | ✅ Everyone knows Google | ✅ Everyone knows WhatsApp |
+| **Chad leaves** | ✅ Runs forever, CMS editor for content updates | ✅ Any admin manages | ✅ Any admin manages | ✅ Groups persist |
+| **No tech board members** | ✅ CMS editor + AI-assisted volunteer | ✅ Designed for non-technical | ✅ Everyone knows Google | ✅ Everyone knows WhatsApp |
 | **Budget goes to zero** | ✅ $0 forever | ⚠️ Communal subscription required | ✅ Free via nonprofit | ✅ Free |
 | **Platform discontinued** | ✅ Markdown → any host in 1 hour | ⚠️ Export data, find replacement | ⚠️ Export data, find replacement | ⚠️ Migrate to another chat |
 
 ### Resiliency Measures (apply to ALL domains)
 
-1. **Organizational accounts** — Every platform should be owned by RRROCA, not a personal account. Create a `rrroca` GitHub organization. Ensure Google Workspace is under the rrroca.org domain. Verify Communal admin access.
+1. **Organizational accounts** — Every platform should be owned by RRROCA, not a personal account. Maintain RRROCA GitHub organization ownership and backup admins. Ensure Google Workspace is under the rrroca.org domain. Verify Communal admin access.
 2. **Redundant access** — 2+ board members as admin on every platform (GitHub, Google, Communal, Facebook, domain registrar).
 3. **Documentation** — Maintain in the repo AND Google Drive:
    - `OPERATIONS.md` — How to edit content, publish posts, manage the site
@@ -500,12 +488,12 @@ The Business Plan identifies volunteer continuity as the Association's core orga
 ```
 RRROCA Technology Quick Reference
 ==================================
-Website:      rrroca.org → edit at rrroca.org/admin (GitHub login)
+Website:      rrroca.org → edit at rrroca.org/admin
 Memberships:  rrroca.getcommunal.com (Communal admin login)
 Email/Docs:   Google Workspace (@rrroca.org accounts)
 Board chat:   WhatsApp group
 Facebook:     RRROCA page / Safety page / Families group
-Source code:  github.com/rrroca/rrroca.org
+Source code:  github.com/RRROCA/rrroca-site
 Domain:       rrroca.org — managed at [registrar]
 Passwords:    [shared password manager location]
 ```
@@ -516,20 +504,20 @@ Passwords:    [shared password manager location]
 
 ### Phase 1: Foundation & Alignment (Current)
 - ✅ Website rebuilt on Hugo + GitHub Pages (zero-cost, zero-maintenance)
-- ✅ Board Motion Tracker with GitHub PR-based voting (authenticated, auditable)
+- ✅ Motion and decision publishing library live at `/board/`
 - ✅ Integrated Technology Strategy (this document) and Architecture Principles
 - ✅ Change Management Plan prepared
 - Board reviews this strategy and website prototype
-- Board votes on motions: (1) website platform, (2) governance tracker adoption
+- Board votes on motions: (1) website platform, (2) strategy adoption
 - Board ratifies Communal as membership platform
 
 ### Phase 2: Website Launch & Board Onboarding
-- Board members create free GitHub accounts (voting access)
-- First real motion voted via GitHub PR (tiny forest fencing — $1,200)
+- Confirm board process for approving motions (meeting resolution + published record)
+- Publish first board-approved motion outcome through `/board/`
 - Register RRROCA at techsoupcanada.ca
-- Create RRROCA GitHub organization, transfer repo
+- Confirm RRROCA GitHub organization continuity (2+ admins)
 - Configure rrroca.org domain for GitHub Pages
-- Set up Decap CMS for non-technical editors
+- Maintain CMS editor onboarding for non-technical content editors
 
 ### Phase 3: Meeting Intelligence (Frontier CA Milestone)
 - Record first board meeting on Teams (free tier)
@@ -561,7 +549,7 @@ Passwords:    [shared password manager location]
 | A. Website Platform | Capital/strategic | **Board motion** | Pending approval |
 | B. Communal | Budget ratification | **Board motion** | Already adopted — ratify |
 | C. Google Workspace | No change | N/A | ✅ Continue |
-| D. Board Governance (Motions) | Operational/strategic | **Board motion** | ✅ Built — pending adoption |
+| D. Board Governance (Motions) | Operational/strategic | **Board motion** | Publishing live; approval workflow standardization pending board decision |
 | E. Facebook strategy | Operational | Portfolio authority | Recommendation above |
 | F. Newsletter tool | Operational | Portfolio authority | Evaluation needed |
 | G. Social media | Operational | Portfolio authority | Future — not urgent |

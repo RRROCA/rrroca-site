@@ -1,14 +1,12 @@
 const { test, expect } = require('@playwright/test');
 
 const primaryNavigation = [
-  { label: 'About', href: '/about/', heading: /About/i },
-  { label: 'Safety', href: '/safety/', heading: /Safety|Community Safety Hub/i },
   { label: 'Events', href: '/events/', heading: /Events/i },
+  { label: 'Programs & Sports', href: '/sports/', heading: /Sport|Programs/i },
+  { label: 'Safety', href: '/safety/', heading: /Safety|Community Safety Hub/i },
+  { label: 'Neighbourhood', href: '/community/', heading: /Neighbourhood|Community/i },
   { label: 'Get Involved', href: '/get-involved/', heading: /Join us|Get Involved/i },
-  { label: 'Community', href: '/community/', heading: /Community/i },
-  { label: 'Governance', href: '/board/', heading: /Governance|Board/i },
-  { label: 'Resources', href: '/resources/', heading: /Resources/i },
-  { label: 'News', href: '/news/', heading: /News/i },
+  { label: 'About', href: '/about/', heading: /About/i },
 ];
 
 const contentPages = [
@@ -39,6 +37,10 @@ const formPages = [
 test.describe('Navigation', () => {
   test('header links and homepage calls to action resolve to real pages', async ({ page }) => {
     await page.goto('/', { waitUntil: 'domcontentloaded' });
+    const header = page.locator('.site-header .nav-main');
+    const registerCta = header.locator('a.nav-cta-secondary').filter({ hasText: /^Register$/ });
+    const facilitiesCta = header.locator('a.nav-cta-secondary').filter({ hasText: /^Book Facilities$/ });
+    const joinCta = header.locator('a.nav-cta').filter({ hasText: /^Join$/ });
 
     const logo = page.locator('.site-header .logo');
     await expect(logo).toBeVisible();
@@ -54,9 +56,8 @@ test.describe('Navigation', () => {
     }
 
     await page.goto('/', { waitUntil: 'domcontentloaded' });
-    const joinCta = page.locator('.site-header .nav-cta');
-    await expect(joinCta).toBeVisible();
-    await expect(joinCta).toHaveText('Join');
+    await expect(registerCta).toHaveAttribute('href', /rrroca\.getcommunal\.com\/events/);
+    await expect(facilitiesCta).toHaveAttribute('href', /rrroca\.getcommunal\.com\/facilities/);
     await expect(joinCta).toHaveAttribute('href', /rrroca\.getcommunal\.com\/memberships/);
   });
 

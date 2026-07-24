@@ -1,3 +1,6 @@
+{{ $membershipURL := .Site.Params.membershipURL | default "https://rrroca.getcommunal.com/memberships" }}
+{{ $eventsURL := .Site.Params.eventsURL | default "https://rrroca.getcommunal.com/events" }}
+{{ $facilitiesURL := .Site.Params.facilitiesURL | default "https://rrroca.getcommunal.com/facilities" }}
 <div class="sidebar">
   <div class="sidebar-card sidebar-emergency">
     <div class="sidebar-card-header">
@@ -18,16 +21,16 @@
     <div class="sidebar-card-header">
       <span class="sidebar-card-icon">🧭</span>
       <div>
-        <p class="sidebar-eyebrow">Popular destinations</p>
-        <p class="sidebar-card-title">Quick links</p>
+        <p class="sidebar-eyebrow">Resident shortcuts</p>
+        <p class="sidebar-card-title">Do this now</p>
       </div>
     </div>
     <ul class="sidebar-link-list">
+      <li><a href="{{ $eventsURL }}" target="_blank" rel="noopener"><span>Sign up today</span><strong>Register for Events</strong></a></li>
+      <li><a href="{{ $facilitiesURL }}" target="_blank" rel="noopener"><span>Reserve community spaces</span><strong>Book Facilities</strong></a></li>
+      <li><a href="{{ $membershipURL }}" target="_blank" rel="noopener"><span>Support RRROCA</span><strong>Join as a Member</strong></a></li>
+      <li><a href="{{ "board/actions/" | relURL }}"><span>Read official records</span><strong>Board Decisions</strong></a></li>
       <li><a href="{{ "safety/" | relURL }}"><span>Stay informed</span><strong>Safety Hub</strong></a></li>
-      <li><a href="{{ "events/" | relURL }}"><span>Plan your month</span><strong>Events</strong></a></li>
-      <li><a href="{{ "board/" | relURL }}"><span>Transparent decisions</span><strong>Governance</strong></a></li>
-      <li><a href="{{ "get-involved/" | relURL }}"><span>Support RRROCA</span><strong>Get Involved</strong></a></li>
-      <li><a href="{{ "business-directory/" | relURL }}"><span>Shop local</span><strong>Business Directory</strong></a></li>
       <li><a href="{{ "contact/" | relURL }}"><span>Questions?</span><strong>Contact Us</strong></a></li>
     </ul>
   </div>
