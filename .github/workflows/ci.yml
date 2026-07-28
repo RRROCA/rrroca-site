@@ -64,7 +64,7 @@ jobs:
 
       - name: Setup Node.js
         if: steps.changes.outputs.site == 'true' || github.event_name != 'pull_request'
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           node-version: '20'
 
